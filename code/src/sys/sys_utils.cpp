@@ -1,4 +1,4 @@
-
+// -*- mode: c++; c-basic-offset: 4; -*-
 
 #include <stdlib.h>
 #ifdef _WINDOWS
@@ -58,7 +58,8 @@ unsigned long long diskSpace(const QString & mount_ponit)
 #else
     struct statfs stats;
     statfs (mount_ponit.toLocal8Bit(), &stats);
-    return ((unsigned long long)stats.f_blocks * (unsigned long long)stats.f_bsize);
+    return (static_cast<unsigned long long>(stats.f_blocks) *
+            static_cast<unsigned long long>(stats.f_bsize));
 #endif
 }
 
@@ -69,7 +70,8 @@ unsigned long long freeSpace(const QString & mount_ponit)
 #else
     struct statfs stats;
     statfs (mount_ponit.toLocal8Bit(), &stats);
-    return ((unsigned long long)stats.f_bavail * (unsigned long long)stats.f_bsize);
+    return (static_cast<unsigned long long>(stats.f_bavail) *
+            static_cast<unsigned long long>(stats.f_bsize));
 #endif
 }
 

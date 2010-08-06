@@ -1,0 +1,9 @@
+<RCC>
+<qresource>
+    <file>vbf_icons/close.png</file>
+    <file>vbf_icons/next.png</file>
+    <file>vbf_icons/prev.png</file>
+    <file>vbf_icons/keyboard.png</file>
+    <file>vbf_icons/toc.png</file>
+</qresource>
+</RCC>

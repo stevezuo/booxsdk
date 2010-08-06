@@ -1,0 +1,19 @@
+<!DOCTYPE RCC><RCC version="1.0">
+  <qresource>
+    <file>images/network_connection.png</file>
+    <file>images/signal_bk_1.png</file>
+    <file>images/signal_bk_2.png</file>
+    <file>images/signal_bk_3.png</file>
+    <file>images/signal_bk_4.png</file>
+    <file>images/signal_bk_5.png</file>
+    <file>images/signal_fg_1.png</file>
+    <file>images/signal_fg_2.png</file>
+    <file>images/signal_fg_3.png</file>
+    <file>images/signal_fg_4.png</file>
+    <file>images/signal_fg_5.png</file>
+    <file>images/refresh.png</file>
+    <file>images/lock.png</file>
+    <file>images/selected.png</file>
+    <file>images/customize.png</file>
+  </qresource>
+</RCC>

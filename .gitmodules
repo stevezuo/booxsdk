@@ -1,0 +1,3 @@
+[submodule "cmake_modules"]
+	path = cmake_modules
+	url = git://github.com/onyx-intl/cmake_modules.git

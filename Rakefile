@@ -1,5 +1,33 @@
 task :default => :build
 
+def has_distcc
+  if ENV['DISABLE_DISTCC']
+    false
+  else
+    system("which distcc")
+  end
+end
+
+def cmake_cmd(arch)
+  arm_cc = "/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/arm-linux-gcc"
+  arm_cxx = "/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/arm-linux-g++"
+  if arch == :arm and has_distcc
+    "CC='distcc #{arm_cc}' CXX='distcc #{arm_cxx}' cmake "
+  elsif arch == :x86 and has_distcc
+    "CC='distcc gcc' CXX='distcc g++' cmake "
+  else
+    "CC='#{arm_cc}' CXX='#{arm_cxx}' cmake "
+  end
+end
+
+def make_cmd
+  if has_distcc
+    "make -j12"
+  else
+    "make -j2"
+  end
+end
+
 desc "Remove the build directory."
 task :clean do
   sh 'rm -rf build'  # Remove compilation targets and cmake output.
@@ -21,10 +49,10 @@ directory "build/x86"
 
 task :arm_env do
   path = ENV['PATH']
-  ENV['PATH'] = "/opt/onyx/naboo/bin:/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/:#{path}"
-  ENV['ONYX_SDK_ROOT'] = '/opt/onyx/naboo'
-  ENV['PKG_CONFIG_PATH'] = '/opt/onyx/naboo/lib/pkgconfig/'
-  ENV['QMAKESPEC'] = '/opt/onyx/naboo/mkspecs/qws/linux-arm-g++/'
+  ENV['PATH'] = "/opt/onyx/arm/bin:/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/:#{path}"
+  ENV['ONYX_SDK_ROOT'] = '/opt/onyx/arm'
+  ENV['PKG_CONFIG_PATH'] = '/opt/onyx/arm/lib/pkgconfig/'
+  ENV['QMAKESPEC'] = '/opt/onyx/arm/mkspecs/qws/linux-arm-g++/'
 end
 
 task :x86_env do
@@ -33,31 +61,23 @@ task :x86_env do
   ENV['PATH'] = "/opt/qtsdk-2009.04/qt/bin:#{path}"
 end
 
-file "build/x86/Makefile" => ["build/x86", :x86_env] do
-  sh 'cd build/x86 && cmake ../..'
-end
-
-file "build/arm/Makefile" => ["build/arm", :arm_env] do
-  sh 'cd build/arm && cmake -DBUILD_FOR_ARM:BOOL=ON ../..'
-end
-
 namespace :config do
   namespace :x86 do
     task :static => ["build/x86", :x86_env] do
-      sh 'cd build/x86 && cmake -DONYX_BUILD_STATIC_LIB:BOOL=ON ../..'
+      sh "cd build/x86 && #{cmake_cmd :x86} -DONYX_BUILD_STATIC_LIB:BOOL=ON ../.."
     end
 
     task :default => ["build/x86", :x86_env] do
-      sh 'cd build/x86 && cmake ../..'
+      sh "cd build/x86 && #{cmake_cmd :x86} ../.."
     end
   end
 
   namespace :arm do
     task :static => [:arm_env, "build/arm"] do
-      sh 'cd build/arm && cmake -DONYX_BUILD_STATIC_LIB:BOOL=ON -DBUILD_FOR_ARM:BOOL=ON ../..'
+      sh "cd build/arm && #{cmake_cmd :arm} -DONYX_BUILD_STATIC_LIB:BOOL=ON -DBUILD_FOR_ARM:BOOL=ON ../.."
     end
     task :default => [:arm_env, "build/arm"] do
-      sh 'cd build/arm && cmake -DBUILD_FOR_ARM:BOOL=ON ../..'
+      sh "cd build/arm && #{cmake_cmd :arm} -DBUILD_FOR_ARM:BOOL=ON ../.."
     end
   end
 end
@@ -66,24 +86,24 @@ namespace :build do
   namespace :x86 do
     desc "Build all packages."
     task :static => "config:x86:static" do
-      sh 'cd build/x86 && make'
+      sh "cd build/x86 && #{make_cmd}"
     end
 
     desc "Build all packages."
     task :default => "config:x86:default" do
-      sh 'cd build/x86 && make'
+      sh "cd build/x86 && #{make_cmd}"
     end
   end
 
   namespace :arm do
     desc "Build the ARM version of the SDK."
     task :static => ["config:arm:static", :arm_env] do
-      sh 'cd build/arm && make'
+      sh "cd build/arm && #{make_cmd}"
     end
 
     desc "Build the ARM version of all packages."
     task :default => ["config:arm:default", :arm_env] do
-      sh 'cd build/arm && make'
+      sh "cd build/arm && #{make_cmd}"
     end
   end
 

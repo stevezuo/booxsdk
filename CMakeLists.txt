@@ -8,9 +8,6 @@ SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules")
 Project(SDK CXX C)
 ENABLE_TESTING()
 
-# Global definitions
-SET(ADD_LIB "")
-
 # Check to use arm toolchain or not
 IF(BUILD_FOR_ARM)
     INCLUDE(arm_toolchain)
@@ -49,11 +46,6 @@ include(misc)
 include(tc)
 
 LINK_DIRECTORIES(${QT_LIBRARY_DIR})
-
-# Find ZLIB
-INCLUDE(FindZLIB)
-INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
-LINK_DIRECTORIES(${ZLIB_LIBRARIES})
 
 # Output directories.
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)

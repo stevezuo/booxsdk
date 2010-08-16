@@ -233,6 +233,12 @@ void ReadingToolsActions::generateActions(const vector<ReadingToolsType> & value
                 act->setIcon(QIcon(QPixmap(":/images/paste.png")));
             }
             break;
+        case CLOCK_TOOL:
+            {
+                act->setText(QCoreApplication::tr("Clock"));
+                act->setIcon(QIcon(QPixmap(":/images/speed.png")));
+            }
+            break;
         default:
             break;
         }

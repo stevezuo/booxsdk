@@ -170,6 +170,11 @@ void MainWindow::handleFullScreen(bool enable)
     }
 }
 
+void MainWindow::handleClockClicked()
+{
+    status_bar_.onClockClicked();
+}
+
 void MainWindow::onPagebarClicked(const int percent, const int value)
 {
     emit pagebarClicked(percent, value - 1);

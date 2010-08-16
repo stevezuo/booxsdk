@@ -86,6 +86,7 @@ enum ReadingToolsType
     DELETE_ACCOUNT,
     CLEAR_COOKIES,
     AUTO_LOAD_IMAGE,
+    CLOCK_TOOL,
     UNDEFINED_TOOL
 };
 

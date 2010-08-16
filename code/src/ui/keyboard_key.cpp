@@ -224,7 +224,7 @@ void KeyBoardKey::updateText()
 
 void KeyBoardKey::keyPressEvent(QKeyEvent * event)
 {
-    event->ignore();
+    event->accept();
 }
 
 void KeyBoardKey::keyReleaseEvent(QKeyEvent * event)

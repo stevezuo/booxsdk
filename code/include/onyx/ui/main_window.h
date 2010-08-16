@@ -39,6 +39,7 @@ public Q_SLOTS:
                                  const int state);
     void handleRequestUpdate(bool update_now);
     void handlePopupJumpPageDialog();
+    void handleClockClicked();
 
 Q_SIGNALS:
     // base signals

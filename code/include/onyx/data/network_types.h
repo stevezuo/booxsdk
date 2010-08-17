@@ -27,5 +27,15 @@ enum OperationMode
     RF_OFF,
 };
 
+/// 3G Connection state
+enum TGConnectionState
+{
+    TG_INVALID = 0,       ///< Initial state
+    TG_CHECKING_NETWORK,  ///< Checking network
+    TG_CONNECTING,        ///< In connecting, network found.
+    TG_CONNECTED,         ///< Connected
+    TG_DISCONNECTED,      ///< Disconnect from network, but modem is still active
+    TG_STOP,              ///< Modem power off.
+};
 
 #endif

@@ -130,20 +130,20 @@ libs = [ "libonyxapp.a",
          "libonyx_data.a",
          "libonyx_screen.a",
          "libonyx_sys.a",
-         "libonyx_ui.a",
-         "libonyx_wifi.a",
+         "libonyx_ui.so",
+         "libonyx_wireless.a",
          "libonyx_wpa.a" ]
 
 arm_libs = libs.map {|lib| "build/arm/libs/#{lib}"}
 x86_libs = libs.map {|lib| "build/x86/libs/#{lib}"}
 
-arm_libs.each {|lib| file lib => "build:arm:sdk"}
-x86_libs.each {|lib| file lib => "build:x86:sdk"}
+arm_libs.each {|lib| file lib => "build:arm:default"}
+x86_libs.each {|lib| file lib => "build:x86:default"}
 
 date = `date --rfc-3339=date`.chomp
 sdktar = "onyxsdk-#{date}.tar.gz"
 
-file sdktar => (arm_libs + x86_libs) do
+file sdktar do
   dirname = "onyxsdk-#{date}"
   sh "mkdir -p #{dirname}/lib/x86"
   sh "mkdir -p #{dirname}/lib/arm"
@@ -154,7 +154,7 @@ file sdktar => (arm_libs + x86_libs) do
   x86_libs.each do |lib|
     sh "cp #{lib} #{dirname}/lib/x86/"
   end
-  sh "cp -r sdk_readonly/include #{dirname}/include"
+  sh "cp -r code/include #{dirname}/include"
   sh "tar -czf #{sdktar} #{dirname}"
   sh "rm -rf #{dirname}"
 end
@@ -168,5 +168,6 @@ namespace :release do
   desc "Build and upload the SDK to our web server."
   task :sdk => sdktar do
     sh "scp #{sdktar} sdkrelease@dev.onyxcommunity.com:/var/www/dev.onyxcommunity.com/sdk/"
+    sh "ssh sdkrelease@dev.onyxcommunity.com 'cd /var/www/dev.onyxcommunity.com/sdk/ && ln -sf #{sdktar} onyxsdk-latest.tar.gz && echo #{sdktar} >LATEST.txt'"
   end
 end

@@ -13,23 +13,33 @@
 #include "onyx/ui/status_bar_item_input.h"
 #include "onyx/ui/status_bar_item_connection.h"
 #include "onyx/ui/status_bar_item_3g_connection.h"
+#include "onyx/ui/status_bar_item_volume.h"
 #include "onyx/ui/number_dialog.h"
 #include "onyx/ui/power_management_dialog.h"
 #include "onyx/ui/clock_dialog.h"
+#include "onyx/ui/volume_control.h"
 
 namespace ui
 {
+
+static const int HIDE_VOLUME_DIALOG_INTERVAL = 5000;
 
 StatusBar::StatusBar(QWidget *parent, StatusBarItemTypes items)
     : QWidget(parent)
     , items_(0)
     , layout_(this)
     , enable_jump_to_page_(true)
+    , volume_control_dialog_(0)
 {
     createLayout();
     setupConnections();
     addItems(items);
     initUpdate();
+
+    hide_volume_dialog_timer_.setSingleShot( true );
+    hide_volume_dialog_timer_.setInterval( HIDE_VOLUME_DIALOG_INTERVAL );
+    connect(&hide_volume_dialog_timer_, SIGNAL( timeout() ),
+            this, SLOT(onHideVolumeDialog()));
 }
 
 StatusBar::~StatusBar(void)
@@ -67,7 +77,10 @@ void StatusBar::setupConnections()
             SIGNAL(connectToPC(bool)),
             this,
             SLOT(onConnectToPC(bool)));
-
+    connect(&sys_status,
+            SIGNAL(volumeChanged(int, bool)),
+            this,
+            SLOT(onVolumeChanged(int, bool)));
 }
 
 /// Update some status when it's created.
@@ -85,7 +98,7 @@ void StatusBar::addItems(StatusBarItemTypes items)
     // Adjust the order if necessary.
     const StatusBarItemType all[] =
     {
-        MENU, PROGRESS, MESSAGE, STYLUS, CLOCK, INPUT_TEXT, SCREEN_REFRESH, INPUT_URL, BATTERY,
+        MENU, PROGRESS, MESSAGE, STYLUS, CLOCK, INPUT_TEXT, VOLUME, SCREEN_REFRESH, INPUT_URL, BATTERY,
         CONNECTION, THREEG_CONNECTION
     };
     const int size = sizeof(all)/sizeof(all[0]);
@@ -296,6 +309,50 @@ void StatusBar::onClockClicked()
 
     ClockDialog dialog(clock->startDateTime(), 0);
     dialog.exec();
+}
+
+void StatusBar::onHideVolumeDialog()
+{
+    if (volume_control_dialog_ != 0 && volume_control_dialog_->isVisible())
+    {
+        volume_control_dialog_->hide();
+        onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
+    }
+}
+
+void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
+{
+    if (volume_control_dialog_ == 0)
+    {
+        volume_control_dialog_.reset(new VolumeControlDialog(this));
+    }
+
+    hide_volume_dialog_timer_.stop();
+    if (!volume_control_dialog_->isVisible())
+    {
+        volume_control_dialog_->ensureVisible();
+    }
+
+    hide_volume_dialog_timer_.start();
+    onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
+}
+
+void StatusBar::onVolumeClicked()
+{
+    if (volume_control_dialog_ == 0)
+    {
+        volume_control_dialog_.reset(new VolumeControlDialog(this));
+    }
+
+    hide_volume_dialog_timer_.stop();
+    if (!volume_control_dialog_->isVisible())
+    {
+        volume_control_dialog_->ensureVisible();
+    }
+    else
+    {
+        volume_control_dialog_->hide();
+    }
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
 }
 
@@ -525,6 +582,10 @@ StatusBarItem *StatusBar::item(const StatusBarItemType type, bool create)
     case CLOCK:
         item = new StatusBarItemClock(this);
         connect(item, SIGNAL(clicked()), this, SLOT(onClockClicked()));
+        break;
+    case VOLUME:
+        item = new StatusBarItemVolume(this);
+        connect(item, SIGNAL(clicked()), this, SLOT(onVolumeClicked()));
         break;
     case SCREEN_REFRESH:
         item = new StatusBarItemRefreshScreen(this);

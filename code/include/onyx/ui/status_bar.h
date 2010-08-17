@@ -14,6 +14,8 @@
 namespace ui
 {
 
+class VolumeControlDialog;
+
 /// Status bar library for GUI shell and other applications.
 /// Status bar separates the whole bar into three parts:
 /// - Menu area.
@@ -49,6 +51,7 @@ public Q_SLOTS:
     void onScreenRefreshClicked();
     void onInputUrlClicked();
     void onInputTextClicked();
+    void onVolumeClicked();
 
 Q_SIGNALS:
     void progressClicked(const int percent, const int value);
@@ -70,6 +73,8 @@ private Q_SLOTS:
     void onWifiDeviceChanged(bool enabled);
     void onStylusChanged(bool inserted);
     void onConnectToPC(bool);
+    void onVolumeChanged(int new_volume, bool is_mute);
+    void onHideVolumeDialog();
 
 private:
     virtual void mouseMoveEvent(QMouseEvent *me);
@@ -98,6 +103,8 @@ private:
     StatusBarItems     widgets_;
     bool               enable_jump_to_page_;
     scoped_ptr<USBConnectionDialog> usb_connection_dialog_;
+    scoped_ptr<VolumeControlDialog> volume_control_dialog_;
+    QTimer             hide_volume_dialog_timer_;
 };
 
 };  // namespace ui

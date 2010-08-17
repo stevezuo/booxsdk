@@ -17,7 +17,7 @@ MainWindow::MainWindow(QObject *parent)
     , model_(0)
     , vlayout_(this)
     , hlayout_(0)
-    , status_bar_(this, MENU | PROGRESS | MESSAGE | STYLUS | BATTERY | CLOCK | SCREEN_REFRESH)
+    , status_bar_(this, MENU | PROGRESS | MESSAGE | STYLUS | BATTERY | CLOCK | VOLUME | SCREEN_REFRESH)
     , mandatory_update_(false)
 {
     setAutoFillBackground(true);

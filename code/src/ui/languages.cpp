@@ -31,6 +31,13 @@ bool loadTranslator(const QString &locale)
     {
         QApplication::removeTranslator(pre_translator);
     }
+    if (locale == "iw_IL")
+    {
+        qApp->setLayoutDirection(Qt::RightToLeft);
+    } else {
+        qApp->setLayoutDirection(Qt::LeftToRight);
+    }
+
     QApplication::installTranslator(translator);
     pre_translator = translator;
     return true;

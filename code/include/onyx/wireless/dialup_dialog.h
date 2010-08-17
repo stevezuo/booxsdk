@@ -39,7 +39,7 @@ private Q_SLOTS:
     void onCloseClicked();
     void onConnectClicked(bool);
     void onGetFocus(OnyxLineEdit *object);
-    void onPppConnectionChanged(const QString &, bool);
+    void onPppConnectionChanged(const QString &, int);
     void showDNSResult(QHostInfo);
 
     void onApnClicked(bool);

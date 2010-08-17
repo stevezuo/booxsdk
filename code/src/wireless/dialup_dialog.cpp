@@ -285,12 +285,14 @@ void DialUpDialog::createLayout()
     }
 
     input_layout_.addWidget(&disconnect_button_);
+    disconnect_button_.setAutoExclusive(true);
+    disconnect_button_.setCheckable(true);
     QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
     content_layout_.addStretch(0);
 
     // QObject::connect(&number_edit_, SIGNAL(getFocus(NabooLineEdit *)), this, SLOT(onGetFocus(NabooLineEdit *)));
-    QObject::connect(&sys_, SIGNAL(pppConnectionChanged(const QString &, bool)),
-                     this, SLOT(onPppConnectionChanged(const QString &, bool)));
+    QObject::connect(&sys_, SIGNAL(pppConnectionChanged(const QString &, int)),
+                     this, SLOT(onPppConnectionChanged(const QString &, int)));
     QObject::connect(&sys_, SIGNAL(report3GNetwork(const int, const int, const int)),
                      this, SLOT(onReport3GNetwork(const int, const int, const int)));
 }
@@ -319,24 +321,25 @@ void DialUpDialog::onConnectClicked(bool)
     state_widget_.setText(tr("Connecting..."));
 }
 
-void DialUpDialog::onPppConnectionChanged(const QString &message, bool connected)
+void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
 {
-    if (!connected)
+    if (status == TG_CHECKING_NETWORK)
     {
-        if (!message.isEmpty())
-        {
-            state_widget_.setText(message);
-        }
-        else
-        {
-            state_widget_.setText(tr("Unknown error."));
-        }
+        state_widget_.setText(tr("Searching Network..."));
     }
-    else
+    else if (status == TG_CONNECTING)
+    {
+        state_widget_.setText(tr("Connecting..."));
+    }
+    else if (status == TG_CONNECTED)
     {
         QString result("Connected. Address: %1");
         result = result.arg(qPrintable(address()));
         state_widget_.setText(result);
+    }
+    else if (status == TG_DISCONNECTED)
+    {
+        state_widget_.setText(tr("Disconnect."));
     }
 }
 

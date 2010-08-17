@@ -36,6 +36,11 @@ int PMConfig::suspendInterval(QSqlDatabase &database)
     query.prepare( "select value from power_management where key = ? ");
     query.addBindValue("suspend_interval");
     int interval = 300 * 1000;
+    int t = qgetenv("SUSPEND_INTERVAL").toInt();
+    if (t > 0)
+    {
+        interval = t;
+    }
     if (query.exec() && query.next())
     {
         interval = query.value(0).toInt();
@@ -58,6 +63,11 @@ int PMConfig::shutdownInterval(QSqlDatabase &database)
     query.prepare( "select value from power_management where key = ? ");
     query.addBindValue("shutdown_interval");
     int interval = 0;
+    int t = qgetenv("SHUTDOWN_INTERVAL").toInt();
+    if (t > 0)
+    {
+        interval = t;
+    }
     if (query.exec() && query.next())
     {
         interval = query.value(0).toInt();

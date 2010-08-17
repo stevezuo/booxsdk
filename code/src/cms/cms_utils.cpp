@@ -7,13 +7,28 @@ namespace cms
 
 static const QString DATABASE_DIR  = ".odb";
 static const QString DATABASE_NAME = "content.db";
-static const QString ONYX_DB_DIR = ".onyx";     ///< SVN style database.
 static const QString SKETCH_POSTFIX = ".sketch";
 
 const QString & dateFormat()
 {
     static const QString DATE_FORMAT  = "yyyy-MM-dd hh:mm:ss";
     return DATE_FORMAT;
+}
+
+static QString onyxDBDir()
+{
+    // By default ".onyx", svn style.
+    static QString ONYX_DB_DIR;
+    if (ONYX_DB_DIR.isEmpty())
+    {
+        ONYX_DB_DIR = qgetenv("ONYX_DB_DIR");
+    }
+    if (ONYX_DB_DIR.isEmpty())
+    {
+        ONYX_DB_DIR = ".onyx";
+    }
+    return ONYX_DB_DIR;
+
 }
 
 /// Retrieve database path name from content file path.
@@ -34,17 +49,17 @@ QString getThumbDB(const QString & dir_path)
 {
     QString db_path;
     QDir dir(dir_path);
-    if (!dir.exists(ONYX_DB_DIR))
+    if (!dir.exists(onyxDBDir()))
     {
-        if (!dir.mkdir(ONYX_DB_DIR))
+        if (!dir.mkdir(onyxDBDir()))
         {
             qWarning("Could not create the db %s. Filesystem readonly or no enough space.",
-                     qPrintable(ONYX_DB_DIR));
+                     qPrintable(onyxDBDir()));
             return db_path;
         }
     }
 
-    dir.cd(ONYX_DB_DIR);
+    dir.cd(onyxDBDir());
     return dir.absoluteFilePath(".thumbs.db");
 }
 
@@ -61,17 +76,17 @@ QString getSketchDB(const QString & file_path)
 
     // File exists, use normal sketch database.
     QDir dir(info.dir());
-    if (!dir.exists(ONYX_DB_DIR))
+    if (!dir.exists(onyxDBDir()))
     {
-        if (!dir.mkdir(ONYX_DB_DIR))
+        if (!dir.mkdir(onyxDBDir()))
         {
             qWarning("Could not create the db %s. Filesystem readonly or no enough space.",
-                     qPrintable(ONYX_DB_DIR));
+                     qPrintable(onyxDBDir()));
             return QString();
         }
     }
 
-    dir.cd(ONYX_DB_DIR);
+    dir.cd(onyxDBDir());
     return dir.absoluteFilePath(info.fileName() + SKETCH_POSTFIX);
 }
 

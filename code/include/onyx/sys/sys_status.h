@@ -148,7 +148,7 @@ class SysStatus : public QObject
     void wakeup();
     void aboutToShutdown();
 
-    void pppConnectionChanged(const QString &message, bool connected);
+    void pppConnectionChanged(const QString &message, int);
     void onlineServiceRequest();
     void forceQuit();
 
@@ -181,7 +181,7 @@ class SysStatus : public QObject
     void onConnectToPC(bool);
     void onInUSBSlaveMode();
 
-    void onPppConnectionChanged(const QString &message, bool connected);
+    void onPppConnectionChanged(const QString &message, int);
     void onlineService();
     void onForceQuit();
     void onStylusChanged(bool inserted);

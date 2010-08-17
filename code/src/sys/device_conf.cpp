@@ -41,17 +41,7 @@ QString DeviceConfig::version()
     static QString version;
     if (version.isEmpty())
     {
-        QFile file("/root/version");
-        if (file.open(QIODevice::ReadOnly))
-        {
-            version = file.readAll();
-            file.close();
-        }
-    }
-
-    if (version.isEmpty())
-    {
-        version = "1.4 20100617";
+        version = qgetenv("VERSION");
     }
     return version;
 }

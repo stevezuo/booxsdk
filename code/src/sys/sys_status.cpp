@@ -59,7 +59,10 @@ static void putDocumentFolder()
 
 static void putDeviceName()
 {
-    qputenv("ADEPT_DEVICE_NAME", DEVICE_NAME.toAscii());
+    if (qgetenv("ADEPT_DEVICE_NAME").isEmpty())
+    {
+        qputenv("ADEPT_DEVICE_NAME", DEVICE_NAME.toAscii());
+    }
     qDebug("ADEPT_DEVICE_NAME : %s", qgetenv("ADEPT_DEVICE_NAME").constData());
 }
 
@@ -213,7 +216,7 @@ void SysStatus::installSlots()
     if (!connection_.connect(service, object, iface,
                              "pppConnectionChanged",
                              this,
-                             SLOT(onPppConnectionChanged(const QString&, bool))))
+                             SLOT(onPppConnectionChanged(const QString&, int))))
     {
         qDebug("\nCan not connect the pppConnectionChanged\n");
     }
@@ -1407,9 +1410,9 @@ void SysStatus::onAboutToShutdown()
     emit aboutToShutdown();
 }
 
-void SysStatus::onPppConnectionChanged(const QString &message, bool connected)
+void SysStatus::onPppConnectionChanged(const QString &message, int state)
 {
-    emit pppConnectionChanged(message, connected);
+    emit pppConnectionChanged(message, state);
 }
 
 void SysStatus::onlineService()

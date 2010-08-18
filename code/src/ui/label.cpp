@@ -24,13 +24,9 @@ QLabel                                  \
 const QString MESSAGE_STYLE = "         \
 QLabel                                  \
 {                                       \
-    background: white;                  \
+    background: transparent;            \
     font: 24px ;                        \
-    border-width: 1px;                  \
-    border-color: black;                \
-    border-style: solid;                \
-    border-radius: 3;                   \
-    color: black;                       \
+    color: white;                       \
     padding: 0px;                       \
  }";
 
@@ -77,7 +73,7 @@ void OnyxLabel::useMessageStyle(int w)
     {
         h = heightForWidth(w - 2 * PADDING);
     }
-    resize(w, h + 2 * PADDING);
+    setFixedSize(w, h + 2 * PADDING);
 }
 
 void OnyxLabel::squeezeText(Qt::TextElideMode mode)

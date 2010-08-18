@@ -34,9 +34,9 @@ MessageDialog::MessageDialog(QMessageBox::Icon icon,
         width = QApplication::desktop()->size().width();
     }
 
+    setFixedWidth(width * 4 / 5);
     createLayout();
     updateTitle(title);
-    setFixedWidth(width * 4 / 5);
 }
 
 MessageDialog::~MessageDialog()

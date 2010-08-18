@@ -26,7 +26,7 @@ QLabel                                  \
 {                                       \
     background: transparent;            \
     font: 24px ;                        \
-    color: white;                       \
+    color: black;                       \
     padding: 0px;                       \
  }";
 

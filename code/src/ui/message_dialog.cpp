@@ -2,6 +2,7 @@
 #include "onyx/ui/message_dialog.h"
 #include "onyx/ui/keyboard_navigator.h"
 #include "onyx/screen/screen_proxy.h"
+#include "onyx/ui/ui_utils.h"
 
 namespace ui
 {
@@ -31,10 +32,10 @@ MessageDialog::MessageDialog(QMessageBox::Icon icon,
     }
     else
     {
-        width = QApplication::desktop()->size().width();
+        width = ui::screenGeometry().width();
     }
 
-    setFixedWidth(width * 4 / 5);
+    setFixedWidth(width * 2 / 3);
     createLayout();
     updateTitle(title);
 }

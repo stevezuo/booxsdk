@@ -309,7 +309,13 @@ void DialUpDialog::connect(const QString & file,
     profile_.setUsername(username);
     profile_.setPassword(password);
     saveConf();
-    sys_.connect3g(file, username, password);
+    if (!sys_.connect3g(file, username, password))
+    {
+        if (!sys_.isPowerSwitchOn())
+        {
+            state_widget_.setText(tr("3G Power switch is off."));
+        }
+    }
 }
 
 void DialUpDialog::onTimeout()

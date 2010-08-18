@@ -98,6 +98,7 @@ class SysStatus : public QObject
 
     bool connect3g(const QString & chat_file, const QString & username, const QString & password);
     void disconnect3g();
+    bool isPowerSwitchOn();
 
     QString currentConnection();
 

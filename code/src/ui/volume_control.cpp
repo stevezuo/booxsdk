@@ -49,7 +49,14 @@ void VolumeControl::onVolumeChanged(int volume, bool is_mutel)
     current_ = volume - min_;
 
     updatefgPath(current_);
-    update();
+    onyx::screen::instance().enableUpdate(false);
+    repaint();
+    onyx::screen::instance().updateWidget(
+        this,
+        onyx::screen::ScreenProxy::DW,
+        false,
+        onyx::screen::ScreenCommand::WAIT_COMMAND_FINISH);
+    onyx::screen::instance().enableUpdate(true);
 }
 
 void VolumeControl::paintEvent(QPaintEvent *pe)
@@ -162,7 +169,7 @@ void VolumeControl::updatefgPath(int value)
     int w = (width() - MARGIN * 2) * value / max_;
     int height = (static_cast<double>(w) * tan(angle * PI / 180.0));
     int bk_height = WIDTH *  tan(angle * PI / 180.0);
-    QRect rc(MARGIN, bk_height - height - MARGIN, w, height);
+    QRect rc(MARGIN, bk_height - height - MARGIN - 1, w, height + 1);
     updatePath(fg_path_, rc);
 }
 

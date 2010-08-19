@@ -322,6 +322,11 @@ void StatusBar::onHideVolumeDialog()
 
 void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
 {
+    if (!isVisible())
+    {
+        return;
+    }
+
     if (volume_control_dialog_ == 0)
     {
         volume_control_dialog_.reset(new VolumeControlDialog(this));
@@ -331,10 +336,10 @@ void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
     if (!volume_control_dialog_->isVisible())
     {
         volume_control_dialog_->ensureVisible();
+        onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
 
     hide_volume_dialog_timer_.start();
-    onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
 }
 
 void StatusBar::onVolumeClicked()

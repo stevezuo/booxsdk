@@ -24,8 +24,12 @@ QLabel                                  \
 const QString MESSAGE_STYLE = "         \
 QLabel                                  \
 {                                       \
-    background: transparent;            \
+    background: white;                  \
     font: 24px ;                        \
+    border-width: 1px;                  \
+    border-color: white;                \
+    border-style: solid;                \
+    border-radius: 3;                   \
     color: black;                       \
     padding: 0px;                       \
  }";

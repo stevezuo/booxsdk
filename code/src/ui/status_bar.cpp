@@ -29,7 +29,6 @@ StatusBar::StatusBar(QWidget *parent, StatusBarItemTypes items)
     , items_(0)
     , layout_(this)
     , enable_jump_to_page_(true)
-    , volume_control_dialog_(0)
 {
     createLayout();
     setupConnections();

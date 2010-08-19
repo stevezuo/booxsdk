@@ -56,7 +56,7 @@ class VolumeControlDialog : public QDialog
     VolumeControlDialog(QWidget *parent);
 public:
     ~VolumeControlDialog();
-    VolumeControlDialog * instance()
+    static VolumeControlDialog * instance()
     {
         static VolumeControlDialog dialog(0);
         return &dialog;

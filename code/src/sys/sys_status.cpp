@@ -1042,6 +1042,28 @@ void SysStatus::disconnect3g()
     }
 }
 
+bool SysStatus::isPowerSwitchOn()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        service,            // destination
+        object,             // path
+        iface,              // interface
+        "isPowerSwitchOn"      // method.
+    );
+
+    QDBusMessage reply = connection_.call(message);
+    if (reply.type() == QDBusMessage::ReplyMessage)
+    {
+        return checkAndReturnBool(reply.arguments());;
+    }
+    else if (reply.type() == QDBusMessage::ErrorMessage)
+    {
+        qWarning("%s", qPrintable(reply.errorMessage()));
+    }
+    return false;
+}
+
+
 QString SysStatus::currentConnection()
 {
     QString result;

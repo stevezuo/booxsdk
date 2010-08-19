@@ -148,10 +148,12 @@ void OnyxDialog::moveEvent(QMoveEvent *e)
 
 void OnyxDialog::resizeEvent(QResizeEvent *e)
 {
+    /*
     QPainterPath p;
     p.addRoundedRect(rect(), 10, 10);
     QRegion maskedRegion(p.toFillPolygon().toPolygon());
     setMask(maskedRegion);
+    */
 
     shadows_.onWidgetResized(this);
 }

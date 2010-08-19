@@ -27,7 +27,7 @@ QLabel                                  \
     background: white;                  \
     font: 24px ;                        \
     border-width: 1px;                  \
-    border-color: black;                \
+    border-color: white;                \
     border-style: solid;                \
     border-radius: 3;                   \
     color: black;                       \
@@ -77,7 +77,7 @@ void OnyxLabel::useMessageStyle(int w)
     {
         h = heightForWidth(w - 2 * PADDING);
     }
-    resize(w, h + 2 * PADDING);
+    setFixedSize(w, h + 2 * PADDING);
 }
 
 void OnyxLabel::squeezeText(Qt::TextElideMode mode)

@@ -22,6 +22,7 @@ OnyxShadowWidget::~OnyxShadowWidget()
 
 void OnyxShadowWidget::resizeEvent(QResizeEvent *e)
 {
+    /*
     QPainterPath path;
     if (orient_ == Qt::Horizontal)
     {
@@ -33,6 +34,7 @@ void OnyxShadowWidget::resizeEvent(QResizeEvent *e)
     }
     QRegion maskedRegion(path.toFillPolygon().toPolygon());
     setMask(maskedRegion);
+    */
 }
 
 QPainterPath OnyxShadowWidget::getHorizontalPath()

@@ -337,7 +337,7 @@ void StatusBar::onVolumeClicked()
 {
     VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
     hide_volume_dialog_timer_.stop();
-    if (volume_control_dialog->isVisible())
+    if (!volume_control_dialog->isVisible())
     {
         volume_control_dialog->ensureVisible();
     }

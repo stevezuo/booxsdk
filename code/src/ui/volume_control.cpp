@@ -169,7 +169,7 @@ void VolumeControl::updatefgPath(int value)
     int w = (width() - MARGIN * 2) * value / max_;
     int height = (static_cast<double>(w) * tan(angle * PI / 180.0));
     int bk_height = WIDTH *  tan(angle * PI / 180.0);
-    QRect rc(MARGIN, bk_height - height - MARGIN - 1, w, height + 1);
+    QRect rc(MARGIN, bk_height - height + MARGIN, w, height - MARGIN);
     updatePath(fg_path_, rc);
 }
 
@@ -237,7 +237,7 @@ void VolumeControlDialog::ensureVisible()
     }
 
     QRect screen_rect = qApp->desktop()->screenGeometry();
-    int x = screen_rect.width() - width();
+    int x = screen_rect.width() - width() - 10;
     int y = screen_rect.bottom() - height() - 40;
 
     // Check position.

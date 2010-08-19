@@ -236,9 +236,9 @@ void VolumeControlDialog::ensureVisible()
         show();
     }
 
-    QRect parent_rect = parentWidget()->geometry();
-    int x = parent_rect.width() - width();
-    int y = parent_rect.top() - height();
+    QRect screen_rect = qApp->desktop()->screenGeometry();
+    int x = screen_rect.width() - width();
+    int y = screen_rect.bottom() - height() - 40;
 
     // Check position.
     QPoint new_pos(x, y);
@@ -250,7 +250,7 @@ void VolumeControlDialog::ensureVisible()
 
     // Make sure the widget is visible.
     onyx::screen::instance().flush();
-    onyx::screen::instance().updateWidget(parentWidget(), onyx::screen::ScreenProxy::GU);
+    onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GU);
 }
 
 void VolumeControlDialog::moveEvent(QMoveEvent *e)
@@ -296,7 +296,7 @@ bool VolumeControlDialog::event(QEvent *e)
         static int count = 0;
         if (update_parent_)
         {
-            onyx::screen::instance().updateWidget(parentWidget(), onyx::screen::ScreenProxy::GC);
+            onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GC);
             update_parent_ = false;
         }
         else

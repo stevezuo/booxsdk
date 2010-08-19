@@ -14,8 +14,6 @@
 namespace ui
 {
 
-class VolumeControlDialog;
-
 /// Status bar library for GUI shell and other applications.
 /// Status bar separates the whole bar into three parts:
 /// - Menu area.
@@ -103,7 +101,6 @@ private:
     StatusBarItems     widgets_;
     bool               enable_jump_to_page_;
     scoped_ptr<USBConnectionDialog> usb_connection_dialog_;
-    scoped_ptr<VolumeControlDialog> volume_control_dialog_;
     QTimer             hide_volume_dialog_timer_;
 };
 

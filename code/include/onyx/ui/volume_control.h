@@ -52,10 +52,15 @@ private:
 class VolumeControlDialog : public QDialog
 {
     Q_OBJECT
-
-public:
+    VolumeControlDialog();
     VolumeControlDialog(QWidget *parent);
+public:
     ~VolumeControlDialog();
+    VolumeControlDialog * instance()
+    {
+        static VolumeControlDialog dialog(0);
+        return &dialog;
+    }
 
     void ensureVisible();
 

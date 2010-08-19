@@ -313,29 +313,21 @@ void StatusBar::onClockClicked()
 
 void StatusBar::onHideVolumeDialog()
 {
-    if (volume_control_dialog_ != 0 && volume_control_dialog_->isVisible())
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
+    if (volume_control_dialog->isVisible())
     {
-        volume_control_dialog_->hide();
+        volume_control_dialog->hide();
         onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
 }
 
 void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
 {
-    if (!isVisible())
-    {
-        return;
-    }
-
-    if (volume_control_dialog_ == 0)
-    {
-        volume_control_dialog_.reset(new VolumeControlDialog(this));
-    }
-
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
     hide_volume_dialog_timer_.stop();
-    if (!volume_control_dialog_->isVisible())
+    if (!volume_control_dialog->isVisible())
     {
-        volume_control_dialog_->ensureVisible();
+        volume_control_dialog->ensureVisible();
         onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
 
@@ -344,19 +336,15 @@ void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
 
 void StatusBar::onVolumeClicked()
 {
-    if (volume_control_dialog_ == 0)
-    {
-        volume_control_dialog_.reset(new VolumeControlDialog(this));
-    }
-
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
     hide_volume_dialog_timer_.stop();
-    if (!volume_control_dialog_->isVisible())
+    if (volume_control_dialog->isVisible())
     {
-        volume_control_dialog_->ensureVisible();
+        volume_control_dialog->ensureVisible();
     }
     else
     {
-        volume_control_dialog_->hide();
+        volume_control_dialog->hide();
     }
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
 }

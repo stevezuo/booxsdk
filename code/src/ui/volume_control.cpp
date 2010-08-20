@@ -175,7 +175,6 @@ void VolumeControl::updatefgPath(int value)
 
 void VolumeControl::updatePath(QPainterPath & result, const QRect & rect)
 {
-    int height  = rect.height();
     int x_start = rect.left();
     int x_end   = rect.right();
     int top     = rect.top();
@@ -297,7 +296,6 @@ bool VolumeControlDialog::event(QEvent *e)
     int ret = QDialog::event(e);
     if (e->type() == QEvent::UpdateRequest)
     {
-        static int count = 0;
         if (update_parent_)
         {
             onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GC);

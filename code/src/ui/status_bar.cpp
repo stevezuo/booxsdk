@@ -22,7 +22,7 @@
 namespace ui
 {
 
-static const int HIDE_VOLUME_DIALOG_INTERVAL = 5000;
+static const int HIDE_VOLUME_DIALOG_INTERVAL = 10000;
 
 StatusBar::StatusBar(QWidget *parent, StatusBarItemTypes items)
     : QWidget(parent)
@@ -313,7 +313,7 @@ void StatusBar::onClockClicked()
 void StatusBar::onHideVolumeDialog()
 {
     VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
-    if (volume_control_dialog->isVisible())
+    if (volume_control_dialog->isVisible() && !volume_control_dialog->alwaysActive())
     {
         volume_control_dialog->hide();
         onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
@@ -329,7 +329,6 @@ void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
         volume_control_dialog->ensureVisible();
         onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
-
     hide_volume_dialog_timer_.start();
 }
 
@@ -340,10 +339,12 @@ void StatusBar::onVolumeClicked()
     if (!volume_control_dialog->isVisible())
     {
         volume_control_dialog->ensureVisible();
+        volume_control_dialog->setAlwaysActive(true);
     }
     else
     {
         volume_control_dialog->hide();
+        volume_control_dialog->setAlwaysActive(false);
     }
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
 }

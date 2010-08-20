@@ -62,6 +62,8 @@ public:
         return &dialog;
     }
 
+    inline void setAlwaysActive(bool always_active) { always_active_ = always_active; }
+    inline bool alwaysActive() { return always_active_; }
     void ensureVisible();
 
 protected:
@@ -80,6 +82,7 @@ public:
     QHBoxLayout        layout_;
     VolumeControl      control_;
     bool               update_parent_;
+    bool               always_active_;
 };
 
 };  // namespace ui

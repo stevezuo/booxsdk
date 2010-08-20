@@ -209,6 +209,7 @@ VolumeControlDialog::VolumeControlDialog(QWidget *parent)
     , layout_(this)
     , control_(0)
     , update_parent_(false)
+    , always_active_(false)
 {
     createLayout();
     setModal(false);

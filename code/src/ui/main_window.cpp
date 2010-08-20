@@ -21,7 +21,7 @@ MainWindow::MainWindow(QObject *parent)
     , mandatory_update_(false)
 {
     setAutoFillBackground(true);
-    setBackgroundRole(QPalette::WindowText);
+    setBackgroundRole(QPalette::Base);
 
 #ifndef Q_WS_QWS
     resize(600, 800);

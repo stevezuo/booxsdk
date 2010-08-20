@@ -232,6 +232,9 @@ void VolumeControlDialog::createLayout()
 
 void VolumeControlDialog::ensureVisible()
 {
+    SysStatus & sys_status = SysStatus::instance();
+    control_.onVolumeChanged(sys_status.volume(), false);
+
     if (!isVisible())
     {
         show();
@@ -307,6 +310,23 @@ bool VolumeControlDialog::event(QEvent *e)
         e->accept();
     }
     return ret;
+}
+
+void VolumeControlDialog::keyPressEvent(QKeyEvent *ke)
+{
+    ke->ignore();
+}
+
+void VolumeControlDialog::keyReleaseEvent(QKeyEvent *ke)
+{
+    int key = ke->key();
+    if (key == Qt::Key_Escape)
+    {
+        done(QDialog::Rejected);
+        ke->accept();
+        return;
+    }
+    ke->ignore();
 }
 
 }   // namespace ui

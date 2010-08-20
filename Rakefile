@@ -124,8 +124,7 @@ task :test => :build do
   sh "cd build/x86 && xvfb-run -a -w 3 make test"
 end
 
-libs = [ "libonyxapp.a",
-         "libonyx_base.a",
+libs = [ "libonyx_base.a",
          "libonyx_cms.a",
          "libonyx_data.a",
          "libonyx_screen.a",

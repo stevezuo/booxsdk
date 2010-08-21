@@ -29,16 +29,12 @@ StatusBar::StatusBar(QWidget *parent, StatusBarItemTypes items)
     , items_(0)
     , layout_(this)
     , enable_jump_to_page_(true)
+    , hide_volume_dialog_timer_(HIDE_VOLUME_DIALOG_INTERVAL, this, SLOT(onHideVolumeDialog()))
 {
     createLayout();
     setupConnections();
     addItems(items);
     initUpdate();
-
-    hide_volume_dialog_timer_.setSingleShot( true );
-    hide_volume_dialog_timer_.setInterval( HIDE_VOLUME_DIALOG_INTERVAL );
-    connect(&hide_volume_dialog_timer_, SIGNAL( timeout() ),
-            this, SLOT(onHideVolumeDialog()));
 }
 
 StatusBar::~StatusBar(void)

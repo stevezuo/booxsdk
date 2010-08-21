@@ -447,26 +447,13 @@ KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     , button_group_(0)
     , receiver_(0)
     , sketch_proxy_(0)
+    , finish_character_timer_(finish_charater_interval, this, SLOT(handleFinishCharacterTimeOut()))
+    , auto_select_timer_(auto_select_interval, this, SLOT(handleAutoSelect()))
 {
     HandwritingManager::instance().reload();
 
     is_english = !isRussian();
     init();
-
-    // update erased area
-    finish_character_timer_.setSingleShot( true );
-    finish_character_timer_.setInterval( finish_charater_interval );
-    connect( &finish_character_timer_,
-             SIGNAL( timeout() ),
-             this,
-             SLOT( handleFinishCharacterTimeOut() ) );
-
-    auto_select_timer_.setSingleShot( true );
-    auto_select_timer_.setInterval( auto_select_interval );
-    connect( &auto_select_timer_,
-             SIGNAL( timeout() ),
-             this,
-             SLOT( handleAutoSelect() ) );
 }
 
 KeyBoard::~KeyBoard()

@@ -23,7 +23,7 @@ void OnyxSingleShotTimer::start()
     // connect signal
     timer_->setSingleShot(true);
     timer_->setInterval(msec_);
-    connect(timer_.get(), SIGNAL(timeout()), this, member_);
+    connect(timer_.get(), SIGNAL(timeout()), receiver_, member_);
 
     timer_->start();
 }

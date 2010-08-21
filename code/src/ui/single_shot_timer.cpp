@@ -10,7 +10,6 @@ OnyxSingleShotTimer::OnyxSingleShotTimer(int msec, QObject * receiver, const cha
     , receiver_(receiver)
     , member_(member)
 {
-    start();
 }
 
 OnyxSingleShotTimer::~OnyxSingleShotTimer()

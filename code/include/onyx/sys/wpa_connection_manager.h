@@ -7,6 +7,7 @@
 #include "onyx/base/dbus.h"
 #include "onyx/sys/wpa_connection.h"
 #include "onyx/sys/wifi_conf.h"
+#include "onyx/sys/sys_conf.h"
 
 using namespace sys;
 

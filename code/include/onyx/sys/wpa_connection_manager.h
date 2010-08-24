@@ -5,7 +5,7 @@
 #include <QtCore/QtCore>
 #include "onyx/base/base.h"
 #include "onyx/base/dbus.h"
-#include "onyx/wpa/wpa_connection.h"
+#include "onyx/sys/wpa_connection.h"
 #include "onyx/sys/wifi_conf.h"
 
 using namespace sys;

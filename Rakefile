@@ -124,8 +124,7 @@ task :test => :build do
   sh "cd build/x86 && xvfb-run -a -w 3 make test"
 end
 
-libs = [ "libonyxapp.a",
-         "libonyx_base.a",
+libs = [ "libonyx_base.a",
          "libonyx_cms.a",
          "libonyx_data.a",
          "libonyx_screen.a",
@@ -141,10 +140,11 @@ arm_libs.each {|lib| file lib => "build:arm:default"}
 x86_libs.each {|lib| file lib => "build:x86:default"}
 
 date = `date --rfc-3339=date`.chomp
-sdktar = "onyxsdk-#{date}.tar.gz"
+sdktar = "onyxsdk.tar.gz"
+timestamped_sdktar = "onyxsdk-#{date}.tar.gz"
 
 file sdktar do
-  dirname = "onyxsdk-#{date}"
+  dirname = "sdk"
   sh "mkdir -p #{dirname}/lib/x86"
   sh "mkdir -p #{dirname}/lib/arm"
   sh "rm -rf #{dirname}/include"
@@ -167,7 +167,7 @@ end
 namespace :release do
   desc "Build and upload the SDK to our web server."
   task :sdk => sdktar do
-    sh "scp #{sdktar} sdkrelease@dev.onyxcommunity.com:/var/www/dev.onyxcommunity.com/sdk/"
-    sh "ssh sdkrelease@dev.onyxcommunity.com 'cd /var/www/dev.onyxcommunity.com/sdk/ && ln -sf #{sdktar} onyxsdk-latest.tar.gz && echo #{sdktar} >LATEST.txt'"
+    sh "scp #{sdktar} sdkrelease@dev.onyxcommunity.com:/var/www/dev.onyxcommunity.com/sdk/#{timestamped_sdktar}"
+    sh "ssh sdkrelease@dev.onyxcommunity.com 'cd /var/www/dev.onyxcommunity.com/sdk/ && ln -sf #{timestamped_sdktar} onyxsdk-latest.tar.gz && echo #{timestamped_sdktar} >LATEST.txt'"
   end
 end

@@ -22,24 +22,19 @@
 namespace ui
 {
 
-static const int HIDE_VOLUME_DIALOG_INTERVAL = 5000;
+static const int HIDE_VOLUME_DIALOG_INTERVAL = 10000;
 
 StatusBar::StatusBar(QWidget *parent, StatusBarItemTypes items)
     : QWidget(parent)
     , items_(0)
     , layout_(this)
     , enable_jump_to_page_(true)
-    , volume_control_dialog_(0)
+    , hide_volume_dialog_timer_(HIDE_VOLUME_DIALOG_INTERVAL, this, SLOT(onHideVolumeDialog()))
 {
     createLayout();
     setupConnections();
     addItems(items);
     initUpdate();
-
-    hide_volume_dialog_timer_.setSingleShot( true );
-    hide_volume_dialog_timer_.setInterval( HIDE_VOLUME_DIALOG_INTERVAL );
-    connect(&hide_volume_dialog_timer_, SIGNAL( timeout() ),
-            this, SLOT(onHideVolumeDialog()));
 }
 
 StatusBar::~StatusBar(void)
@@ -313,45 +308,56 @@ void StatusBar::onClockClicked()
 
 void StatusBar::onHideVolumeDialog()
 {
-    if (volume_control_dialog_ != 0 && volume_control_dialog_->isVisible())
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
+    if (volume_control_dialog->isVisible() && !volume_control_dialog->alwaysActive())
     {
-        volume_control_dialog_->hide();
+        qDebug("Hide Volume Dialog");
+        volume_control_dialog->hide();
         onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
 }
 
 void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
 {
-    if (volume_control_dialog_ == 0)
+    if (parentWidget() != 0)
     {
-        volume_control_dialog_.reset(new VolumeControlDialog(this));
+        if (!parentWidget()->isActiveWindow())
+        {
+            return;
+        }
+    }
+    else if (!this->isActiveWindow())
+    {
+        return;
     }
 
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
     hide_volume_dialog_timer_.stop();
-    if (!volume_control_dialog_->isVisible())
+    if (!volume_control_dialog->isVisible())
     {
-        volume_control_dialog_->ensureVisible();
+        qDebug("Volume Changed, Ensure Volume Dialog Visible");
+        volume_control_dialog->ensureVisible();
+        onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
-
     hide_volume_dialog_timer_.start();
-    onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
 }
 
 void StatusBar::onVolumeClicked()
 {
-    if (volume_control_dialog_ == 0)
-    {
-        volume_control_dialog_.reset(new VolumeControlDialog(this));
-    }
-
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
     hide_volume_dialog_timer_.stop();
-    if (!volume_control_dialog_->isVisible())
+    qDebug("Volume Clicked");
+    if (!volume_control_dialog->isVisible())
     {
-        volume_control_dialog_->ensureVisible();
+        qDebug("Ensure volume control visible");
+        volume_control_dialog->ensureVisible();
+        volume_control_dialog->setAlwaysActive(true);
     }
     else
     {
-        volume_control_dialog_->hide();
+        qDebug("Hide volume control");
+        volume_control_dialog->hide();
+        volume_control_dialog->setAlwaysActive(false);
     }
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
 }

@@ -52,11 +52,18 @@ private:
 class VolumeControlDialog : public QDialog
 {
     Q_OBJECT
-
-public:
+    VolumeControlDialog();
     VolumeControlDialog(QWidget *parent);
+public:
     ~VolumeControlDialog();
+    static VolumeControlDialog * instance()
+    {
+        static VolumeControlDialog dialog(0);
+        return &dialog;
+    }
 
+    inline void setAlwaysActive(bool always_active) { always_active_ = always_active; }
+    inline bool alwaysActive() { return always_active_; }
     void ensureVisible();
 
 protected:
@@ -64,6 +71,8 @@ protected:
     void mousePressEvent(QMouseEvent *me);
     void mouseMoveEvent(QMouseEvent *me);
     void mouseReleaseEvent(QMouseEvent *me);
+    void keyPressEvent(QKeyEvent *ke);
+    void keyReleaseEvent(QKeyEvent *ke);
     void moveEvent(QMoveEvent *e);
     void resizeEvent(QResizeEvent *e);
     void paintEvent(QPaintEvent *e);
@@ -75,6 +84,7 @@ public:
     QHBoxLayout        layout_;
     VolumeControl      control_;
     bool               update_parent_;
+    bool               always_active_;
 };
 
 };  // namespace ui

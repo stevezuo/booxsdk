@@ -49,7 +49,14 @@ void VolumeControl::onVolumeChanged(int volume, bool is_mutel)
     current_ = volume - min_;
 
     updatefgPath(current_);
-    update();
+    onyx::screen::instance().enableUpdate(false);
+    repaint();
+    onyx::screen::instance().updateWidget(
+        this,
+        onyx::screen::ScreenProxy::DW,
+        false,
+        onyx::screen::ScreenCommand::WAIT_COMMAND_FINISH);
+    onyx::screen::instance().enableUpdate(true);
 }
 
 void VolumeControl::paintEvent(QPaintEvent *pe)
@@ -162,13 +169,12 @@ void VolumeControl::updatefgPath(int value)
     int w = (width() - MARGIN * 2) * value / max_;
     int height = (static_cast<double>(w) * tan(angle * PI / 180.0));
     int bk_height = WIDTH *  tan(angle * PI / 180.0);
-    QRect rc(MARGIN, bk_height - height - MARGIN, w, height);
+    QRect rc(MARGIN, bk_height - height + MARGIN, w, height - MARGIN);
     updatePath(fg_path_, rc);
 }
 
 void VolumeControl::updatePath(QPainterPath & result, const QRect & rect)
 {
-    int height  = rect.height();
     int x_start = rect.left();
     int x_end   = rect.right();
     int top     = rect.top();
@@ -202,6 +208,7 @@ VolumeControlDialog::VolumeControlDialog(QWidget *parent)
     , layout_(this)
     , control_(0)
     , update_parent_(false)
+    , always_active_(false)
 {
     createLayout();
     setModal(false);
@@ -224,14 +231,17 @@ void VolumeControlDialog::createLayout()
 
 void VolumeControlDialog::ensureVisible()
 {
+    SysStatus & sys_status = SysStatus::instance();
+    control_.onVolumeChanged(sys_status.volume(), false);
+
     if (!isVisible())
     {
         show();
     }
 
-    QRect parent_rect = parentWidget()->geometry();
-    int x = parent_rect.width() - width();
-    int y = parent_rect.top() - height();
+    QRect screen_rect = qApp->desktop()->screenGeometry();
+    int x = screen_rect.width() - width() - 10;
+    int y = screen_rect.bottom() - height() - 40;
 
     // Check position.
     QPoint new_pos(x, y);
@@ -243,7 +253,7 @@ void VolumeControlDialog::ensureVisible()
 
     // Make sure the widget is visible.
     onyx::screen::instance().flush();
-    onyx::screen::instance().updateWidget(parentWidget(), onyx::screen::ScreenProxy::GU);
+    onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GU);
 }
 
 void VolumeControlDialog::moveEvent(QMoveEvent *e)
@@ -286,10 +296,9 @@ bool VolumeControlDialog::event(QEvent *e)
     int ret = QDialog::event(e);
     if (e->type() == QEvent::UpdateRequest)
     {
-        static int count = 0;
         if (update_parent_)
         {
-            onyx::screen::instance().updateWidget(parentWidget(), onyx::screen::ScreenProxy::GC);
+            onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GC);
             update_parent_ = false;
         }
         else
@@ -299,6 +308,23 @@ bool VolumeControlDialog::event(QEvent *e)
         e->accept();
     }
     return ret;
+}
+
+void VolumeControlDialog::keyPressEvent(QKeyEvent *ke)
+{
+    ke->ignore();
+}
+
+void VolumeControlDialog::keyReleaseEvent(QKeyEvent *ke)
+{
+    int key = ke->key();
+    if (key == Qt::Key_Escape)
+    {
+        done(QDialog::Rejected);
+        ke->accept();
+        return;
+    }
+    ke->ignore();
 }
 
 }   // namespace ui

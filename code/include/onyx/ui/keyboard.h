@@ -5,6 +5,7 @@
 #include "keyboard_key.h"
 #include "tree_view.h"
 #include "im_char_selection.h"
+#include "single_shot_timer.h"
 
 namespace sketch
 {
@@ -89,8 +90,8 @@ private:
     scoped_ptr<InputMethodCharSelection> im_char_selection_;
     QStandardItemModel handwriting_functions_model_;
 
-    QTimer finish_character_timer_;
-    QTimer auto_select_timer_;
+    OnyxSingleShotTimer finish_character_timer_;
+    OnyxSingleShotTimer auto_select_timer_;
     QStringList candidates_;
     QString     current_text_;      // current text is used for adjusting the 
 };

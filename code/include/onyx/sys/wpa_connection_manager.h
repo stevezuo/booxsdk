@@ -73,6 +73,8 @@ private:
     WifiProfiles & records(sys::SystemConfig& conf);
 
 private:
+    WpaConnection& proxy_;
+
     QTimer scan_timer_;
     int count_;     ///< Scan retry.
     WpaConnection::ConnectionState internal_state_;

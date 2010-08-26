@@ -1,8 +1,16 @@
+#include "onyx/sys/sys_status.h"
 #include "onyx/sys/wpa_connection_manager.h"
 
 
 WpaConnectionManager::WpaConnectionManager()
+: proxy_(sys::SysStatus::instance().wpa_proxy())
+, count_(0)
+, internal_state_(WpaConnection::STATE_UNKNOWN)
+, auto_connect_(true)
+, wifi_enabled_(true)
 {
+    setupConnections();
+    scan_timer_.setInterval(1500);
 }
 
 WpaConnectionManager::~WpaConnectionManager()
@@ -62,6 +70,18 @@ bool WpaConnectionManager::checkWpaSupplicant()
 
 void WpaConnectionManager::setupConnections()
 {
+    QObject::connect(&scan_timer_, SIGNAL(timeout()), this, SLOT(onScanTimeout()));
+
+    SysStatus & sys = sys::SysStatus::instance();
+    QObject::connect(&sys, SIGNAL(sdioChangedSignal(bool)), this, SLOT(onSdioChanged(bool)));
+
+    QObject::connect(&proxy_, SIGNAL(scanResultsReady(WifiProfiles &)),
+            this, SLOT(onScanReturned(WifiProfiles &)));
+    QObject::connect(&proxy_, SIGNAL(stateChanged(WifiProfile &,WpaConnection::ConnectionState)),
+        this, SLOT(onConnectionChanged(WifiProfile &, WpaConnection::ConnectionState)));
+    QObject::connect(&proxy_, SIGNAL(needPassword(WifiProfile )),
+            this, SLOT(onNeedPassword(WifiProfile )));
+
 }
 
 void WpaConnectionManager::resetProfile(WifiProfile & profile)

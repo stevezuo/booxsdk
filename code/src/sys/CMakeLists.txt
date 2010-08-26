@@ -4,7 +4,8 @@ ENABLE_QT()
 SET(HDRS
     ${ONYXSDK_DIR}/include/onyx/sys/sys_status.h
     ${ONYXSDK_DIR}/include/onyx/sys/wpa_connection.h
-    ${ONYXSDK_DIR}/include/onyx/sys/messenger_proxy.h)
+    ${ONYXSDK_DIR}/include/onyx/sys/messenger_proxy.h
+    ${ONYXSDK_DIR}/include/onyx/sys/wpa_connection_manager.h)
 QT4_WRAP_CPP(MOC_SRCS ${HDRS})
 
 # Source files.

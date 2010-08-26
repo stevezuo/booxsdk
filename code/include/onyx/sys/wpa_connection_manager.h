@@ -8,6 +8,7 @@
 #include "onyx/sys/wpa_connection.h"
 #include "onyx/sys/wifi_conf.h"
 #include "onyx/sys/sys_conf.h"
+#include "onyx/sys/sys_status.h"
 
 using namespace sys;
 
@@ -29,8 +30,8 @@ public Q_SLOTS:
     void enableAutoConnect(bool e) { auto_connect_ = e; }
     bool allowAutoConnect() { return auto_connect_; }
 
-    void start();
-    void stop();
+    bool start();
+    bool stop();
 
     void scanResults(WifiProfiles &);
 
@@ -38,6 +39,8 @@ private Q_SLOTS:
     // slots for WpaConnection
     void onSdioChanged(bool on);
 
+    void triggerScan();
+    void scan();
     void onScanTimeout();
     void onScanReturned(WifiProfiles & list);
 
@@ -49,10 +52,12 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     // signals for caller
+    void wpaStateChanged(bool running);
     void connectionChanged(WifiProfile & profile, WpaConnection::ConnectionState state);
     void passwordRequest(WifiProfile profile);
 
 private:
+    bool checkWifiDevice();
     bool checkWpaSupplicant();
     void setupConnections();
 
@@ -62,10 +67,11 @@ private:
     bool syncAuthentication(WifiProfile & source, WifiProfile & target);
     void saveAp(WifiProfile & profile);
 
-    void increaseRetry() { ++count_; }
-    void resetRetry() { count_ = 0; }
-    bool canRetry() { return count_ <= 5; }
+    void increaseScanRetry() { ++scan_count_; }
+    void resetScanRetry() { scan_count_ = 0; }
+    bool canScanRetry() { return scan_count_ <= 5; }
 
+    bool connectToBestAP();
     bool isConnecting();
     void setConnecting(bool c);
     void stopAllTimers();
@@ -73,15 +79,17 @@ private:
     WifiProfiles & records(sys::SystemConfig& conf);
 
 private:
+    sys::SysStatus & sys_;
     WpaConnection& proxy_;
 
     QTimer scan_timer_;
-    int count_;     ///< Scan retry.
+    int scan_count_;     ///< Scan retry.
+
     WpaConnection::ConnectionState internal_state_;
     bool auto_connect_;
     bool wifi_enabled_;
 
-    WifiProfiles scan_results_;
+    WifiProfiles scan_results_;     ///< Also serves as connect list.
     scoped_ptr<WifiProfiles> records_;  ///< All profiles that stored in database.
 };
 

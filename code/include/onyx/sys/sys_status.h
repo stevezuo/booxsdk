@@ -118,6 +118,7 @@ class SysStatus : public QObject
     bool startMessenger();
     bool stopMessenger();
 
+    bool setAsScreensaver(const QString & path);
     void snapshot(const QString &path);
 
     bool hasTouchScreen();

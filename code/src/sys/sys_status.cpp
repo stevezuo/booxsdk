@@ -1293,6 +1293,19 @@ void SysStatus::addDRMEnvironment()
     putDeviceFile();
 }
 
+// TODO, implement in system manager later.
+bool SysStatus::setAsScreensaver(const QString & path)
+{
+    QDir dir(SHARE_ROOT);
+    dir.cd("system_manager/images");
+
+    int count =  dir.entryInfoList(QDir::NoDotAndDotDot|QDir::Files).size();
+    QString result_path("screen_saver%1.png");
+    result_path = result_path.arg(count);
+    result_path = dir.absoluteFilePath(result_path);
+    return QFile::copy(path, result_path);
+}
+
 void SysStatus::snapshot(const QString &path)
 {
     QDBusMessage message = QDBusMessage::createMethodCall(

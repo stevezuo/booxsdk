@@ -212,7 +212,7 @@ void WpaConnectionManager::scan()
 void WpaConnectionManager::resetProfile(WifiProfile & profile)
 {
     // TODO, not sure.
-    setPassword(profile, "");
+    setPassword(profile, QString());
     profile.setCount(-1);
     saveAp(profile);
 }

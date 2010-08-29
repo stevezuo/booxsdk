@@ -300,10 +300,9 @@ void StatusBar::onClockClicked()
     if (ptr)
     {
         clock = static_cast<StatusBarItemClock*>(ptr);
+        ClockDialog dialog(clock->startDateTime(), 0);
+        dialog.exec();
     }
-
-    ClockDialog dialog(clock->startDateTime(), 0);
-    dialog.exec();
 }
 
 void StatusBar::onHideVolumeDialog()

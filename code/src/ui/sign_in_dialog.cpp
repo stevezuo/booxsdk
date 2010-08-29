@@ -91,6 +91,10 @@ void SignInDialog::createLayout()
     onShowPlainTextClicked();
 }
 
+void SignInDialog::disableID(bool disable)
+{
+    id_edit_.setDisabled(disable);
+}
 
 void SignInDialog::onShowPlainTextClicked()
 {

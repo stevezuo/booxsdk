@@ -5,11 +5,15 @@ namespace ui
 
 OnyxSingleShotTimer::OnyxSingleShotTimer(int msec, QObject * receiver, const char * member)
     : QObject(0)
-    , timer_(0)
+    , timer_(new QTimer())
     , msec_(msec)
     , receiver_(receiver)
     , member_(member)
 {
+    // connect signal
+    timer_->setSingleShot(true);
+    timer_->setInterval(msec_);
+    connect(timer_.get(), SIGNAL(timeout()), receiver_, member_);
 }
 
 OnyxSingleShotTimer::~OnyxSingleShotTimer()
@@ -18,14 +22,10 @@ OnyxSingleShotTimer::~OnyxSingleShotTimer()
 
 void OnyxSingleShotTimer::start()
 {
-    timer_.reset(new QTimer());
-
-    // connect signal
-    timer_->setSingleShot(true);
-    timer_->setInterval(msec_);
-    connect(timer_.get(), SIGNAL(timeout()), receiver_, member_);
-
-    timer_->start();
+    if (timer_ != 0)
+    {
+        timer_->start();
+    }
 }
 
 void OnyxSingleShotTimer::stop()

@@ -18,6 +18,7 @@ public:
     ~SignInDialog(void);
 
 public:
+    void disableID(bool disable);
     int popup(const QString & id, const QString & password);
     QString password();
     QString id();

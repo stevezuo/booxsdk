@@ -1,0 +1,3 @@
+uninitdata:code/src/wireless/wpa/utils/eloop_none.c:130
+uninitdata:code/src/wireless/wpa/utils/eloop_none.c:131
+uninitdata:code/src/wireless/wpa/utils/eloop_none.c:132

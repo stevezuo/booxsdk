@@ -225,6 +225,11 @@ void ServiceConfig::loadDefaultServices()
                               OPEN_METHOD,
                               "office_viewer");
         office_viewer.mutable_extensions().push_back("doc");
+        office_viewer.mutable_extensions().push_back("docx");
+        office_viewer.mutable_extensions().push_back("xls");
+        office_viewer.mutable_extensions().push_back("xlsx");
+        office_viewer.mutable_extensions().push_back("ppt");
+        office_viewer.mutable_extensions().push_back("pptx");
         DEFAULT_SERVICES.push_back(office_viewer);
 
 

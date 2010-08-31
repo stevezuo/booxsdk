@@ -9,6 +9,9 @@ using namespace sys;
 
 int main(int argc, char * argv[])
 {
-    return 0;
+    QApplication app(argc, argv);
+    WpaConnectionManager manager;
+    manager.start();
+    return app.exec();
 }
 

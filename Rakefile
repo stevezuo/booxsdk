@@ -171,3 +171,8 @@ namespace :release do
     sh "ssh sdkrelease@dev.onyxcommunity.com 'cd /var/www/dev.onyxcommunity.com/sdk/ && ln -sf #{timestamped_sdktar} onyxsdk-latest.tar.gz && echo #{timestamped_sdktar} >LATEST.txt'"
   end
 end
+
+desc "Run cppcheck."
+task :cppcheck do
+  sh "cppcheck --error-exitcode=1 --suppressions cppcheck_suppressions.txt -I code/include -I third_party/gtest/include code/src > /dev/null"
+end

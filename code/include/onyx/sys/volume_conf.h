@@ -26,6 +26,10 @@ private:
     static int volume(QSqlDatabase &);
     static bool setVolume(QSqlDatabase&, int volume);
 
+    static QVector<int> volumes();
+    static int minVolume();
+    static int maxVolume();
+
     static bool mute(QSqlDatabase &, bool mute);
     static bool isMute(QSqlDatabase &);
 

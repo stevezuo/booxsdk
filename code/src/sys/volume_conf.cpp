@@ -51,6 +51,37 @@ bool VolumeConfig::setVolume(QSqlDatabase &database, int volume)
     return query.exec();
 }
 
+QVector<int> VolumeConfig::volumes()
+{
+    static QVector<int> VOLUMES;
+    if (VOLUMES.size() <= 0)
+    {
+        VOLUMES.push_back(0);
+        VOLUMES.push_back(60);
+        VOLUMES.push_back(64);
+        VOLUMES.push_back(68);
+        VOLUMES.push_back(72);
+        VOLUMES.push_back(76);
+        VOLUMES.push_back(80);
+        VOLUMES.push_back(85);
+        VOLUMES.push_back(90);
+        VOLUMES.push_back(95);
+        VOLUMES.push_back(100);
+    }
+
+    return VOLUMES;
+}
+
+int VolumeConfig::minVolume()
+{
+    return 0;
+}
+
+int VolumeConfig::maxVolume()
+{
+    return 100;
+}
+
 bool VolumeConfig::mute(QSqlDatabase &database, bool m)
 {
     QSqlQuery query(database);

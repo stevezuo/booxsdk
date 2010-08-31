@@ -64,6 +64,10 @@ public:
     // volume.
     int volume();
     bool setVolume(const int);
+    QVector<int> volumes();
+    int minVolume();
+    int maxVolume();
+
     bool mute(bool mute);
     bool isMute();
 

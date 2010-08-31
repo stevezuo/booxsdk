@@ -399,6 +399,21 @@ bool SystemConfig::mute(bool m)
     return VolumeConfig::mute(*database_, m);
 }
 
+QVector<int> SystemConfig::volumes()
+{
+    return VolumeConfig::volumes();
+}
+
+int SystemConfig::minVolume()
+{
+    return VolumeConfig::minVolume();
+}
+
+int SystemConfig::maxVolume()
+{
+    return VolumeConfig::maxVolume();
+}
+
 bool SystemConfig::isMute()
 {
     return VolumeConfig::isMute(*database_);

@@ -54,7 +54,7 @@ Q_SIGNALS:
     // signals for caller
     void wpaStateChanged(bool running);
     void connectionChanged(WifiProfile & profile, WpaConnection::ConnectionState state);
-    void passwordRequest(WifiProfile profile);
+    void passwordRequired(WifiProfile profile);
 
 private:
     bool checkWifiDevice();

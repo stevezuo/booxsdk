@@ -303,7 +303,7 @@ void DialUpDialog::createLayout()
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), this, SLOT(onApnClicked(bool)));
-        if (APNS[i].apn == profile_.name())
+        if (APNS[i].apn.compare(profile_.name(), Qt::CaseInsensitive) == 0)
         {
             btn->setChecked(true);
         }

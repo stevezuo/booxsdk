@@ -21,8 +21,9 @@ VolumeControl::VolumeControl(QWidget *parent)
 {
     // TODO update min and max value by system status
     SysStatus & sys_status = SysStatus::instance();
-    min_ = 0;
-    max_ = 100;
+    SystemConfig sys_conf;
+    min_ = sys_conf.minVolume();
+    max_ = sys_conf.maxVolume();
     current_ = sys_status.volume() - min_;
 
     createLayout();

@@ -201,6 +201,7 @@ void ServiceConfig::loadDefaultServices()
                              "com.onyx.interface.onyx_reader",
                             OPEN_METHOD,
                             "onyx_reader");
+        onyx_reader.mutable_extensions().push_back("doc");
         onyx_reader.mutable_extensions().push_back("txt");
         onyx_reader.mutable_extensions().push_back("pdb");
         onyx_reader.mutable_extensions().push_back("fb2");
@@ -219,7 +220,7 @@ void ServiceConfig::loadDefaultServices()
         DEFAULT_SERVICES.push_back(onyx_reader);
 
         // Office viewer.
-        Service office_viewer("com.onyx.service.office_viewer",
+        /*Service office_viewer("com.onyx.service.office_viewer",
                               "/com/onyx/object/office_viewer",
                               "com.onyx.interface.office_viewer",
                               OPEN_METHOD,
@@ -229,8 +230,8 @@ void ServiceConfig::loadDefaultServices()
         office_viewer.mutable_extensions().push_back("xls");
         office_viewer.mutable_extensions().push_back("xlsx");
         office_viewer.mutable_extensions().push_back("ppt");
-        office_viewer.mutable_extensions().push_back("pptx");
-        DEFAULT_SERVICES.push_back(office_viewer);
+        office_viewer.mutable_extensions().push_back("pptx");*/
+        // DEFAULT_SERVICES.push_back(office_viewer);
 
 
         // oar_wrapper based service

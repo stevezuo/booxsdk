@@ -126,6 +126,14 @@ void DialUpDialog::loadConf()
     {
         profile_ = all.front();
     }
+    else
+    {
+        // By default use the first one.
+        profile_.setName(APNS[0].peer);
+        profile_.setUsername(APNS[0].username);
+        profile_.setPassword(APNS[0].password);
+    }
+
 }
 
 void DialUpDialog::saveConf()
@@ -385,6 +393,7 @@ void DialUpDialog::onApnClicked(bool)
     {
         if (buttons_.at(i)->isChecked())
         {
+            onDisconnectClicked(true);
             connect(APNS[i].peer, APNS[i].username.toLocal8Bit().constData(), APNS[i].password.toLocal8Bit().constData());
             onConnectClicked(true);
             return;

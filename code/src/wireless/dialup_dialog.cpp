@@ -140,7 +140,7 @@ int  DialUpDialog::popup()
 {
     if (!sys_.isPowerSwitchOn())
     {
-        state_widget_.setText(tr("3G Connection is off. Please turn 3G switch on."));
+        showOffMessage();
     }
     showMaximized();
     onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC);
@@ -329,7 +329,7 @@ void DialUpDialog::connect(const QString & peer,
     {
         if (!sys_.isPowerSwitchOn())
         {
-            state_widget_.setText(tr("3G Power switch is off."));
+            showOffMessage();
         }
     }
 }
@@ -419,9 +419,21 @@ void DialUpDialog::onReport3GNetwork(const int signal,
                                      const int total,
                                      const int network)
 {
-    QString t("%1 %2%");
-    t = t.arg(networkType(network)).arg(signal * 100 / total);
-    network_label_.setText(t);
+    if (signal >= 0 && total > 0)
+    {
+        QString t("%1 %2%");
+        t = t.arg(networkType(network)).arg(signal * 100 / total);
+        network_label_.setText(t);
+    }
+    else
+    {
+        showOffMessage();
+    }
+}
+
+void DialUpDialog::showOffMessage()
+{
+    state_widget_.setText(tr("3G Connection is off. Please turn 3G switch on."));
 }
 
 void DialUpDialog::onDisconnectClicked(bool)

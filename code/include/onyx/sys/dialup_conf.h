@@ -41,6 +41,8 @@ public:
     void setPassword(const QString &password);
 
     void debugDump() const;
+
+    static QString defaultPeer();
 };
 typedef DialupProperties DialupProfile;
 typedef QVector<DialupProfile> DialupProfiles;

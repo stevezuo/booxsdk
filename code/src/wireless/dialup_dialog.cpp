@@ -128,10 +128,24 @@ void DialUpDialog::loadConf()
     }
     else
     {
-        // By default use the first one.
-        profile_.setName(APNS[0].peer);
-        profile_.setUsername(APNS[0].username);
-        profile_.setPassword(APNS[0].password);
+        for(int i = 0; i < APNS_COUNT; ++i)
+        {
+            if (DialupProfile::defaultPeer().compare(APNS[i].peer, Qt::CaseInsensitive) == 0)
+            {
+                profile_.setName(APNS[i].peer);
+                profile_.setUsername(APNS[i].username);
+                profile_.setPassword(APNS[i].password);
+                break;
+            }
+        }
+
+        if (profile_.name().isEmpty())
+        {
+            // By default use the first one.
+            profile_.setName(APNS[0].peer);
+            profile_.setUsername(APNS[0].username);
+            profile_.setPassword(APNS[0].password);
+        }
     }
 
 }
@@ -303,7 +317,7 @@ void DialUpDialog::createLayout()
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), this, SLOT(onApnClicked(bool)));
-        if (APNS[i].apn.compare(profile_.name(), Qt::CaseInsensitive) == 0)
+        if (APNS[i].peer.compare(profile_.name(), Qt::CaseInsensitive) == 0)
         {
             btn->setChecked(true);
         }

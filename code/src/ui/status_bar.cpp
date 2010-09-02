@@ -318,19 +318,26 @@ void StatusBar::onHideVolumeDialog()
 
 void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
 {
-    if (parentWidget() != 0)
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
+    if (!volume_control_dialog->isActiveWindow())
     {
-        if (!parentWidget()->isActiveWindow())
+        if (parentWidget() != 0)
+        {
+            if (!parentWidget()->isActiveWindow())
+            {
+                return;
+            }
+        }
+        else if (!this->isActiveWindow())
         {
             return;
         }
     }
-    else if (!this->isActiveWindow())
+    else
     {
-        return;
+        qDebug("Volume Control Dialog is Active Window");
     }
 
-    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
     hide_volume_dialog_timer_.stop();
     if (!volume_control_dialog->isVisible())
     {

@@ -318,26 +318,21 @@ void StatusBar::onHideVolumeDialog()
 
 void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
 {
-    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
-    if (!volume_control_dialog->isActiveWindow())
+    QRegion region = this->visibleRegion();
+    if (region.isEmpty())
     {
-        if (parentWidget() != 0)
-        {
-            if (!parentWidget()->isActiveWindow())
-            {
-                return;
-            }
-        }
-        else if (!this->isActiveWindow())
-        {
-            return;
-        }
-    }
-    else
-    {
-        qDebug("Volume Control Dialog is Active Window");
+        qDebug("Hidden Status Bar");
+        return;
     }
 
+    QRect visible_rect = region.boundingRect();
+    if (visible_rect.width() < height() && visible_rect.height() < height())
+    {
+        qDebug("Almost Hidden Status Bar");
+        return;
+    }
+
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
     hide_volume_dialog_timer_.stop();
     if (!volume_control_dialog->isVisible())
     {

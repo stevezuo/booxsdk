@@ -84,14 +84,12 @@ DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
     , title_text_label_(tr("3G Connection"), this)
     , close_button_("", this)
     , sys_(sys)
-    , timer_(0)
     , connecting_(false)
 {
+    loadConf();
+
     setAutoFillBackground(false);
     createLayout();
-
-    timer_.setInterval(1500);
-    loadConf();
 }
 
 DialUpDialog::~DialUpDialog()
@@ -128,6 +126,28 @@ void DialUpDialog::loadConf()
     {
         profile_ = all.front();
     }
+    else
+    {
+        for(int i = 0; i < APNS_COUNT; ++i)
+        {
+            if (DialupProfile::defaultPeer().compare(APNS[i].peer, Qt::CaseInsensitive) == 0)
+            {
+                profile_.setName(APNS[i].peer);
+                profile_.setUsername(APNS[i].username);
+                profile_.setPassword(APNS[i].password);
+                break;
+            }
+        }
+
+        if (profile_.name().isEmpty())
+        {
+            // By default use the first one.
+            profile_.setName(APNS[0].peer);
+            profile_.setUsername(APNS[0].username);
+            profile_.setPassword(APNS[0].password);
+        }
+    }
+
 }
 
 void DialUpDialog::saveConf()
@@ -140,8 +160,21 @@ void DialUpDialog::saveConf()
 
 int  DialUpDialog::popup()
 {
+    if (!sys_.isPowerSwitchOn())
+    {
+        showOffMessage();
+    }
     showMaximized();
     onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC);
+
+    // connect to default network.
+    for(int i = 0; i < APNS_COUNT; ++i)
+    {
+        if (profile_.name() == APNS[i].peer && sys_.isPowerSwitchOn())
+        {
+            connect(APNS[i].peer, APNS[i].username, APNS[i].password);
+        }
+    }
     return exec();
 }
 
@@ -284,6 +317,10 @@ void DialUpDialog::createLayout()
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), this, SLOT(onApnClicked(bool)));
+        if (APNS[i].peer.compare(profile_.name(), Qt::CaseInsensitive) == 0)
+        {
+            btn->setChecked(true);
+        }
     }
 
     input_layout_.addWidget(&disconnect_button_);
@@ -303,19 +340,18 @@ void DialUpDialog::clear()
 {
 }
 
-void DialUpDialog::connect(const QString & file,
+void DialUpDialog::connect(const QString & peer,
                            const QString & username,
                            const QString & password)
 {
-    profile_.setNumber(file);
+    profile_.setName(peer);
     profile_.setUsername(username);
     profile_.setPassword(password);
-    saveConf();
-    if (!sys_.connect3g(file, username, password))
+    if (!sys_.connect3g(peer, username, password))
     {
         if (!sys_.isPowerSwitchOn())
         {
-            state_widget_.setText(tr("3G Power switch is off."));
+            showOffMessage();
         }
     }
 }
@@ -344,6 +380,8 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
         QString result("Connected. Address: %1");
         result = result.arg(qPrintable(address()));
         state_widget_.setText(result);
+        saveConf();
+        QTimer::singleShot(1500, this, SLOT(accept()));
     }
     else if (status == TG_DISCONNECTED)
     {
@@ -369,6 +407,7 @@ void DialUpDialog::onApnClicked(bool)
     {
         if (buttons_.at(i)->isChecked())
         {
+            onDisconnectClicked(true);
             connect(APNS[i].peer, APNS[i].username.toLocal8Bit().constData(), APNS[i].password.toLocal8Bit().constData());
             onConnectClicked(true);
             return;
@@ -403,9 +442,21 @@ void DialUpDialog::onReport3GNetwork(const int signal,
                                      const int total,
                                      const int network)
 {
-    QString t("%1 %2%");
-    t = t.arg(networkType(network)).arg(signal * 100 / total);
-    network_label_.setText(t);
+    if (signal >= 0 && total > 0)
+    {
+        QString t("%1 %2%");
+        t = t.arg(networkType(network)).arg(signal * 100 / total);
+        network_label_.setText(t);
+    }
+    else
+    {
+        showOffMessage();
+    }
+}
+
+void DialUpDialog::showOffMessage()
+{
+    state_widget_.setText(tr("3G Connection is off. Please turn 3G switch on."));
 }
 
 void DialUpDialog::onDisconnectClicked(bool)

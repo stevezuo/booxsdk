@@ -83,6 +83,11 @@ void DialupProperties::setPassword(const QString & password)
     insert(PASSWORD_TAG, password);
 }
 
+QString DialupProperties::defaultPeer()
+{
+    return qgetenv("DEFAULT_PEER");
+}
+
 void DialupProperties::debugDump() const
 {
 // #ifdef QT_DEBUG

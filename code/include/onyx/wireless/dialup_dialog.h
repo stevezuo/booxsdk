@@ -46,6 +46,7 @@ private Q_SLOTS:
     void onDisconnectClicked(bool);
 
     void onReport3GNetwork(const int signal, const int total, const int network);
+    void showOffMessage();
 
 private:
     void createLayout();

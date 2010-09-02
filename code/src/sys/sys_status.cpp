@@ -1082,6 +1082,17 @@ QString SysStatus::currentConnection()
     return result;
 }
 
+/// Check hardware connection type. It returns wifi or 3g.
+/// But it does not mean the connection has been established.
+QString SysStatus::connectionType()
+{
+    if (qgetenv("TG").toInt() > 0)
+    {
+        return "3g";
+    }
+    return "wifi";
+}
+
 /// Retrieve the wpa_proxy instance. Before using this function make sure
 /// you call startWpaSupplicant already. Although dbus supports activation,
 /// but we need to start wpa_supplicant with different conf file sometimes,

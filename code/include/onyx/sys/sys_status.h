@@ -101,6 +101,7 @@ class SysStatus : public QObject
     bool isPowerSwitchOn();
 
     QString currentConnection();
+    QString connectionType();
 
     void setSystemBusy(bool busy = true, bool show_indicator = true);
     inline bool isSystemBusy() { return system_busy_; }

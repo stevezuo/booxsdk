@@ -22,7 +22,7 @@ OnyxSingleShotTimer::~OnyxSingleShotTimer()
 
 void OnyxSingleShotTimer::start()
 {
-    qDebug("\nStart Timer\n");
+    qDebug("Start Timer");
     if (timer_ != 0)
     {
         timer_->start();
@@ -31,7 +31,7 @@ void OnyxSingleShotTimer::start()
 
 void OnyxSingleShotTimer::stop()
 {
-    qDebug("\nStop Timer\n");
+    qDebug("Stop Timer");
     if (timer_ != 0)
     {
         timer_->stop();

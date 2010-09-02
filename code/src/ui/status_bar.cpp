@@ -333,6 +333,10 @@ void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
             return;
         }
     }
+    else
+    {
+        qDebug("Volume Control Dialog is Active Window");
+    }
 
     hide_volume_dialog_timer_.stop();
     if (!volume_control_dialog->isVisible())

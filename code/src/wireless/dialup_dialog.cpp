@@ -180,10 +180,10 @@ int  DialUpDialog::popup()
 
 void DialUpDialog::keyPressEvent(QKeyEvent *ke)
 {
+    ke->accept();
     if (ke->key() == Qt::Key_Escape)
     {
-        ke->accept();
-        reject();
+        accept();
     }
 
     // Disable the parent widget to update screen.

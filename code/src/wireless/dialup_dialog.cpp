@@ -57,6 +57,7 @@ static const APN APNS[] =
     {"Beeline", "beeline", "beeline", "beeline"},
     {"telenor.mbb", "telenor.mbb", "", ""},
     {"T-Mobile", "", "", "t-mobile"},
+    {"Orange", "", "", "orange"},
     {"O2", "", "", "o2"},
     {"movistar.es", "movistar", "movistar", "movistar"},
     {"China Unicom", "", "", "unicom"},

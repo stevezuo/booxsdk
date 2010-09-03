@@ -21,6 +21,10 @@
     <file>images/font_family_item.png</file>
     <file>images/return_to_library.png</file>
     <file>images/music.png</file>
+    <file>images/left.png</file>
+    <file>images/right.png</file>
+    <file>images/up.png</file>
+    <file>images/down.png</file>
 
     <file>images/bookmark.png</file>
     <file>images/add_bookmark.png</file>

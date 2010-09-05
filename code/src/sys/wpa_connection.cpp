@@ -814,7 +814,7 @@ void WpaConnection::parseScanResult(WifiProfiles & result,
         }
     }
 
-    debugDump(result);
+    //debugDump(result);
 }
 
 bool WpaConnection::parseItem(QString & tag, QVariant & value, const QByteArray & data)

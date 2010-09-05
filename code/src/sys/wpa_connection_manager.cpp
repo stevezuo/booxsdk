@@ -1,10 +1,11 @@
 
 #include "onyx/sys/wpa_connection_manager.h"
 
+static WifiProfile dummy;
 
 WpaConnectionManager::WpaConnectionManager()
 : sys_(sys::SysStatus::instance())
-, proxy_(sys::SysStatus::instance().wpa_proxy())
+, proxy_(sys::SysStatus::instance().wpa_proxy(""))
 , scan_count_(0)
 , internal_state_(WpaConnection::STATE_UNKNOWN)
 , auto_connect_(true)
@@ -72,6 +73,8 @@ void WpaConnectionManager::onScanReturned(WifiProfiles & list)
         return;
     }
 
+    emit connectionChanged(dummy, WpaConnection::STATE_SCANNED);
+
     scan_results_ = list;
     scan_timer_.stop();
     connectToBestAP();
@@ -84,32 +87,61 @@ void WpaConnectionManager::scanResults(WifiProfiles &ret)
 
 void WpaConnectionManager::onNeedPassword(WifiProfile profile)
 {
-    // password is incorrect
+    // ic is incorrect
+    if (checkAuthentication(profile))
+    {
+        proxy_.connectTo(profile);
+        return;
+    }
+
+    emit passwordRequired(profile);
 }
 
 void WpaConnectionManager::onConnectionChanged(WifiProfile &profile,
                                                WpaConnection::ConnectionState state)
 {
-    if (state == WpaConnection::STATE_CONNECTED)
+    qDebug("state changed %d", state);
+    switch (state)
     {
-        saveAp(profile);
-    }
-    if (state == WpaConnection::STATE_COMPLETE)
-    {
-        stopAllTimers();
-    }
-    else if (state == WpaConnection::STATE_ACQUIRING_ADDRESS_ERROR)
-    {
-        resetProfile(profile);
-    }
-    else if (state == WpaConnection::STATE_AUTHENTICATION_FAILED)
-    {
-        // Could be ignored now.
-        if (!checkAuthentication(profile))
+    case WpaConnection::STATE_SCANNING:
         {
-            onNeedPassword(profile);
+            emit connectionChanged(dummy, WpaConnection::STATE_SCANNING);
         }
+        break;
+
+    case WpaConnection::STATE_CONNECTED:
+        {
+            saveAp(profile);
+            emit connectionChanged(profile, WpaConnection::STATE_CONNECTED);
+        }
+        break;
+
+    case WpaConnection::STATE_COMPLETE:
+        {
+            stopAllTimers();
+            emit connectionChanged(profile, WpaConnection::STATE_COMPLETE);
+        }
+        break;
+    case WpaConnection::STATE_ACQUIRING_ADDRESS_ERROR:
+        {
+            resetProfile(profile);
+            emit connectionChanged(profile, WpaConnection::STATE_ACQUIRING_ADDRESS_ERROR);
+        }
+        break;
+
+    case WpaConnection::STATE_AUTHENTICATION_FAILED:
+        {
+            // Could be ignored now.
+            if (!checkAuthentication(profile))
+            {
+                onNeedPassword(profile);
+            }
+        }
+        break;
+    default:
+        break;
     }
+
 }
 
 void WpaConnectionManager::onConnectionTimeout()

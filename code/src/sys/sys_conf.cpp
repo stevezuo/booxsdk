@@ -174,15 +174,19 @@ bool SystemConfig::setTimezone(const QString & name)
 
 QString SystemConfig::currentTimezone()
 {
-    QString path = qgetenv("TZ");
-    if (path.isEmpty())
-    {
-        path = "/etc/localtime";
-    }
-    QFileInfo info(path);
+    // Check default link at first.
+    const QString defaultLink = "/etc/localtime";
+    QFileInfo info(defaultLink);
     if (info.exists() && info.isSymLink())
     {
         QString path = info.symLinkTarget();
+        return path.remove(ZONE_PREFIX);
+    }
+
+    // Check TZ now.
+    QString path = qgetenv("TZ");
+    if (QFile::exists(path))
+    {
         return path.remove(ZONE_PREFIX);
     }
     return QString();

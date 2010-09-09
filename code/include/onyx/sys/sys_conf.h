@@ -40,6 +40,7 @@ public:
     bool writePadService(Service &);
     bool dictionaryService(Service &);
     bool feedService(Service &);
+    bool sudokuService(Service &);
     bool registerService(const Service &, const QString &);
     bool unRegisterService(const Service &);
 

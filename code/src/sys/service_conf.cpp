@@ -55,6 +55,11 @@ static Service feed_service("com.onyx.service.feed",
                             OPEN_METHOD,
                             "onyx_feed_reader");
 
+static Service sudoku_service("com.onyx.service.feed",
+                              "/com/onyx/object/feed",
+                              "com.onyx.interface.feed",
+                              OPEN_METHOD,
+                              "simsu");
 
 
 Service::Service()
@@ -386,6 +391,12 @@ bool ServiceConfig::dictionaryService(QSqlDatabase &, Service & service)
 bool ServiceConfig::feedReaderService(QSqlDatabase &, Service & service)
 {
     service = feed_service;
+    return true;
+}
+
+bool ServiceConfig::sudokuService(QSqlDatabase &, Service & service)
+{
+    service = sudoku_service;
     return true;
 }
 

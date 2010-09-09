@@ -49,6 +49,14 @@ static Service dict_service("com.onyx.service.dict_tool",
                             OPEN_METHOD,
                             "dict_tool");
 
+static Service feed_service("com.onyx.service.feed",
+                            "/com/onyx/object/feed",
+                            "com.onyx.interface.feed",
+                            OPEN_METHOD,
+                            "onyx_feed_reader");
+
+
+
 Service::Service()
 {
 }
@@ -372,6 +380,12 @@ bool ServiceConfig::writePadService(QSqlDatabase &, Service & service)
 bool ServiceConfig::dictionaryService(QSqlDatabase &, Service & service)
 {
     service = dict_service;
+    return true;
+}
+
+bool ServiceConfig::feedReaderService(QSqlDatabase &, Service & service)
+{
+    service = feed_service;
     return true;
 }
 

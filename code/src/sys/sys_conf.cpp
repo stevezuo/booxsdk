@@ -92,6 +92,11 @@ bool SystemConfig::dictionaryService(Service &service)
     return ServiceConfig::dictionaryService(*database_, service);
 }
 
+bool SystemConfig::feedService(Service &service)
+{
+    return ServiceConfig::feedReaderService(*database_, service);
+}
+
 bool SystemConfig::registerService(const Service &service,
                                    const QString &path)
 {

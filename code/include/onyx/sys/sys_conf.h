@@ -39,6 +39,7 @@ public:
     bool messengerService(Service &);
     bool writePadService(Service &);
     bool dictionaryService(Service &);
+    bool feedService(Service &);
     bool registerService(const Service &, const QString &);
     bool unRegisterService(const Service &);
 

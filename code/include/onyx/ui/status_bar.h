@@ -10,6 +10,7 @@
 #include "onyx/ui/ui_global.h"
 #include "status_bar_item.h"
 #include "common_dialogs.h"
+#include "clock_dialog.h"
 #include "single_shot_timer.h"
 
 namespace ui
@@ -90,6 +91,7 @@ private:
     void changeStylus(const int stylus);
 
     USBConnectionDialog * usbConnectionDialog(bool create);
+    ClockDialog * clockDialog(bool create, const QDateTime & start);
 
 private:
     typedef shared_ptr<StatusBarItem>          StatusBarItemPtr;
@@ -102,6 +104,7 @@ private:
     StatusBarItems     widgets_;
     bool               enable_jump_to_page_;
     scoped_ptr<USBConnectionDialog> usb_connection_dialog_;
+    scoped_ptr<ClockDialog> clock_dialog_;
     OnyxSingleShotTimer hide_volume_dialog_timer_;
 };
 

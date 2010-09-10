@@ -300,8 +300,7 @@ void StatusBar::onClockClicked()
     if (ptr)
     {
         clock = static_cast<StatusBarItemClock*>(ptr);
-        ClockDialog dialog(clock->startDateTime(), 0);
-        dialog.exec();
+        clockDialog(true, clock->startDateTime())->exec();
     }
 }
 
@@ -546,6 +545,15 @@ USBConnectionDialog * StatusBar::usbConnectionDialog(bool create)
         usb_connection_dialog_.reset(new USBConnectionDialog(0));
     }
     return usb_connection_dialog_.get();
+}
+
+ClockDialog * StatusBar::clockDialog(bool create, const QDateTime & start)
+{
+    if (!clock_dialog_ && create)
+    {
+        clock_dialog_.reset(new ClockDialog(start, 0));
+    }
+    return clock_dialog_.get();
 }
 
 void StatusBar::createLayout()

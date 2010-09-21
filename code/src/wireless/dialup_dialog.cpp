@@ -52,17 +52,10 @@ struct APN
 
 static const APN APNS[] =
 {
+    {"OZON", "mts", "mts", "mts"},
     {"Mts", "mts", "mts", "mts"},
     {"Megafon", "gdata", "gdata", "megafon"},
     {"Beeline", "beeline", "beeline", "beeline"},
-    {"telenor.mbb", "telenor.mbb", "", ""},
-    {"T-Mobile", "", "", "t-mobile"},
-    {"Orange", "", "", "orange"},
-    {"O2", "", "", "o2"},
-    {"movistar.es", "movistar", "movistar", "movistar"},
-    {"web.htgprs", "", "", "htgprs"},
-    {"China Unicom", "", "", "unicom"},
-    {"China Telecom", "", "", "telecom"},
 };
 static const int APNS_COUNT = sizeof(APNS)/sizeof(APNS[0]);
 

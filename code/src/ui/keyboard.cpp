@@ -450,8 +450,6 @@ KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     , finish_character_timer_(finish_charater_interval, this, SLOT(handleFinishCharacterTimeOut()))
     , auto_select_timer_(auto_select_interval, this, SLOT(handleAutoSelect()))
 {
-    HandwritingManager::instance().reload();
-
     is_english = !isRussian();
     init();
 }

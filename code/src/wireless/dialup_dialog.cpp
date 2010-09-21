@@ -59,6 +59,51 @@ static const APN APNS[] =
 };
 static const int APNS_COUNT = sizeof(APNS)/sizeof(APNS[0]);
 
+
+static QString networkType(const int n)
+{
+    switch (n)
+    {
+    case NO_SERVICE:
+        return "NO_SERVICE";
+    case GSM_MODE:
+        return "GSM";
+    case GPRS_MODE:
+        return "GPRS";
+    case EDGE_MODE:
+        return "EDGE";
+    case WCDMA_MODE:
+    case HSDPA_MODE:
+    case HSUPA_MODE:
+    case HSDPA_MODE_AND_HSUPA_MODE:
+    case TD_SCDMA_MODE:
+    case HSPA_PLUS_MODE:
+        return "3G";
+    }
+    return "";
+}
+
+static QString address()
+{
+    QString result;
+    QList<QNetworkInterface> all = QNetworkInterface::allInterfaces();
+    foreach(QNetworkInterface ni, all)
+    {
+        qDebug("interface name %s", qPrintable(ni.name()));
+        QList<QNetworkAddressEntry> addrs = ni.addressEntries();
+        foreach(QNetworkAddressEntry entry, addrs)
+        {
+            if (ni.name().compare("ppp0", Qt::CaseInsensitive) == 0)
+            {
+                result = entry.ip().toString();
+            }
+            qDebug("ip address %s", qPrintable(entry.ip().toString()));
+        }
+    }
+    return result;
+}
+
+
 DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
 #ifndef Q_WS_QWS
     : QDialog(parent, 0)
@@ -70,6 +115,7 @@ DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
     , title_vbox_(&title_widget_)
     , title_hbox_(0)
     , content_layout_(0)
+    , state_box_(0)
     , network_label_(0)
     , state_widget_(0)
     , input_layout_(0)
@@ -90,26 +136,6 @@ DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
 DialUpDialog::~DialUpDialog()
 {
 
-}
-
-QString DialUpDialog::address()
-{
-    QString result;
-    QList<QNetworkInterface> all = QNetworkInterface::allInterfaces();
-    foreach(QNetworkInterface ni, all)
-    {
-        qDebug("interface name %s", qPrintable(ni.name()));
-        QList<QNetworkAddressEntry> addrs = ni.addressEntries();
-        foreach(QNetworkAddressEntry entry, addrs)
-        {
-            if (ni.name().compare("ppp0", Qt::CaseInsensitive) == 0)
-            {
-                result = entry.ip().toString();
-            }
-            qDebug("ip address %s", qPrintable(entry.ip().toString()));
-        }
-    }
-    return result;
 }
 
 void DialUpDialog::loadConf()
@@ -153,7 +179,7 @@ void DialUpDialog::saveConf()
     conf.saveDialupProfiles(all);
 }
 
-int  DialUpDialog::popup()
+int  DialUpDialog::popup(bool show_profile)
 {
     if (!sys_.isPowerSwitchOn())
     {
@@ -260,8 +286,9 @@ void DialUpDialog::createLayout()
     network_label_.setAlignment(Qt::AlignLeft);
     network_label_.setContentsMargins(MARGINS, 0, MARGINS, 0);
 
-    content_layout_.addWidget(&network_label_);
-    content_layout_.addWidget(&state_widget_);
+    state_box_.addWidget(&state_widget_, 600);
+    state_box_.addWidget(&network_label_);
+    content_layout_.addLayout(&state_box_);
     content_layout_.addSpacing(MARGINS);
 
     // top_label_
@@ -410,28 +437,7 @@ void DialUpDialog::onApnClicked(bool)
     }
 }
 
-static QString networkType(const int n)
-{
-    switch (n)
-    {
-    case NO_SERVICE:
-        return "NO_SERVICE";
-    case GSM_MODE:
-        return "GSM";
-    case GPRS_MODE:
-        return "GPRS";
-    case EDGE_MODE:
-        return "EDGE";
-    case WCDMA_MODE:
-    case HSDPA_MODE:
-    case HSUPA_MODE:
-    case HSDPA_MODE_AND_HSUPA_MODE:
-    case TD_SCDMA_MODE:
-    case HSPA_PLUS_MODE:
-        return "3G";
-    }
-    return "";
-}
+
 
 void DialUpDialog::onReport3GNetwork(const int signal,
                                      const int total,
@@ -439,9 +445,10 @@ void DialUpDialog::onReport3GNetwork(const int signal,
 {
     if (signal >= 0 && total > 0)
     {
-        QString t("%1 %2%");
-        t = t.arg(networkType(network)).arg(signal * 100 / total);
-        network_label_.setText(t);
+        QString t(":/images/signal_3g_%1.png");
+        t = t.arg(signal);
+        QPixmap pixmap(t);
+        network_label_.setPixmap(pixmap);
     }
     else
     {
@@ -451,6 +458,9 @@ void DialUpDialog::onReport3GNetwork(const int signal,
 
 void DialUpDialog::showOffMessage()
 {
+    QString t(":/images/signal_3g_off.png");
+    QPixmap pixmap(t);
+    network_label_.setPixmap(pixmap);
     state_widget_.setText(tr("3G Connection is off. Please turn 3G switch on."));
 }
 

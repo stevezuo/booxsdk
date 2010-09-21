@@ -185,7 +185,15 @@ int  DialUpDialog::popup(bool show_profile)
     {
         showOffMessage();
     }
-    showMaximized();
+
+    if (show_profile)
+    {
+        showMaximized();
+    }
+    else
+    {
+        setFixedSize(500, 300);
+    }
     onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC);
 
     // connect to default network.
@@ -384,7 +392,7 @@ void DialUpDialog::onTimeout()
 
 void DialUpDialog::onConnectClicked(bool)
 {
-    state_widget_.setText(tr("Connecting..."));
+    state_widget_.setText(tr("Establishing 3G-connection... Please wait"));
 }
 
 void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
@@ -395,7 +403,7 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
     }
     else if (status == TG_CONNECTING)
     {
-        state_widget_.setText(tr("Connecting..."));
+        state_widget_.setText(tr("Establishing 3G-connection... Please wait"));
     }
     else if (status == TG_CONNECTED)
     {

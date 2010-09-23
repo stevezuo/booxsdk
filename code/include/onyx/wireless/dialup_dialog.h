@@ -53,6 +53,7 @@ private:
     void createLayout();
     void clear();
 
+    void myShow(bool max = true);
     bool isConnecting() { return connecting_; }
     void setConnecting(bool c) { connecting_ = c; }
 

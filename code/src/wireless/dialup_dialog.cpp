@@ -186,14 +186,7 @@ int  DialUpDialog::popup(bool show_profile)
         showOffMessage();
     }
 
-    if (show_profile)
-    {
-        showMaximized();
-    }
-    else
-    {
-        setFixedSize(500, 300);
-    }
+    myShow(show_profile);
     onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC);
 
     // connect to default network.
@@ -353,10 +346,11 @@ void DialUpDialog::createLayout()
         }
     }
 
-    input_layout_.addWidget(&disconnect_button_);
-    disconnect_button_.setAutoExclusive(true);
-    disconnect_button_.setCheckable(true);
-    QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
+    disconnect_button_.hide();
+    //input_layout_.addWidget(&disconnect_button_);
+    //disconnect_button_.setAutoExclusive(true);
+    //disconnect_button_.setCheckable(true);
+    //QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
     content_layout_.addStretch(0);
 
     // QObject::connect(&number_edit_, SIGNAL(getFocus(NabooLineEdit *)), this, SLOT(onGetFocus(NabooLineEdit *)));
@@ -368,6 +362,27 @@ void DialUpDialog::createLayout()
 
 void DialUpDialog::clear()
 {
+}
+
+void DialUpDialog::myShow(bool max)
+{
+    if (max)
+    {
+        for(int i = 0; i < buttons_.size(); ++i)
+        {
+            buttons_[i]->show();
+        }
+        showMaximized();
+    }
+    else
+    {
+        for(int i = 0; i < buttons_.size(); ++i)
+        {
+            buttons_[i]->hide();
+        }
+        setFixedSize(500, 150);
+    }
+
 }
 
 void DialUpDialog::connect(const QString & peer,

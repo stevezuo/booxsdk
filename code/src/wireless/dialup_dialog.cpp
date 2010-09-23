@@ -52,7 +52,7 @@ struct APN
 
 static const APN APNS[] =
 {
-    {"OZON", "mts", "mts", "mts"},
+    {"OZON", "", "", "ozon"},
     {"Mts", "mts", "mts", "mts"},
     {"Megafon", "gdata", "gdata", "megafon"},
     {"Beeline", "beeline", "beeline", "beeline"},

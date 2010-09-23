@@ -203,10 +203,7 @@ int  DialUpDialog::popup(bool show_profile)
 void DialUpDialog::keyPressEvent(QKeyEvent *ke)
 {
     ke->accept();
-    if (ke->key() == Qt::Key_Escape)
-    {
-        accept();
-    }
+
 
     // Disable the parent widget to update screen.
 
@@ -222,6 +219,10 @@ void DialUpDialog::keyPressEvent(QKeyEvent *ke)
 void DialUpDialog::keyReleaseEvent(QKeyEvent *ke)
 {
     ke->accept();
+    if (ke->key() == Qt::Key_Escape)
+    {
+        accept();
+    }
 }
 
 bool DialUpDialog::event(QEvent * e)

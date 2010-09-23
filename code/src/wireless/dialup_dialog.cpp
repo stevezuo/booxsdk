@@ -288,7 +288,7 @@ void DialUpDialog::createLayout()
     network_label_.setContentsMargins(MARGINS, 0, MARGINS, 0);
 
     state_box_.addWidget(&state_widget_, 600);
-    state_box_.addWidget(&network_label_);
+    state_box_.addWidget(&network_label_, 0, static_cast<Qt::AlignmentFlag>(Qt::AlignHCenter|Qt::AlignBottom));
     content_layout_.addLayout(&state_box_);
     content_layout_.addSpacing(MARGINS);
 

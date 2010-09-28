@@ -174,7 +174,7 @@ int  DialUpDialog::popup()
     {
         if (profile_.name() == APNS[i].peer && sys_.isPowerSwitchOn())
         {
-            connect(APNS[i].peer, APNS[i].username, APNS[i].password);
+            // connect(APNS[i].peer, APNS[i].username, APNS[i].password);
         }
     }
     return exec();

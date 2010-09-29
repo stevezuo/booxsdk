@@ -181,8 +181,6 @@ void DialUpDialog::saveConf()
 
 int  DialUpDialog::popup(bool show_profile)
 {
-    onyx::screen::instance().enableUpdate(false);
-
     myShow(show_profile);
     if (!sys_.isPowerSwitchOn())
     {
@@ -198,6 +196,14 @@ int  DialUpDialog::popup(bool show_profile)
         }
     }
 
+    enableUpdate(false);
+    QTime t;
+    t.start();
+    while (QApplication::hasPendingEvents() || t.elapsed() <= 1000)
+    {
+        QApplication::processEvents();
+    }
+    enableUpdate(true);
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
     return exec();
 }
@@ -249,8 +255,9 @@ void DialUpDialog::paintEvent(QPaintEvent *e)
     painter.drawPath(path);
 }
 
-void DialUpDialog::resizeEvent(QResizeEvent *)
+void DialUpDialog::resizeEvent(QResizeEvent *event)
 {
+    QDialog::resizeEvent(event);
 }
 
 void DialUpDialog::mousePressEvent(QMouseEvent *)

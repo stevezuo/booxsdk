@@ -196,14 +196,6 @@ int  DialUpDialog::popup(bool show_profile)
         }
     }
 
-    enableUpdate(false);
-    QTime t;
-    t.start();
-    while (QApplication::hasPendingEvents() || t.elapsed() <= 1000)
-    {
-        QApplication::processEvents();
-    }
-    enableUpdate(true);
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
     return exec();
 }
@@ -391,6 +383,7 @@ void DialUpDialog::myShow(bool max)
             buttons_[i]->hide();
         }
         setFixedSize(500, 150);
+        show();
     }
 
 }

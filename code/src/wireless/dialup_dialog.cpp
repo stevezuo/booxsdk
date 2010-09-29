@@ -431,7 +431,14 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
     }
     else if (status == TG_DISCONNECTED)
     {
-        state_widget_.setText(tr("Disconnect."));
+        if (message.isEmpty())
+        {
+            state_widget_.setText(tr("Disconnect."));
+        }
+        else
+        {
+            state_widget_.setText(message);
+        }
     }
 }
 

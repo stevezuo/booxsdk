@@ -181,13 +181,15 @@ void DialUpDialog::saveConf()
 
 int  DialUpDialog::popup(bool show_profile)
 {
+    onyx::screen::instance().enableUpdate(false);
+
     if (!sys_.isPowerSwitchOn())
     {
         showOffMessage();
     }
 
     myShow(show_profile);
-    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC);
+    onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
 
     // connect to default network.
     for(int i = 0; i < APNS_COUNT; ++i)

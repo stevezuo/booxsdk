@@ -183,12 +183,12 @@ int  DialUpDialog::popup(bool show_profile)
 {
     onyx::screen::instance().enableUpdate(false);
 
+    myShow(show_profile);
     if (!sys_.isPowerSwitchOn())
     {
         showOffMessage();
     }
 
-    myShow(show_profile);
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
 
     // connect to default network.
@@ -435,7 +435,14 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
     {
         if (message.isEmpty())
         {
-            state_widget_.setText(tr("Disconnect."));
+            if (!sys_.isPowerSwitchOn())
+            {
+                showOffMessage();
+            }
+            else
+            {
+                state_widget_.setText(tr("Disconnect."));
+            }
         }
         else
         {

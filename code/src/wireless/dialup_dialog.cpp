@@ -189,8 +189,6 @@ int  DialUpDialog::popup(bool show_profile)
         showOffMessage();
     }
 
-    onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
-
     // connect to default network.
     for(int i = 0; i < APNS_COUNT; ++i)
     {
@@ -199,6 +197,8 @@ int  DialUpDialog::popup(bool show_profile)
             connect(APNS[i].peer, APNS[i].username, APNS[i].password);
         }
     }
+
+    onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
     return exec();
 }
 

@@ -7,6 +7,7 @@ namespace handwriting
 HandwritingManager::HandwritingManager()
 {
     loadPlugin();
+    reload();
 }
 
 HandwritingManager::~HandwritingManager()

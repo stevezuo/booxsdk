@@ -547,12 +547,10 @@ QString SystemConfig::version()
 }
 QString SystemConfig::cpuInfo()
 {
-    qWarning("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    return "aaa";
 
-    QString cpu;
-    QString key1("BogoMIPS        :");
-    QString key2("Hardware        :");
+    QString cpu,tmp;
+    QString key1("Hardware");
+    QString key2("BogoMIPS");
 
     QFile file("/proc/cpuinfo");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -563,16 +561,45 @@ QString SystemConfig::cpuInfo()
     {
        	 if(line.contains(key1))
          {
-		cpu.append(" BogoMIPS ");
-		cpu.append( line.right( line.length() - key1.length() ) );
+		cpu.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
     
          }
   
        	 if(line.contains(key2))
          {
-		cpu.append(" Hardware ");
-		cpu.append( line.right( line.length() - key2.length() ) );
+		tmp.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
+         }
+
+         line = in.readLine();
+    }
+
+    file.close();
+    cpu.append(" ").append(tmp);
+
+    return cpu;
+}
+QString SystemConfig::memInfo()
+{
+   QString total,free;
+   QString key1="MemTotal";
+   QString key2="MemFree";
+
+   QFile file("/proc/meminfo");
+   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	return total;
+    QTextStream in(&file);
+    QString line = in.readLine();
+    while (!line.isNull()) 
+    {
+       	 if(line.contains(key1))
+         {
+		total.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
     
+         }
+  
+       	 if(line.contains(key2))
+         {
+		free.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
          }
 
          line = in.readLine();
@@ -580,17 +607,29 @@ QString SystemConfig::cpuInfo()
 
     file.close();
 
-    return cpu;
-}
-QString SystemConfig::memInfo()
-{
+    free=free.left( free.length() - 2 ) ;
+    free.append("/").append(total);
 
- return "";
+    return free;
 }
 QString SystemConfig::flashInfo()
 {
+   QString flash;
+   QFile file("/tmp/df_flash_info");
+   system("df -k /media/flash  > /tmp/df_flash_info");
 
- return "";
+   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	return flash;
+    QTextStream in(&file);
+    QString line = in.readLine();
+    line=in.readLine();
+    file.close();
+    system("rm  -f /tmp/df_flash_info");
+
+    QRegExp sep("\\ +");
+    flash= line.section(sep,2,2);
+    flash.append("/").append(line.section(sep,1,1)).append(" KB");
+    return flash; 
 }
 
 }

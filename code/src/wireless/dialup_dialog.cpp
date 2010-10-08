@@ -55,7 +55,7 @@ static const APN APNS[] =
     {"Mts", "mts", "mts", "mts"},
     {"Megafon", "gdata", "gdata", "megafon"},
     {"Beeline", "beeline", "beeline", "beeline"},
-    {"telenor.mbb", "telenor.mbb", "", ""},
+    {"telenor.mbb", "telenor.mbb", "", "telenor"},
     {"T-Mobile", "", "", "t-mobile"},
     {"Orange", "", "", "orange"},
     {"O2", "", "", "o2"},
@@ -174,7 +174,7 @@ int  DialUpDialog::popup()
     {
         if (profile_.name() == APNS[i].peer && sys_.isPowerSwitchOn())
         {
-            connect(APNS[i].peer, APNS[i].username, APNS[i].password);
+            // connect(APNS[i].peer, APNS[i].username, APNS[i].password);
         }
     }
     return exec();

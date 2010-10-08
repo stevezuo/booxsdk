@@ -551,7 +551,7 @@ bool SysStatus::setScreenTransformation(int degree)
     }
     else
     {
-        QString data("export QWS_DISPLAY=Transformed:Rot%1:NabooScreen:/dev/mem");
+        QString data("export QWS_DISPLAY=Transformed:Rot%1:OnyxScreen:/dev/mem");
         data = data.arg(degree);
         file.write(data.toAscii());
         file.flush();

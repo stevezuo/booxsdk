@@ -585,12 +585,12 @@ QString SystemConfig::cpuInfo()
 QString SystemConfig::memInfo()
 {
 
-
+ return "";
 }
 QString SystemConfig::flashInfo()
 {
 
-
+ return "";
 }
 
 }

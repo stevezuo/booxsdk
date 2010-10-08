@@ -14,6 +14,7 @@ qt4_wrap_cpp(MOC_SRCS
   ${ONYXSDK_DIR}/include/onyx/data/sketch_page.h
   ${ONYXSDK_DIR}/include/onyx/data/sketch_point.h
   ${ONYXSDK_DIR}/include/onyx/data/sketch_stroke.h
+  ${ONYXSDK_DIR}/include/onyx/data/web_history.h
   ${ONYXSDK_DIR}/include/onyx/data/sketch_utils.h
   ${ONYXSDK_DIR}/include/onyx/data/handwriting_interface.h
   ${ONYXSDK_DIR}/include/onyx/data/handwriting_manager.h
@@ -38,6 +39,7 @@ add_library(onyx_data
   sketch_page.cpp
   sketch_point.cpp
   sketch_stroke.cpp
+  web_history.cpp
   handwriting_manager.cpp
   handwriting_widget.cpp
   handwriting_functions_model.cpp

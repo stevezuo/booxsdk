@@ -545,6 +545,53 @@ QString SystemConfig::version()
 {
     return DeviceConfig::version();
 }
+QString SystemConfig::cpuInfo()
+{
+    qWarning("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    return "aaa";
+
+    QString cpu;
+    QString key1("BogoMIPS        :");
+    QString key2("Hardware        :");
+
+    QFile file("/proc/cpuinfo");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	return cpu;
+    QTextStream in(&file);
+    QString line = in.readLine();
+    while (!line.isNull()) 
+    {
+       	 if(line.contains(key1))
+         {
+		cpu.append(" BogoMIPS ");
+		cpu.append( line.right( line.length() - key1.length() ) );
+    
+         }
+  
+       	 if(line.contains(key2))
+         {
+		cpu.append(" Hardware ");
+		cpu.append( line.right( line.length() - key2.length() ) );
+    
+         }
+
+         line = in.readLine();
+    }
+
+    file.close();
+
+    return cpu;
+}
+QString SystemConfig::memInfo()
+{
+
+
+}
+QString SystemConfig::flashInfo()
+{
+
+
+}
 
 }
 

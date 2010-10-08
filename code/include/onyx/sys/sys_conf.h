@@ -102,6 +102,10 @@ public:
     QString deviceId();
     static QString version();
 
+    QString cpuInfo();
+    QString memInfo();
+    QString flashInfo();
+
     // Enable to change boot splash.
     static bool isUpdateSplashEnabled();
 

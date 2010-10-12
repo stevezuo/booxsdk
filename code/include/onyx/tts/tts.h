@@ -5,7 +5,8 @@
 #include "onyx/ui/ui.h"
 #include "onyx/sound/sound.h"
 #include "onyx/sound/async_player.h"
-#include "tts_interface.h"
+//#include "tts_interface.h"
+#include "tts_plugin.h"
 
 namespace tts
 {
@@ -71,7 +72,7 @@ private:
     scoped_ptr<Sound> sound_;
     TTS_State state_;
     QByteArray data_;   ///< Cached data.
-    scoped_ptr<TTSInterface> tts_impl_; ///< Backend instance.
+    scoped_ptr<TTSPlugin> tts_impl_; ///< Backend instance.
     QTimer timer_;
     int span_;      ///< Serves as interval.
 };

@@ -1,8 +1,7 @@
 
 #include "onyx/base/base.h"
 #include "onyx/ui/ui.h"
-#include "testing/testing.h"
-#include "tts/tts.h"
+#include "onyx/tts/tts.h"
 
 using namespace tts;
 

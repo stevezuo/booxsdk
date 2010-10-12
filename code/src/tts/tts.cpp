@@ -10,10 +10,10 @@ static const int BPS = 16;
 static const int SAMPLE_RATE = 44100;
 static const int CHANNELS = 1;
 
-
 TTS::TTS(const QLocale & locale)
 : span_(3000), tts_impl_(0)
 {
+    qDebug()<<"TTS begins to initialise";
     if(!loadPlugin()) {
         qDebug("Error", "Could not load the plugin");
     }
@@ -255,8 +255,10 @@ Sound & TTS::sound()
 bool TTS::loadPlugin()
 {
     QPluginLoader pluginLoader("/usr/share/tts/plugins/libtts_ej.so");
+    qDebug()<<"TTS begins to create a plugin instance";
     QObject *plugin = pluginLoader.instance();
     if (plugin) {
+        qDebug()<<"TTS gets plugin, is to reset tts_impl_";
         tts_impl_.reset(qobject_cast<TTSPlugin *>(plugin));
         if (tts_impl_)
             return true;

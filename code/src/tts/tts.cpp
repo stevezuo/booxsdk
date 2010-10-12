@@ -254,7 +254,7 @@ Sound & TTS::sound()
 
 bool TTS::loadPlugin()
 {
-    QPluginLoader pluginLoader("/opt/onyx/arm/lib/plugins/libtts_ej.so");
+    QPluginLoader pluginLoader("/usr/share/tts/plugins/libtts_ej.so");
     QObject *plugin = pluginLoader.instance();
     if (plugin) {
         tts_impl_.reset(qobject_cast<TTSPlugin *>(plugin));

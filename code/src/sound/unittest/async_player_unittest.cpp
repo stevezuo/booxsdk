@@ -1,14 +1,14 @@
-
 #include "onyx/base/base.h"
-#include "testing/testing.h"
+#include "gtest/gtest.h"
 #include "onyx/sound/wave.h"
 #include "onyx/sound/async_player.h"
 #include <QFile>
-
 namespace
 {
+class ASPTest : public ::testing::Test {
+};
 
-TEST(ASyncPlayer)
+TEST_F(ASPTest,instance)
 {
     QString path = SAMPLE_ROOT;
     path += "/wav/short.wav";
@@ -25,6 +25,9 @@ TEST(ASyncPlayer)
         EXPECT_TRUE(AsyncPlayer::instance().play(sound, data));
     }
 }
-
+}
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
 

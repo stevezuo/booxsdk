@@ -4,9 +4,6 @@
 #include <QtGui/QtGui>
 #include "onyx/sound/sound.h"
 
-namespace tts
-{
-
 /// TTS engine interface. The tts engine only needs to provide
 /// the sound data from given text. The tts manager then can use
 /// the data either to play or just store them in a file.
@@ -42,6 +39,6 @@ Q_SIGNALS:
 
 };
 
-}   // namespace tts
-
+Q_DECLARE_INTERFACE(TTSInterface,
+                     "com.onyx-international.Plugin.TTSInterface/1.0")
 #endif  // ONYX_LIB_TTS_INTERFACE_H_

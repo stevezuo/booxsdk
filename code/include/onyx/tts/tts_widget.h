@@ -3,8 +3,8 @@
 
 #include "onyx/base/base.h"
 #include "onyx/sound/sound.h"
-#include "tts_interface.h"
-#include "tts.h"
+#include "onyx/tts/tts_interface.h"
+#include "onyx/tts/tts.h"
 #include "onyx/ui/ui.h"
 #include "onyx/ui/tts_actions.h"
 

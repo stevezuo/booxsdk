@@ -13,4 +13,5 @@ add_subdirectory(wpa)
 add_subdirectory(sys)
 add_subdirectory(ui)
 add_subdirectory(wireless)
-
+add_subdirectory(sound)
+add_subdirectory(tts)

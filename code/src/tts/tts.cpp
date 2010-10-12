@@ -1,6 +1,6 @@
 
 #include "onyx/tts/tts.h"
-#include "onyx/tts/tts_plugin.h"
+#include "onyx/tts/tts_interface.h"
 //#include "espeak/tts_espeak.h"
 //#include "aisound/tts_aisound.h"
 #include "QDebug"
@@ -259,7 +259,7 @@ bool TTS::loadPlugin()
     QObject *plugin = pluginLoader.instance();
     if (plugin) {
         qDebug()<<"TTS gets plugin, is to reset tts_impl_";
-        tts_impl_.reset(qobject_cast<TTSPlugin *>(plugin));
+        tts_impl_.reset(qobject_cast<TTSInterface *>(plugin));
         if (tts_impl_)
             return true;
     }

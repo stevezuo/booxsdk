@@ -180,7 +180,7 @@ void initShiftMap()
     if (isSwedish()) {
         shift_map[code_vector[21]] = QChar(0x00C5);//å's upper-case
         shift_map[code_vector[1]]  = QChar(0x00C4);//ä's upper-case
-        shift_map[code_vector[13]] = QChar(0x00C6);//ö's upper-case
+        shift_map[code_vector[13]] = QChar(0x00D6);//ö's upper-case
     } else {
         shift_map[code_vector[21]] = QChar(0x00A3);//£
         shift_map[code_vector[1]]  = QChar(0x00A5);//￥
@@ -841,20 +841,28 @@ QChar KeyBoard::getRealChar(uint code)
         charactor = QChar(code);
         if (charactor.isLetter())
         {
-            if (lock_)
-            {
-                charactor = charactor.toUpper();
-            }
-
-            if (shift_)
-            {
-                if (charactor.isUpper())
-                {
-                    charactor = charactor.toLower();
+            if (code == 0x00C5 || code == 0x00C4 || 0x00D6) {
+                if (lock_) {
+                    code+=0x0010;
                 }
-                else if (charactor.isLower())
+                    charactor = QChar(code);
+                    return charactor;
+            } else {
+                if (lock_)
                 {
                     charactor = charactor.toUpper();
+                }
+
+                if (shift_)
+                {
+                    if (charactor.isUpper())
+                    {
+                        charactor = charactor.toLower();
+                    }
+                    else if (charactor.isLower())
+                    {
+                        charactor = charactor.toUpper();
+                    }
                 }
             }
         }

@@ -7,10 +7,6 @@ ELSE (UNIX)
     ADD_DEFINITIONS(-DPLATFORM_WINDOWS)
 ENDIF (UNIX)
 FILE(GLOB HDRS ${ONYXSDK_DIR}/include/onyx/tts/*.h)
-
-# Source files.
-QT4_WRAP_CPP(MOC_SRCS ${hdrs})
-
 # aisound
 include_directories(aisound)
 link_directories(${CMAKE_SOURCE_DIR}/lib/tts/aisound)
@@ -51,38 +47,38 @@ SET(ESPEAK_SRCS
 
 
 # source files.
-#SET(HDRS tts.h tts_widget.h tts_interface.h tts_plugin.h)
+
 SET(SRCS ${HDRS} tts.cpp tts_widget.cpp )
 
-#SET(HDRS tts.h tts_widget.h tts_interface.h aisound/tts_aisound.h)
-#SET(SRCS ${AISOUND_SRCS} ${AISOUND_HDRS} ${HDRS} tts.cpp tts_widget.cpp) 
+
+#SET(SRCS ${AISOUND_SRCS} ${AISOUND_HDRS} ${HDRS} tts.cpp tts_widget.cpp)
 SET(MOC_HDRS ${HDRS})
 QT4_WRAP_CPP(MOC_SRCS ${MOC_HDRS})
 
-#ADD_LIBRARY(ej_file ${EJ_FILE_SRCS})
+
 
 # resource
 SET(resource_srcs tts_images.qrc)
 QT4_ADD_RESOURCES(tts_ui_res ${resource_srcs})
 
 ADD_LIBRARY(tts ${SRCS} ${MOC_SRCS} ${tts_ui_res})
-#if(BUILD_FOR_ARM)
-TARGET_LINK_LIBRARIES(tts sound)
 
-#TARGET_LINK_LIBRARIES(tts ej_file sound)
-#endif(BUILD_FOR_ARM)
+TARGET_LINK_LIBRARIES(tts sound  onyx_ui
+   ${QT_LIBRARIES}
+   ${ADD_LIB} )
+
 INSTALL(FILES ${ESPEAK_HDRS} ${HDRS} DESTINATION include)
 
 # unittest
 FILE(GLOB UNITTEST_SRCS unittest/unittest.cpp)
 ADD_EXECUTABLE(tts_unittest ${UNITTEST_SRCS})
 if(BUILD_FOR_ARM)
-TARGET_LINK_LIBRARIES(tts_unittest tts 
+TARGET_LINK_LIBRARIES(tts_unittest tts
    ${QT_LIBRARIES}
    ${ADD_LIB}
 )
 else(BUILD_FOR_ARM)
-TARGET_LINK_LIBRARIES(tts_unittest tts 
+TARGET_LINK_LIBRARIES(tts_unittest tts
    ${QT_LIBRARIES}
    ${ADD_LIB}
 )

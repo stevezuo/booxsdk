@@ -256,6 +256,7 @@ bool TTS::loadPlugin()
 {
     QPluginLoader pluginLoader("/usr/share/tts/plugins/libtts_ej.so");
     qDebug()<<"TTS begins to create a plugin instance";
+    if (!pluginLoader.isLoaded()) return false;
     QObject *plugin = pluginLoader.instance();
     if (plugin) {
         qDebug()<<"TTS gets plugin, is to reset tts_impl_";

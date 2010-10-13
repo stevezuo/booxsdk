@@ -14,9 +14,7 @@ TTS::TTS(const QLocale & locale)
 : span_(3000), tts_impl_(0)
 {
     qDebug()<<"TTS begins to initialise";
-    if(!loadPlugin()) {
-        qDebug("Error", "Could not load the plugin");
-    }
+    if(loadPlugin()) {
     tts_impl_->initialize(locale, sound());
 
     connect(tts_impl_.get(), SIGNAL(synthDone(bool, QByteArray &)),
@@ -25,6 +23,8 @@ TTS::TTS(const QLocale & locale)
     connect(&timer_, SIGNAL(timeout()), this, SLOT(onTimeout()));
 
     setState(TTS_STOPPED);
+    }
+    qDebug("Error", "Could not load the plugin");
 }
 
 TTS::~TTS()

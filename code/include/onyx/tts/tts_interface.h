@@ -11,7 +11,7 @@ class TTSInterface : public QObject
 {
     Q_OBJECT
 public:
-    TTSInterface(){}
+    //TTSInterface(){}
     virtual ~TTSInterface(){}
 
 public:

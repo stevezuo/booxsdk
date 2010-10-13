@@ -178,9 +178,9 @@ void initShiftMap()
     shift_map[code_vector[23]] = '.';
     shift_map[code_vector[2]] = '/';
     if (isSwedish()) {
-        shift_map[code_vector[21]] = QChar(0x00E5);//å
-        shift_map[code_vector[1]]  = QChar(0x00E4);//ä
-        shift_map[code_vector[13]] = QChar(0x00F6);//ö
+        shift_map[code_vector[21]] = QChar(0x00C5);//å's upper-case
+        shift_map[code_vector[1]]  = QChar(0x00C4);//ä's upper-case
+        shift_map[code_vector[13]] = QChar(0x00C6);//ö's upper-case
     } else {
         shift_map[code_vector[21]] = QChar(0x00A3);//£
         shift_map[code_vector[1]]  = QChar(0x00A5);//￥

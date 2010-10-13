@@ -37,6 +37,11 @@ bool isRussian()
             currentCountry()  == QLocale::RussianFederation);
 }
 
+bool isSwedish()
+{
+    return (currentLanguage() == QLocale::Swedish ||
+            currentCountry()  == QLocale::Sweden);
+}
 bool isEnglishLayout()
 {
     return is_english;
@@ -146,7 +151,7 @@ void initShiftMap()
     shift_map['4'] = '$';
     shift_map['5'] = '%';
     shift_map['6'] = '^';
-    shift_map['7'] = '&';
+    shift_map['7'] = QChar(0x0036);
     shift_map['8'] = '*';
     shift_map['9'] = '(';
     shift_map['0'] = ')';
@@ -172,10 +177,16 @@ void initShiftMap()
     shift_map[code_vector[25]] = '\\';
     shift_map[code_vector[23]] = '.';
     shift_map[code_vector[2]] = '/';
-    shift_map[code_vector[21]] = QChar(0x00A3);
-    shift_map[code_vector[1]]  = QChar(0x00A5);
-    shift_map[code_vector[13]] = QChar(0x00A7);
-    shift_map[code_vector[12]] = QChar(0x00A9);
+    if (isSwedish()) {
+        shift_map[code_vector[21]] = QChar(0x00E5);//å
+        shift_map[code_vector[1]]  = QChar(0x00E4);//ä
+        shift_map[code_vector[13]] = QChar(0x00F6);//ö
+    } else {
+        shift_map[code_vector[21]] = QChar(0x00A3);//£
+        shift_map[code_vector[1]]  = QChar(0x00A5);//￥
+        shift_map[code_vector[13]] = QChar(0x00A7);//§
+    }
+    shift_map[code_vector[12]] = QChar(0x00A9);//©
 
     if (code_vector.size() > 26)
     {

@@ -151,7 +151,7 @@ void initShiftMap()
     shift_map['4'] = '$';
     shift_map['5'] = '%';
     shift_map['6'] = '^';
-    shift_map['7'] = QChar(0x0036);
+    shift_map['7'] = QChar(0x0026);
     shift_map['8'] = '*';
     shift_map['9'] = '(';
     shift_map['0'] = ')';

@@ -177,15 +177,9 @@ void initShiftMap()
     shift_map[code_vector[25]] = '\\';
     shift_map[code_vector[23]] = '.';
     shift_map[code_vector[2]] = '/';
-    if (isSwedish()) {
-        shift_map[code_vector[21]] = QChar(0x00E5);//å
-        shift_map[code_vector[1]]  = QChar(0x00E4);//ä
-        shift_map[code_vector[13]] = QChar(0x00F6);//ö
-    } else {
-        shift_map[code_vector[21]] = QChar(0x00A3);//£
-        shift_map[code_vector[1]]  = QChar(0x00A5);//￥
-        shift_map[code_vector[13]] = QChar(0x00A7);//§
-    }
+    shift_map[code_vector[21]] = QChar(0x00A3);//£
+    shift_map[code_vector[1]]  = QChar(0x00A5);//￥
+    shift_map[code_vector[13]] = QChar(0x00A7);//§
     shift_map[code_vector[12]] = QChar(0x00A9);//©
 
     if (code_vector.size() > 26)
@@ -255,6 +249,8 @@ void initEnglishKeyboard()
         keyboard_standard[0].clear();
     }
     keyboard_standard[0].resize(10);
+    if (isSwedish())
+    keyboard_standard[0].resize(11);
     setKey(0, index++, '1');
     setKey(0, index++, '2');
     setKey(0, index++, '3');
@@ -265,12 +261,16 @@ void initEnglishKeyboard()
     setKey(0, index++, '8');
     setKey(0, index++, '9');
     setKey(0, index++, '0');
+    if (isSwedish())
+    setKey(0, index++,QChar(0x00E5));
 
     if (!keyboard_standard[1].isEmpty())
     {
         keyboard_standard[1].clear();
     }
     keyboard_standard[1].resize(10);
+    if (isSwedish())
+    keyboard_standard[1].resize(11);
     index = 0;
     setKey(1, index++, code_vector[16]);
     setKey(1, index++, code_vector[22]);
@@ -282,12 +282,15 @@ void initEnglishKeyboard()
     setKey(1, index++, code_vector[8]);
     setKey(1, index++, code_vector[14]);
     setKey(1, index++, code_vector[15]);
+    setKey(1, index++, QChar(0x00E4));
 
     if (!keyboard_standard[2].isEmpty())
     {
         keyboard_standard[2].clear();
     }
     keyboard_standard[2].resize(10);
+    if (isSwedish())
+    keyboard_standard[2].resize(11);
     index = 0;
     setKey(2, index++, code_vector[0]);
     setKey(2, index++, code_vector[18]);
@@ -299,6 +302,8 @@ void initEnglishKeyboard()
     setKey(2, index++, code_vector[10]);
     setKey(2, index++, code_vector[11]);
     setKey(2, index++, code_vector[12]);
+    if (isSwedish())
+    setKey(0, index++,QChar(0x00F6));
 
     if (!keyboard_standard[3].isEmpty())
     {
@@ -841,28 +846,20 @@ QChar KeyBoard::getRealChar(uint code)
         charactor = QChar(code);
         if (charactor.isLetter())
         {
-            if (code == 0x00E5 || code == 0x00E4 || code == 0x00F6) {
-                if (lock_) {
-                    code-=0x0010;
+            if (lock_)
+            {
+                charactor = charactor.toUpper();
+            }
+
+            if (shift_)
+            {
+                if (charactor.isUpper())
+                {
+                    charactor = charactor.toLower();
                 }
-                    charactor = QChar(code);
-                    return charactor;
-            } else {
-                if (lock_)
+                else if (charactor.isLower())
                 {
                     charactor = charactor.toUpper();
-                }
-
-                if (shift_)
-                {
-                    if (charactor.isUpper())
-                    {
-                        charactor = charactor.toLower();
-                    }
-                    else if (charactor.isLower())
-                    {
-                        charactor = charactor.toUpper();
-                    }
                 }
             }
         }

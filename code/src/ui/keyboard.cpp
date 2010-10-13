@@ -248,9 +248,7 @@ void initEnglishKeyboard()
     {
         keyboard_standard[0].clear();
     }
-    keyboard_standard[0].resize(10);
-    if (isSwedish())
-    keyboard_standard[0].resize(11);
+    keyboard_standard[0].resize(isSwedish()?11:10);
     setKey(0, index++, '1');
     setKey(0, index++, '2');
     setKey(0, index++, '3');
@@ -262,15 +260,13 @@ void initEnglishKeyboard()
     setKey(0, index++, '9');
     setKey(0, index++, '0');
     if (isSwedish())
-    setKey(0, index++,QChar(0x00E5));
+    setKey(0, index++, QChar(0x00E5));
 
     if (!keyboard_standard[1].isEmpty())
     {
         keyboard_standard[1].clear();
     }
-    keyboard_standard[1].resize(10);
-    if (isSwedish())
-    keyboard_standard[1].resize(11);
+    keyboard_standard[1].resize(isSwedish()?11:10);
     index = 0;
     setKey(1, index++, code_vector[16]);
     setKey(1, index++, code_vector[22]);
@@ -282,15 +278,14 @@ void initEnglishKeyboard()
     setKey(1, index++, code_vector[8]);
     setKey(1, index++, code_vector[14]);
     setKey(1, index++, code_vector[15]);
+    if (isSwedish())
     setKey(1, index++, QChar(0x00E4));
 
     if (!keyboard_standard[2].isEmpty())
     {
         keyboard_standard[2].clear();
     }
-    keyboard_standard[2].resize(10);
-    if (isSwedish())
-    keyboard_standard[2].resize(11);
+    keyboard_standard[2].resize(isSwedish()?11:10);
     index = 0;
     setKey(2, index++, code_vector[0]);
     setKey(2, index++, code_vector[18]);
@@ -303,7 +298,7 @@ void initEnglishKeyboard()
     setKey(2, index++, code_vector[11]);
     setKey(2, index++, code_vector[12]);
     if (isSwedish())
-    setKey(0, index++,QChar(0x00F6));
+    setKey(2, index++, QChar(0x00F6));
 
     if (!keyboard_standard[3].isEmpty())
     {

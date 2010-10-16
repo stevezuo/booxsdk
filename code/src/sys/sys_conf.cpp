@@ -545,6 +545,7 @@ QString SystemConfig::version()
 {
     return DeviceConfig::version();
 }
+
 QString SystemConfig::cpuInfo()
 {
 
@@ -554,23 +555,23 @@ QString SystemConfig::cpuInfo()
 
     QFile file("/proc/cpuinfo");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-	return cpu;
+        return cpu;
     QTextStream in(&file);
     QString line = in.readLine();
     while (!line.isNull()) 
     {
-       	 if(line.contains(key1))
-         {
-		cpu.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
-    
-         }
-  
-       	 if(line.contains(key2))
-         {
-		tmp.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
-         }
+        if(line.contains(key1))
+        {
+            cpu.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
 
-         line = in.readLine();
+        }
+
+        if(line.contains(key2))
+        {
+            tmp.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
+        }
+
+        line = in.readLine();
     }
 
     file.close();
@@ -580,29 +581,29 @@ QString SystemConfig::cpuInfo()
 }
 QString SystemConfig::memInfo()
 {
-   QString total,free;
-   QString key1="MemTotal";
-   QString key2="MemFree";
+    QString total,free;
+    QString key1="MemTotal";
+    QString key2="MemFree";
 
-   QFile file("/proc/meminfo");
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-	return total;
+    QFile file("/proc/meminfo");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return total;
     QTextStream in(&file);
     QString line = in.readLine();
     while (!line.isNull()) 
     {
-       	 if(line.contains(key1))
-         {
-		total.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
-    
-         }
-  
-       	 if(line.contains(key2))
-         {
-		free.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
-         }
+        if(line.contains(key1))
+        {
+            total.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
 
-         line = in.readLine();
+        }
+
+        if(line.contains(key2))
+        {
+            free.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
+        }
+
+        line = in.readLine();
     }
 
     file.close();
@@ -614,12 +615,12 @@ QString SystemConfig::memInfo()
 }
 QString SystemConfig::flashInfo()
 {
-   QString flash;
-   QFile file("/tmp/df_flash_info");
-   system("df -k /media/flash  > /tmp/df_flash_info");
+    QString flash;
+    QFile file("/tmp/df_flash_info");
+    system("df -k /media/flash  > /tmp/df_flash_info");
 
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-	return flash;
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return flash;
     QTextStream in(&file);
     QString line = in.readLine();
     line=in.readLine();

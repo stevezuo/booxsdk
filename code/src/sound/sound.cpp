@@ -126,9 +126,9 @@ bool Sound::setVolume(int volume)
         volume = 0;
     }
 
-    if (volume >= 75)
+    if (volume > 100)
     {
-        volume = 75;
+        volume = 100;
     }
 
     // TODO, check we need to set the left/right volume or not.

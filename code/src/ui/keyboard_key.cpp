@@ -204,11 +204,6 @@ void KeyBoardKey::handleCapLocked(bool cap_locked)
 void KeyBoardKey::updateText()
 {
     QChar c(code_);
-    if (code_ == QChar('7') && shifted_)
-    {
-        setText("&&");
-    return;
-    }
     if (shifted_ && isShiftKey())
     {
         shift_code_ = shift_map[code_].unicode();
@@ -225,6 +220,11 @@ void KeyBoardKey::updateText()
     if (isShiftKey() || c.isLetter())
     {
         setText(QChar(shift_code_));
+    }
+    
+    if (code_ == QChar('7') && shifted_)
+    {
+        setText("&&");
     }
 }
 

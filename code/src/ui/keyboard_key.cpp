@@ -218,6 +218,11 @@ void KeyBoardKey::updateText()
 
     if (isShiftKey() || c.isLetter())
     {
+        if (code_ == QChar('7') && isShiftKey())
+        {
+        setText("&&");
+        return;
+        }
         setText(QChar(shift_code_));
     }
 }

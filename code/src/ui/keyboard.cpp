@@ -53,6 +53,10 @@ int standardKeySize()
     {
         return 43;
     }
+    else if (isSwedish())
+    {
+        return 43;
+    }       
     return 52;
 }
 

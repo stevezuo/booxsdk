@@ -57,6 +57,7 @@ static QSize getKeySize(int code)
 
     if (ch.isNumber())
     {
+        if (isSwedish()) return QSize(45,45);
         return QSize(52, 52);
     }
 

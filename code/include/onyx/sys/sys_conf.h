@@ -125,6 +125,9 @@ public:
     static bool isFlashMounted();
     static bool isMounted(const std::string & point);
 
+    // show browsing history or not
+    static bool showBrowsingHistory();
+
 private:
     scoped_ptr<QSqlDatabase> database_;
 };

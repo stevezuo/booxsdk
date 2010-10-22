@@ -57,6 +57,7 @@ static QSize getKeySize(int code)
 
     if (ch.isNumber())
     {
+        if (isSwedish()) return QSize(47,47);
         return QSize(52, 52);
     }
 
@@ -219,6 +220,11 @@ void KeyBoardKey::updateText()
     if (isShiftKey() || c.isLetter())
     {
         setText(QChar(shift_code_));
+    }
+    
+    if (code_ == QChar('7') && shifted_)
+    {
+        setText("&&");
     }
 }
 

@@ -1,7 +1,7 @@
 #include <QtGui/QtGui>
 #include <QString>
-#include "dictionary_manager.h"
-#include "dict_widget.h"
+#include "onyx/dictionary/dictionary_manager.h"
+#include "onyx/dictionary/dict_widget.h"
 
 static const QString translationCSS =
     "body {\n"

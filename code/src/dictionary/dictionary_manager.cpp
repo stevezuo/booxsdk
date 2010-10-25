@@ -1,7 +1,7 @@
 
 #include <QDir>
 #include "onyx/sys/sys_conf.h"
-#include "dictionary_manager.h"
+#include "onyx/dictionary/dictionary_manager.h"
 #include "qstardict_plugin/qstardict_plugin_impl.h"
 
 

@@ -6,7 +6,7 @@
 #include "onyx/sys/sys.h"
 #include "onyx/screen/screen_proxy.h"
 
-#include "dict_frame.h"
+#include "onyx/dictionary/dict_frame.h"
 
 static const int LOOKUP = 0;
 static const int DETAILS = 1;

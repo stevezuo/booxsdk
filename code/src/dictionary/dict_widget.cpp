@@ -1,4 +1,4 @@
-#include "dict_widget.h"
+#include "onyx/dictionary/dict_widget.h"
 #include "onyx/screen/screen_proxy.h"
 
 namespace ui

@@ -2,7 +2,7 @@
 #ifndef QSTARDICT_PLUGIN_IMPL_H_
 #define QSTARDICT_PLUGIN_IMPL_H_
 
-#include "../dictionary_plugin.h"
+#include "onyx/dictionary/dictionary_plugin.h"
 #include "stardict_backend.h"
 #include <QVector>
 

@@ -22,7 +22,7 @@ SET(SRCS
   dict_frame.cpp)
 
 # moc
-set(MOC_HDRS ${HDRS} dictionary_plugin.h ${QSTARDICT_PLUGIN_HDRS})
+set(MOC_HDRS ${HDRS}  ${QSTARDICT_PLUGIN_HDRS})
 QT4_WRAP_CPP(MOC_SRCS ${MOC_HDRS})
 
 # resource

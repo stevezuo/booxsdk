@@ -10,11 +10,8 @@ LINK_DIRECTORIES(${ZLIB_LIBRARY_DIRS})
 FILE(GLOB QSTARDICT_PLUGIN_HDRS qstardict_plugin/*.h)
 FILE(GLOB QSTARDICT_PLUGIN_SRCS qstardict_plugin/*.cpp)
 
-SET(HDRS
-  onyx/dictionary/dictionary_manager.h
-  onyx/dictionary/dictionary_plugin.h
-  onyx/dictionary/dict_widget.h
-  onyx/dictionary/dict_frame.h)
+FILE(GLOB HDRS ${ONYXSDK_DIR}/include/onyx/dictionary/*.h)
+QT4_WRAP_CPP(MOC_SRCS ${HDRS})
 
 SET(SRCS
   ${HDRS}
@@ -25,7 +22,7 @@ SET(SRCS
   dict_frame.cpp)
 
 # moc
-set(MOC_HDRS onyx/dictionary/dict_widget.h onyx/dictionary/dict_frame.h onyx/dictionary/dictionary_plugin.h ${QSTARDICT_PLUGIN_HDRS})
+set(MOC_HDRS ${HDRS} dictionary_plugin.h ${QSTARDICT_PLUGIN_HDRS})
 QT4_WRAP_CPP(MOC_SRCS ${MOC_HDRS})
 
 # resource

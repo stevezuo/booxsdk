@@ -585,6 +585,7 @@ QString SystemConfig::cpuInfo()
 
     return cpu;
 }
+
 QString SystemConfig::memInfo()
 {
     QString mem("%1/%2 MB");
@@ -592,12 +593,18 @@ QString SystemConfig::memInfo()
 
     return mem;
 }
+
 QString SystemConfig::flashInfo()
 {
     QString mount_point("/media/flash");
     QString flash("%1/%2 MB");
     flash=flash.arg(freeSpace(mount_point)/1024/1024).arg(diskSpace(mount_point)/1024/1024);
     return flash; 
+}
+
+bool SystemConfig::showBrowsingHistory()
+{
+    return qgetenv("SHOW_BROWSING_HISTORY").toInt()?true:false;
 }
 
 }

@@ -93,8 +93,8 @@ void StatusBar::addItems(StatusBarItemTypes items)
     // Adjust the order if necessary.
     const StatusBarItemType all[] =
     {
-        MENU, PROGRESS, MESSAGE, STYLUS, CLOCK, INPUT_TEXT, VOLUME, SCREEN_REFRESH, INPUT_URL, BATTERY,
-        CONNECTION, THREEG_CONNECTION
+        MENU, PROGRESS, MESSAGE, STYLUS, CLOCK, INPUT_TEXT, VOLUME, SCREEN_REFRESH, INPUT_URL,THREEG_CONNECTION,
+        CONNECTION, BATTERY
     };
     const int size = sizeof(all)/sizeof(all[0]);
     for(int i = 0; i < size; ++i)

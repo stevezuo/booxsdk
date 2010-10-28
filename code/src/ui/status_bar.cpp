@@ -76,6 +76,10 @@ void StatusBar::setupConnections()
             SIGNAL(volumeChanged(int, bool)),
             this,
             SLOT(onVolumeChanged(int, bool)));
+    connect(&sys_status,
+            SIGNAL(report3GNetwork(const int, const int, const int)),
+            this,
+            SLOT(onReport3GNetwork(const int, const int, const int)));
 }
 
 /// Update some status when it's created.
@@ -434,6 +438,24 @@ void StatusBar::onWifiDeviceChanged(bool enabled)
         ptr->hide();
     }
 }
+void StatusBar::onReport3GNetwork(const int signal, const int total, const int network)
+{
+
+    StatusBarItem *ptr = item(THREEG_CONNECTION, false);
+    if (ptr)
+    {
+        StatusBarItem3GConnection *wnd = static_cast<StatusBarItem3GConnection*>(ptr);
+        onyx::screen::instance().enableUpdate(false);
+        bool changed = wnd->signalStrengthChanged(signal, total,network);
+        QApplication::processEvents();
+        onyx::screen::instance().enableUpdate(true);
+        if (changed && isVisible())
+        {
+            onyx::screen::instance().updateWidget(wnd, onyx::screen::ScreenProxy::GC, false);
+        }
+    }
+}
+
 
 void StatusBar::onStylusChanged(bool inserted)
 {

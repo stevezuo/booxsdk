@@ -5,30 +5,28 @@ namespace ui
 {
 
 StatusBarItem3GConnection::StatusBarItem3GConnection(QWidget *parent)
-    : StatusBarItem(CONNECTION, parent)
+    : StatusBarItem(THREEG_CONNECTION, parent)
     , status_(-1)
 {
     setConnectionStatus(0);
-    connect(&sys::SysStatus::instance(),
-            SIGNAL(report3GNetwork(const int, const int, const int)),
-            this,
-            SLOT(onSignalStrengthChanged(const int, const int, const int)));
 }
 
 StatusBarItem3GConnection::~StatusBarItem3GConnection(void)
 {
 }
 
-void StatusBarItem3GConnection::setConnectionStatus(const int status)
+bool StatusBarItem3GConnection::setConnectionStatus(const int status)
 {
     if (status_ == status)
     {
-        return;
+        return false;
     }
     status_ = status;
-
     QImage & img = image();
     setFixedWidth(img.width());
+
+    update();
+    return true;
 }
 
 void StatusBarItem3GConnection::paintEvent(QPaintEvent *pe)
@@ -75,7 +73,7 @@ QString StatusBarItem3GConnection::resourcePath()
     return QString();
 }
 
-void StatusBarItem3GConnection::onSignalStrengthChanged(const int signal,
+bool StatusBarItem3GConnection::signalStrengthChanged(const int signal,
                                                         const int total,
                                                         const int network)
 {
@@ -87,7 +85,8 @@ void StatusBarItem3GConnection::onSignalStrengthChanged(const int signal,
         strength = 5;
     }
 
-    setConnectionStatus(strength);
+    return  setConnectionStatus(strength);
+    
 }
 
 }

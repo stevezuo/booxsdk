@@ -78,7 +78,6 @@ bool StatusBarItem3GConnection::signalStrengthChanged(const int signal,
                                                         const int network)
 {
     qDebug("signal:%d total:%d network:%d",signal,total,network);
-
     int strength = signal;
     if (strength > 5)
     { 
@@ -86,7 +85,6 @@ bool StatusBarItem3GConnection::signalStrengthChanged(const int signal,
     }
 
     return  setConnectionStatus(strength);
-    
 }
 
 }

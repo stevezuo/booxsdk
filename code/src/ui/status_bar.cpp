@@ -1,5 +1,6 @@
 #include "onyx/sys/sys.h"
 #include "onyx/screen/screen_proxy.h"
+#include "onyx/data/network_types.h"
 
 #include "onyx/ui/status_bar.h"
 #include "onyx/ui/status_bar_item_menu.h"
@@ -80,6 +81,10 @@ void StatusBar::setupConnections()
             SIGNAL(report3GNetwork(const int, const int, const int)),
             this,
             SLOT(onReport3GNetwork(const int, const int, const int)));
+    connect(&sys_status,
+            SIGNAL(pppConnectionChanged(const QString &message, int value)),
+            this,
+            SLOT(onPppConnectionChanged(const QString &message, int value)));
 }
 
 /// Update some status when it's created.
@@ -454,6 +459,18 @@ void StatusBar::onReport3GNetwork(const int signal, const int total, const int n
             onyx::screen::instance().updateWidget(wnd, onyx::screen::ScreenProxy::GC, false);
         }
     }
+}
+void StatusBar::onPppConnectionChanged(const QString &message, int value)
+{
+    if(value == TG_DISCONNECTED)
+    {
+        onReport3GNetwork(0,5,5);
+    }
+    else if(value == TG_STOP)
+    {
+        onReport3GNetwork(-1,5,5);
+    }
+
 }
 
 

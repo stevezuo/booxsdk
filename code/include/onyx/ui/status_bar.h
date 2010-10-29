@@ -71,6 +71,8 @@ private Q_SLOTS:
     void onWakeup();
     void onAboutToShutdown();
     void onWifiDeviceChanged(bool enabled);
+    void onReport3GNetwork(const int signal, const int total, const int network);
+    void onPppConnectionChanged(const QString &message, int value);
     void onStylusChanged(bool inserted);
     void onConnectToPC(bool);
     void onVolumeChanged(int new_volume, bool is_mute);

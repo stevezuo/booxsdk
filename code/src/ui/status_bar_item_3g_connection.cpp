@@ -5,30 +5,28 @@ namespace ui
 {
 
 StatusBarItem3GConnection::StatusBarItem3GConnection(QWidget *parent)
-    : StatusBarItem(CONNECTION, parent)
+    : StatusBarItem(THREEG_CONNECTION, parent)
     , status_(-1)
 {
     setConnectionStatus(0);
-    connect(&sys::SysStatus::instance(),
-            SIGNAL(report3GNetwork(const int, const int, const int)),
-            this,
-            SLOT(onSignalStrengthChanged(const int, const int, const int)));
 }
 
 StatusBarItem3GConnection::~StatusBarItem3GConnection(void)
 {
 }
 
-void StatusBarItem3GConnection::setConnectionStatus(const int status)
+bool StatusBarItem3GConnection::setConnectionStatus(const int status)
 {
     if (status_ == status)
     {
-        return;
+        return false;
     }
     status_ = status;
-
     QImage & img = image();
     setFixedWidth(img.width());
+
+    update();
+    return true;
 }
 
 void StatusBarItem3GConnection::paintEvent(QPaintEvent *pe)
@@ -57,26 +55,36 @@ QString StatusBarItem3GConnection::resourcePath()
     switch (status_)
     {
     case 0:
-        return ":/images/power_0.png";
+        return ":/images/signal_0.png";
     case 1:
-        return ":/images/power_1.png";
+        return ":/images/signal_1.png";
     case 2:
-        return ":/images/power_2.png";
+        return ":/images/signal_2.png";
     case 3:
-        return ":/images/power_3.png";
+        return ":/images/signal_3.png";
     case 4:
-        return ":/images/power_4.png";
+        return ":/images/signal_4.png";
+    case 5:
+        return ":/images/signal_5.png";
     default:
+        return ":/images/signal_x.png";
         break;
     }
     return QString();
 }
 
-void StatusBarItem3GConnection::onSignalStrengthChanged(const int signal,
+bool StatusBarItem3GConnection::signalStrengthChanged(const int signal,
                                                         const int total,
                                                         const int network)
 {
+    qDebug("signal:%d total:%d network:%d",signal,total,network);
+    int strength = signal;
+    if (strength > 5)
+    { 
+        strength = 5;
+    }
 
+    return  setConnectionStatus(strength);
 }
 
 }

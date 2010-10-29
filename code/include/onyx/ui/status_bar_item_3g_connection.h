@@ -14,9 +14,9 @@ public:
     StatusBarItem3GConnection(QWidget *parent);
     virtual ~StatusBarItem3GConnection(void);
 
-public Q_SLOTS:
-    void setConnectionStatus(const int status);
-    void onSignalStrengthChanged(const int signal, const int total, const int network);
+public:
+    bool setConnectionStatus(const int status);
+    bool signalStrengthChanged(const int signal, const int total, const int network);
 
 private:
     virtual void paintEvent(QPaintEvent *);

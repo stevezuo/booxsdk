@@ -33,6 +33,10 @@ bool DictConfig::dictionaryRoots(QSqlDatabase& db, QStringList & dirs)
     dirs.clear();
     QString dir;
 #ifndef _WINDOWS
+    dir = SHARE_ROOT;
+    dir += "/dicts";
+    dirs << dir;
+
     dir = LIBRARY_ROOT;
     dir += "/dicts";
     dirs << dir;
@@ -40,6 +44,7 @@ bool DictConfig::dictionaryRoots(QSqlDatabase& db, QStringList & dirs)
     dir = SDMMC_ROOT;
     dir += "/dicts";
     dirs << dir;
+
 #endif
     dir = QDir::home().absolutePath() + "/dicts";
     dirs << dir;

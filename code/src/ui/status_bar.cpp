@@ -1,5 +1,6 @@
 #include "onyx/sys/sys.h"
 #include "onyx/screen/screen_proxy.h"
+#include "onyx/data/network_types.h"
 
 #include "onyx/ui/status_bar.h"
 #include "onyx/ui/status_bar_item_menu.h"
@@ -76,6 +77,14 @@ void StatusBar::setupConnections()
             SIGNAL(volumeChanged(int, bool)),
             this,
             SLOT(onVolumeChanged(int, bool)));
+    connect(&sys_status,
+            SIGNAL(report3GNetwork(const int, const int, const int)),
+            this,
+            SLOT(onReport3GNetwork(const int, const int, const int)));
+    connect(&sys_status,
+            SIGNAL(pppConnectionChanged(const QString &, int)),
+            this,
+            SLOT(onPppConnectionChanged(const QString &, int)));
 }
 
 /// Update some status when it's created.
@@ -93,8 +102,8 @@ void StatusBar::addItems(StatusBarItemTypes items)
     // Adjust the order if necessary.
     const StatusBarItemType all[] =
     {
-        MENU, PROGRESS, MESSAGE, STYLUS, CLOCK, INPUT_TEXT, VOLUME, SCREEN_REFRESH, INPUT_URL, BATTERY,
-        CONNECTION, THREEG_CONNECTION
+        MENU, PROGRESS, MESSAGE, STYLUS, CLOCK, INPUT_TEXT, VOLUME, SCREEN_REFRESH, INPUT_URL,THREEG_CONNECTION,
+        CONNECTION, BATTERY
     };
     const int size = sizeof(all)/sizeof(all[0]);
     for(int i = 0; i < size; ++i)
@@ -434,6 +443,36 @@ void StatusBar::onWifiDeviceChanged(bool enabled)
         ptr->hide();
     }
 }
+void StatusBar::onReport3GNetwork(const int signal, const int total, const int network)
+{
+
+    StatusBarItem *ptr = item(THREEG_CONNECTION, false);
+    if (ptr)
+    {
+        StatusBarItem3GConnection *wnd = static_cast<StatusBarItem3GConnection*>(ptr);
+        onyx::screen::instance().enableUpdate(false);
+        bool changed = wnd->signalStrengthChanged(signal, total,network);
+        QApplication::processEvents();
+        onyx::screen::instance().enableUpdate(true);
+        if (changed && isVisible())
+        {
+            onyx::screen::instance().updateWidget(wnd, onyx::screen::ScreenProxy::GC, false);
+        }
+    }
+}
+void StatusBar::onPppConnectionChanged(const QString &message, int value)
+{
+    if(value == TG_DISCONNECTED)
+    {
+        onReport3GNetwork(0,5,5);
+    }
+    else if(value == TG_STOP)
+    {
+        onReport3GNetwork(-1,5,5);
+    }
+
+}
+
 
 void StatusBar::onStylusChanged(bool inserted)
 {

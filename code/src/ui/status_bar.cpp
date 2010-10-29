@@ -82,9 +82,9 @@ void StatusBar::setupConnections()
             this,
             SLOT(onReport3GNetwork(const int, const int, const int)));
     connect(&sys_status,
-            SIGNAL(pppConnectionChanged(const QString &message, int value)),
+            SIGNAL(pppConnectionChanged(const QString &, int)),
             this,
-            SLOT(onPppConnectionChanged(const QString &message, int value)));
+            SLOT(onPppConnectionChanged(const QString &, int)));
 }
 
 /// Update some status when it's created.

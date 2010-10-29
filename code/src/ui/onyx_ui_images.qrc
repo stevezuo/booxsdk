@@ -198,5 +198,8 @@
     <file>images/signal_4.png</file>
     <file>images/signal_5.png</file>
     <file>images/signal_x.png</file>
+
+    <file>images/websites.png</file>
+
   </qresource>
 </RCC>

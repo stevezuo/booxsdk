@@ -93,6 +93,16 @@ bool SystemConfig::dictionaryService(Service &service)
     return ServiceConfig::dictionaryService(*database_, service);
 }
 
+bool SystemConfig::rssService(Service &service)
+{
+    return ServiceConfig::rssService(*database_, service);
+}
+
+bool SystemConfig::sudokuService(Service &service)
+{
+    return ServiceConfig::sudokuService(*database_, service);
+}
+
 bool SystemConfig::registerService(const Service &service,
                                    const QString &path)
 {

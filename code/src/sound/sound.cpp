@@ -118,7 +118,7 @@ int Sound::volume()
     return volume;
 }
 
-/// Change the volume. Make sure the volume is in [0, 100]
+/// Change the volume. Make sure the volume is in [0, limit]
 bool Sound::setVolume(int volume)
 {
     if (volume < 0)
@@ -126,9 +126,19 @@ bool Sound::setVolume(int volume)
         volume = 0;
     }
 
-    if (volume > 100)
+    static int limit = -1;
+    if (limit <= 0)
     {
-        volume = 100;
+        limit = qgetenv("VOLUME_LIMIT").toInt();
+        if (limit <= 0)
+        {
+            limit = 100;
+        }
+    }
+
+    if (volume > limit)
+    {
+        volume = limit;
     }
 
     // TODO, check we need to set the left/right volume or not.

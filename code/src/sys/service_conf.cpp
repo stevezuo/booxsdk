@@ -49,6 +49,18 @@ static Service dict_service("com.onyx.service.dict_tool",
                             OPEN_METHOD,
                             "dict_tool");
 
+static Service rss_service("com.onyx.service.feed_reader",
+                            "/com/onyx/object/feed_reader",
+                            "com.onyx.interface.feed_reader",
+                            OPEN_METHOD,
+                            "feed_reader");
+
+static Service sudoku_service("com.onyx.service.sudoku",
+                            "/com/onyx/object/sudoku",
+                            "com.onyx.interface.sudoku",
+                            OPEN_METHOD,
+                            "sudoku");
+
 Service::Service()
 {
 }
@@ -373,6 +385,19 @@ bool ServiceConfig::dictionaryService(QSqlDatabase &, Service & service)
     service = dict_service;
     return true;
 }
+
+bool ServiceConfig::rssService(QSqlDatabase&, Service &service)
+{
+    service = rss_service;
+    return true;
+}
+
+bool ServiceConfig::sudokuService(QSqlDatabase&, Service &service)
+{
+    service = sudoku_service;
+    return true;
+}
+
 
 bool ServiceConfig::checkService(QSqlDatabase &database, const Service &service)
 {

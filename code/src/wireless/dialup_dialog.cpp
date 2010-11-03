@@ -425,7 +425,7 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
     }
     else if (status == TG_CONNECTED)
     {
-        QString result("Connected. Address: %1");
+        QString result(tr("Connected. Address: %1"));
         result = result.arg(qPrintable(address()));
         state_widget_.setText(result);
         saveConf();
@@ -441,7 +441,7 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
             }
             else
             {
-                state_widget_.setText(tr("Disconnect."));
+                state_widget_.setText(tr("Communication is not established."));
             }
         }
         else

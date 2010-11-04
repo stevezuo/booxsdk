@@ -23,7 +23,7 @@
 namespace ui
 {
 
-static const int HIDE_VOLUME_DIALOG_INTERVAL = 10000;
+static const int HIDE_VOLUME_DIALOG_INTERVAL = 3000;
 
 StatusBar::StatusBar(QWidget *parent, StatusBarItemTypes items)
     : QWidget(parent)

@@ -85,6 +85,11 @@ void StatusBarItemBattery::mouseReleaseEvent(QMouseEvent *me)
 QImage & StatusBarItemBattery::image()
 {
     int key = index(value_);
+    if (status_ & BATTERY_STATUS_CHARGING)
+    {
+        key |= (1 << 16);
+    }
+
     if (!images_.contains(key))
     {
         images_.insert(key, QImage(resourcePath()));

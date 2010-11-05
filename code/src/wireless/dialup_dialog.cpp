@@ -454,7 +454,7 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
             {
                 state_widget_.setText(tr("Modem error"));
             }
-            else if message.compare("EXIT_CONNECT_FAILED", Qt::CaseInsensitive) == 0)
+            else if (message.compare("EXIT_CONNECT_FAILED", Qt::CaseInsensitive) == 0)
             {
                 state_widget_.setText(tr("EXIT_CONNECT_FAILED"));
             }

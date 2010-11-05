@@ -446,7 +446,22 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
         }
         else
         {
-            state_widget_.setText(message);
+            if (message.compare("Sim-card Error", Qt::CaseInsensitive) == 0)
+            {
+                state_widget_.setText(tr("Sim-card Error"));
+            }
+            else if (message.compare("Modem error", Qt::CaseInsensitive) == 0)
+            {
+                state_widget_.setText(tr("Modem error"));
+            }
+            else if message.compare("EXIT_CONNECT_FAILED", Qt::CaseInsensitive) == 0)
+            {
+                state_widget_.setText(tr("EXIT_CONNECT_FAILED"));
+            }
+            else
+            {
+                state_widget_.setText(message);
+            }
         }
     }
 }

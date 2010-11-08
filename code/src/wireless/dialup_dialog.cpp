@@ -458,6 +458,10 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
             {
                 state_widget_.setText(tr("EXIT_CONNECT_FAILED"));
             }
+            else if (message.compare("EXIT_HANGUP", Qt::CaseInsensitive) == 0)
+            {
+                state_widget_.setText(tr("Communication is not established."));
+            }
             else
             {
                 state_widget_.setText(message);

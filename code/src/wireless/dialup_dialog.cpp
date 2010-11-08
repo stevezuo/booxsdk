@@ -59,7 +59,7 @@ static const APN APNS[] =
 };
 static const int APNS_COUNT = sizeof(APNS)/sizeof(APNS[0]);
 
-
+/*
 static QString networkType(const int n)
 {
     switch (n)
@@ -82,6 +82,7 @@ static QString networkType(const int n)
     }
     return "";
 }
+*/
 
 static QString address()
 {

@@ -49,6 +49,18 @@ static Service dict_service("com.onyx.service.dict_tool",
                             OPEN_METHOD,
                             "dict_tool");
 
+static Service rss_service("com.onyx.service.feed_reader",
+                            "/com/onyx/object/feed_reader",
+                            "com.onyx.interface.feed_reader",
+                            OPEN_METHOD,
+                            "feed_reader");
+
+static Service sudoku_service("com.onyx.service.sudoku",
+                            "/com/onyx/object/sudoku",
+                            "com.onyx.interface.sudoku",
+                            OPEN_METHOD,
+                            "sudoku");
+
 Service::Service()
 {
 }
@@ -196,12 +208,16 @@ void ServiceConfig::loadDefaultServices()
         DEFAULT_SERVICES.push_back(wb_service);
 
         // onyx_reader based service
+        bool has_office_viewer = QFile::exists("/opt/onyx/arm/bin/office_viewer");
         Service onyx_reader("com.onyx.service.onyx_reader",
                              "/com/onyx/object/onyx_reader",
                              "com.onyx.interface.onyx_reader",
                             OPEN_METHOD,
                             "onyx_reader");
-        onyx_reader.mutable_extensions().push_back("doc");
+        if (!has_office_viewer)
+        {
+            onyx_reader.mutable_extensions().push_back("doc");
+        }
         onyx_reader.mutable_extensions().push_back("txt");
         onyx_reader.mutable_extensions().push_back("pdb");
         onyx_reader.mutable_extensions().push_back("fb2");
@@ -220,21 +236,21 @@ void ServiceConfig::loadDefaultServices()
         DEFAULT_SERVICES.push_back(onyx_reader);
 
         // Office viewer.
-        /*
-        Service office_viewer("com.onyx.service.office_viewer",
-                              "/com/onyx/object/office_viewer",
-                              "com.onyx.interface.office_viewer",
-                              OPEN_METHOD,
-                              "office_viewer");
-        office_viewer.mutable_extensions().push_back("doc");
-        office_viewer.mutable_extensions().push_back("docx");
-        office_viewer.mutable_extensions().push_back("xls");
-        office_viewer.mutable_extensions().push_back("xlsx");
-        office_viewer.mutable_extensions().push_back("ppt");
-        office_viewer.mutable_extensions().push_back("pptx");
-        DEFAULT_SERVICES.push_back(office_viewer);
-        */
-
+        if (has_office_viewer)
+        {
+            Service office_viewer("com.onyx.service.office_viewer",
+                                  "/com/onyx/object/office_viewer",
+                                  "com.onyx.interface.office_viewer",
+                                  OPEN_METHOD,
+                                  "office_viewer");
+            office_viewer.mutable_extensions().push_back("doc");
+            office_viewer.mutable_extensions().push_back("docx");
+            office_viewer.mutable_extensions().push_back("xls");
+            office_viewer.mutable_extensions().push_back("xlsx");
+            office_viewer.mutable_extensions().push_back("ppt");
+            office_viewer.mutable_extensions().push_back("pptx");
+            DEFAULT_SERVICES.push_back(office_viewer);
+        }
 
         // oar_wrapper based service
         Service oar_wrapper("com.onyx.service.oar_wrapper",
@@ -376,6 +392,19 @@ bool ServiceConfig::dictionaryService(QSqlDatabase &, Service & service)
     service = dict_service;
     return true;
 }
+
+bool ServiceConfig::rssService(QSqlDatabase&, Service &service)
+{
+    service = rss_service;
+    return true;
+}
+
+bool ServiceConfig::sudokuService(QSqlDatabase&, Service &service)
+{
+    service = sudoku_service;
+    return true;
+}
+
 
 bool ServiceConfig::checkService(QSqlDatabase &database, const Service &service)
 {

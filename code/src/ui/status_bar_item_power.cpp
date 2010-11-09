@@ -4,6 +4,20 @@
 namespace ui
 {
 
+static int index(int value)
+{
+    int key = value / 20;
+    if (key < 0)
+    {
+        key = 0;
+    }
+    else if (key > 5)
+    {
+        key = 5;
+    }
+    return key;
+}
+
 StatusBarItemBattery::StatusBarItemBattery(QWidget *parent)
     : StatusBarItem(BATTERY, parent)
     , value_(100)
@@ -30,8 +44,8 @@ bool StatusBarItemBattery::setBatteryStatus(const int value,
         return false;
     }
 
-    int old_index = (100 - value_) / 20;
-    int new_index = (100 - value) / 20;
+    int old_index = index(value_);
+    int new_index = index(value);
     bool status_changed = (status_ != status);
 
     value_ = value;
@@ -70,8 +84,12 @@ void StatusBarItemBattery::mouseReleaseEvent(QMouseEvent *me)
 /// Retrieve image item according to battery value and status.
 QImage & StatusBarItemBattery::image()
 {
-    int key = status_ & BATTERY_STATUS_CHARGING;
-    key = (key << 8) | ((100 - value_) / 20);
+    int key = index(value_);
+    if (status_ & BATTERY_STATUS_CHARGING)
+    {
+        key |= (1 << 16);
+    }
+
     if (!images_.contains(key))
     {
         images_.insert(key, QImage(resourcePath()));
@@ -84,13 +102,13 @@ QString StatusBarItemBattery::resourcePath()
     if (status_ & BATTERY_STATUS_CHARGING)
     {
         QString str(":/images/battery_charge_%1.png");
-        str = str.arg((100 - value_) / 20);
+        str = str.arg(index(value_));
         return str;
     }
     else
     {
         QString str(":/images/battery_%1.png");
-        str = str.arg((100 - value_) / 20);
+        str = str.arg(index(value_));
         return str;
     }
     return QString();

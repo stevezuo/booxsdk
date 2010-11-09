@@ -1,23 +1,14 @@
 #ifndef SEARCH_VIEW_H
 #define SEARCH_VIEW_H
 
+#include "onyx/data/search_context.h"
 #include "onyx/ui/ui.h"
 
 using namespace ui;
 namespace vbf
 {
 
-struct SearchContext
-{
-    QString pattern;
-    bool    forward;
-    bool    match_case;
-    bool    match_whole_word;
 
-    SearchContext() : forward(false),
-                      match_case(false),
-                      match_whole_word(false) {}
-};
 
 class SearchView : public QWidget
 {

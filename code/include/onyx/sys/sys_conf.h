@@ -39,6 +39,8 @@ public:
     bool messengerService(Service &);
     bool writePadService(Service &);
     bool dictionaryService(Service &);
+    bool rssService(Service &);
+    bool sudokuService(Service &);
     bool registerService(const Service &, const QString &);
     bool unRegisterService(const Service &);
 
@@ -124,6 +126,9 @@ public:
     static bool isSDMounted();
     static bool isFlashMounted();
     static bool isMounted(const std::string & point);
+
+    // show browsing history or not
+    static bool showBrowsingHistory();
 
 private:
     scoped_ptr<QSqlDatabase> database_;

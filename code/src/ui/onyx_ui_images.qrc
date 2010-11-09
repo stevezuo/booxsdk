@@ -190,5 +190,16 @@
     <file>images/save_document.png</file>
     <file>images/undo.png</file>
     <file>images/redo.png</file>
+
+    <file>images/signal_0.png</file>
+    <file>images/signal_1.png</file>
+    <file>images/signal_2.png</file>
+    <file>images/signal_3.png</file>
+    <file>images/signal_4.png</file>
+    <file>images/signal_5.png</file>
+    <file>images/signal_x.png</file>
+
+    <file>images/websites.png</file>
+
   </qresource>
 </RCC>

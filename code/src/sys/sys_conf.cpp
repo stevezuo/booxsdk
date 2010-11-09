@@ -10,6 +10,7 @@
 #include "onyx/sys/page_turning_conf.h"
 #include "onyx/sys/pm_conf.h"
 #include "onyx/sys/volume_conf.h"
+#include "onyx/sys/sys_utils.h"
 
 #include "device_conf.h"
 
@@ -90,6 +91,16 @@ bool SystemConfig::writePadService(Service &service)
 bool SystemConfig::dictionaryService(Service &service)
 {
     return ServiceConfig::dictionaryService(*database_, service);
+}
+
+bool SystemConfig::rssService(Service &service)
+{
+    return ServiceConfig::rssService(*database_, service);
+}
+
+bool SystemConfig::sudokuService(Service &service)
+{
+    return ServiceConfig::sudokuService(*database_, service);
 }
 
 bool SystemConfig::registerService(const Service &service,
@@ -545,6 +556,7 @@ QString SystemConfig::version()
 {
     return DeviceConfig::version();
 }
+
 QString SystemConfig::cpuInfo()
 {
 
@@ -554,82 +566,55 @@ QString SystemConfig::cpuInfo()
 
     QFile file("/proc/cpuinfo");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-	return cpu;
+        return cpu;
     QTextStream in(&file);
     QString line = in.readLine();
     while (!line.isNull()) 
     {
-       	 if(line.contains(key1))
-         {
-		cpu.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
-    
-         }
-  
-       	 if(line.contains(key2))
-         {
-		tmp.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
-         }
+        if(line.contains(key1))
+        {
+            cpu.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
 
-         line = in.readLine();
+        }
+
+        if(line.contains(key2))
+        {
+            int i;
+            tmp.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
+            if ( (i=tmp.indexOf(QChar('.'))) != -1)
+            {
+                tmp= tmp.left(i);
+            }
+        }
+
+        line = in.readLine();
     }
 
     file.close();
-    cpu.append(" ").append(tmp);
+    cpu.append(" ").append(tmp).append(" MHz");
 
     return cpu;
 }
+
 QString SystemConfig::memInfo()
 {
-   QString total,free;
-   QString key1="MemTotal";
-   QString key2="MemFree";
+    QString mem("%1/%2 MB");
+    mem=mem.arg(systemFreeMemory()/1024/1024).arg(systemTotalMemory()/1024/1024);
 
-   QFile file("/proc/meminfo");
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-	return total;
-    QTextStream in(&file);
-    QString line = in.readLine();
-    while (!line.isNull()) 
-    {
-       	 if(line.contains(key1))
-         {
-		total.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() );
-    
-         }
-  
-       	 if(line.contains(key2))
-         {
-		free.append( line.right( line.length() - line.indexOf(':') - 1 ).trimmed() ); 
-         }
-
-         line = in.readLine();
-    }
-
-    file.close();
-
-    free=free.left( free.length() - 2 ) ;
-    free.append("/").append(total);
-
-    return free;
+    return mem;
 }
+
 QString SystemConfig::flashInfo()
 {
-   QString flash;
-   QFile file("/tmp/df_flash_info");
-   system("df -k /media/flash  > /tmp/df_flash_info");
-
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-	return flash;
-    QTextStream in(&file);
-    QString line = in.readLine();
-    line=in.readLine();
-    file.close();
-    system("rm  -f /tmp/df_flash_info");
-
-    QRegExp sep("\\ +");
-    flash= line.section(sep,2,2);
-    flash.append("/").append(line.section(sep,1,1)).append(" KB");
+    QString mount_point("/media/flash");
+    QString flash("%1/%2 MB");
+    flash=flash.arg(freeSpace(mount_point)/1024/1024).arg(diskSpace(mount_point)/1024/1024);
     return flash; 
+}
+
+bool SystemConfig::showBrowsingHistory()
+{
+    return qgetenv("SHOW_BROWSING_HISTORY").toInt()?true:false;
 }
 
 }

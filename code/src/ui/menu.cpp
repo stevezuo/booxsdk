@@ -20,8 +20,6 @@ const int STATE_INITIAL_VISIBLE = 1;
 const int STATE_IGNORE = 2;
 static int state = STATE_HIDE;
 
-static bool enable_keyboard = false;
-
 
 
 PopupMenu::PopupMenu(QWidget *parent, bool load_translator)
@@ -127,7 +125,7 @@ void PopupMenu::keyReleaseEvent(QKeyEvent *ke)
     // Check the current selected type.
     ke->accept();
 
-    if (!enable_keyboard)
+    if (popup_time.elapsed() < MIN_ELAPSED)
     {
         return;
     }
@@ -350,7 +348,6 @@ int PopupMenu::popup(const QString &)
     // Record current time to avoid the flick.
     // grabMouse();
     popup_time.start();
-    enable_keyboard = false;
 
     // Ensure all pending events has been processed.
     // Use pre-defined timer to prevent deadlock.
@@ -362,7 +359,6 @@ int PopupMenu::popup(const QString &)
     }
     QCoreApplication::removePostedEvents(0);
 
-    enable_keyboard = true;
     int ret = exec();
 
     // releaseMouse();

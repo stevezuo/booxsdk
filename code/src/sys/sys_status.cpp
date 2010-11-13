@@ -522,18 +522,38 @@ bool SysStatus::enableSdio(bool enable)
 
 void SysStatus::rotateScreen()
 {
+    // check default rotation at first.
+    int default_rotation = sys::defaultRotation();
     int degree = screenTransformation();
-    if (degree == 0)
+    if (default_rotation == 0)
     {
-        setScreenTransformation(90);
+        if (degree == 0)
+        {
+            setScreenTransformation(90);
+        }
+        else if (degree == 90)
+        {
+            setScreenTransformation(270);
+        }
+        else if (degree == 270)
+        {
+            setScreenTransformation(0);
+        }
     }
-    else if (degree == 90)
+    else if (default_rotation == 270)
     {
-        setScreenTransformation(270);
-    }
-    else if (degree == 270)
-    {
-        setScreenTransformation(0);
+        if (degree == 0)
+        {
+            setScreenTransformation(180);
+        }
+        else if (degree == 180)
+        {
+            setScreenTransformation(270);
+        }
+        else if (degree == 270)
+        {
+            setScreenTransformation(0);
+        }
     }
 }
 

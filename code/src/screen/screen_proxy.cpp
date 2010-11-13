@@ -40,7 +40,8 @@ inline static void sendCommand(
 }
 
 ScreenProxy::ScreenProxy()
-  : enable_update_(true)
+: enable_update_(true)
+, policy_(INVALID_POLICY)
   , waveform_(ScreenProxy::GC)
   , previous_waveform_(ScreenProxy::GC)
   , user_data_(0)
@@ -113,6 +114,16 @@ QRect & ScreenProxy::screenRegion(const QWidget *widget,
                       rect_.height(),
                       rect_.width());
         desk.setSize(QSize(desk.height(), desk.width()));
+    }
+    else if (degree == 180)
+    {
+        qDebug("destk %d %d rect %d %d %d %d", desk.width(), desk.height(), rect_.left(), rect_.top(), rect_.width(), rect_.height());
+
+        rect_.setRect(desk.width() - rect_.x() - rect_.width(),
+                      desk.height() - rect_.y() - rect_.height(),
+                      rect_.width(),
+                      rect_.height());
+        desk.setSize(QSize(desk.width(), desk.height()));
     }
     else if (degree == 270)
     {
@@ -326,5 +337,13 @@ void ScreenProxy::fillScreen(unsigned char color)
     sendCommand(command_);
 }
 
+void ScreenProxy::setWaveformPolicy(WaveformPolicy policy)
+{
+    policy_ = policy;
 }
+
+ScreenProxy::WaveformPolicy ScreenProxy::waveformPolicy()
+{
+    return policy_;
 }
+

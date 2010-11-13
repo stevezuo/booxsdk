@@ -1,5 +1,5 @@
 
-#include "platform.h"
+#include "onyx/sys/platform.h"
 
 namespace sys
 {

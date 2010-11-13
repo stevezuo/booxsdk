@@ -73,9 +73,9 @@ protected:
     bool adjustAssociatedChar(const QString & dst_text, int index);
 
 private:
-    uint shift_ : 1;
-    uint lock_ : 1;
-    uint is_handwriting_ : 1;
+    bool shift_;
+    bool lock_;
+    bool is_handwriting_;
     Qt::KeyboardModifiers modifiers_;
 
     QVBoxLayout * ver_layout_;

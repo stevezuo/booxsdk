@@ -281,10 +281,6 @@ void TTSWidget::updateActions()
 
 void TTSWidget::onPopupMenu(bool)
 {
-    // Even queue connection does not work well here.
-    // So use process events to clear all keyboard events.
-    QApplication::processEvents();
-
     // Make sure the display update is finished, otherwise
     // user can not see the menu on the screen.
     onyx::screen::instance().ensureUpdateFinished();

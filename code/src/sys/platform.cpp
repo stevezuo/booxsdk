@@ -1,6 +1,6 @@
 
 #include "onyx/sys/platform.h"
-#include "
+#include <QtCore/qglobal.h>
 
 namespace sys
 {

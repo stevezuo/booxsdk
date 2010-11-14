@@ -506,6 +506,7 @@ void StatusBar::onConnectToPC(bool connected)
         closeUSBDialog();
         if (ret != QMessageBox::Yes)
         {
+            onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GU);
             return;
         }
         onyx::screen::instance().flush();

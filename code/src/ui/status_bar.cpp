@@ -197,6 +197,11 @@ void StatusBar::clear()
 void StatusBar::closeChildrenDialogs()
 {
     closeUSBDialog();
+    VolumeControlDialog * volume_control_dialog = VolumeControlDialog::instance();
+    if (volume_control_dialog  && volume_control_dialog->isVisible() && !volume_control_dialog->alwaysActive())
+    {
+        volume_control_dialog->hide();
+    }
 }
 
 void StatusBar::closeUSBDialog()

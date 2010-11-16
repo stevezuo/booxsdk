@@ -17,6 +17,10 @@ following shell commands to install it:
 
 ## Building the SDK
 
+Grab the source:
+    git clone git@github.com:onyx-intl/booxsdk.git
+    git submodule update --init
+
 To build the SDK, install CMake and Rake, then run
     rake build:arm:default
 

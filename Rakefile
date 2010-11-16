@@ -8,23 +8,41 @@ def has_distcc
   end
 end
 
+def has_ccache
+  system('which ccache')
+end
+
+def compiler_prefix
+  if has_ccache
+    "ccache"
+  elsif has_distcc
+    "distcc"
+  else
+    ""
+  end
+end
+
 def cmake_cmd(arch)
+  marvell_cc = "/usr/local/arm/arm-marvell-linux-gnueabi/bin/arm-linux-gcc"
+  marvell_cxx = "/usr/local/arm/arm-marvell-linux-gnueabi/bin/arm-linux-g++"
   arm_cc = "/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/arm-linux-gcc"
   arm_cxx = "/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/arm-linux-g++"
-  if arch == :arm and has_distcc
-    "CC='distcc #{arm_cc}' CXX='distcc #{arm_cxx}' cmake "
-  elsif arch == :x86 and has_distcc
-    "CC='distcc gcc' CXX='distcc g++' cmake "
+  if arch == :arm
+    "CC='#{compiler_prefix} #{arm_cc}' CXX='#{compiler_prefix} #{arm_cxx}' cmake "
+  elsif arch == :marvell
+    "CC='#{compiler_prefix} #{marvell_cc}' CXX='#{compiler_prefix} #{marvell_cxx}' cmake "
+  elsif arch == :x86
+    "CC='#{compiler_prefix} gcc' CXX='#{compiler_prefix} g++' cmake "
   else
-    "CC='#{arm_cc}' CXX='#{arm_cxx}' cmake "
+    raise "Invalid machine type: #{arch}"
   end
 end
 
 def make_cmd
   if has_distcc
-    "make -j12"
+    "make -j18"
   else
-    "make -j2"
+    "make -j5"
   end
 end
 

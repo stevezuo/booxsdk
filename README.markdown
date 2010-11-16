@@ -21,6 +21,14 @@ Grab the source:
     git clone git@github.com:onyx-intl/booxsdk.git
     git submodule update --init
 
+Then download some prebuilt third-party libraries:
+    cd /tmp
+    wget http://c1044492.cdn.cloudfiles.rackspacecloud.com/boox_thirdparty.tar.gz
+    cd /opt && sudo tar -xzf /tmp/boox_thirdparty.tar.gz
+
+If you want to build the third-party libraries from source, you can
+get the source code at `http://opensource.onyx-international.com/`
+
 To build the SDK, install CMake and Rake, then run
     rake build:arm:default
 

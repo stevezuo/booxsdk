@@ -14,9 +14,9 @@ end
 
 def compiler_prefix
   if has_ccache
-    "ccache"
+    "ccache "
   elsif has_distcc
-    "distcc"
+    "distcc "
   else
     ""
   end
@@ -28,11 +28,11 @@ def cmake_cmd(arch)
   arm_cc = "/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/arm-linux-gcc"
   arm_cxx = "/opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-linux-gnueabi/bin/arm-linux-g++"
   if arch == :arm
-    "CC='#{compiler_prefix} #{arm_cc}' CXX='#{compiler_prefix} #{arm_cxx}' cmake "
+    "CC='#{compiler_prefix}#{arm_cc}' CXX='#{compiler_prefix}#{arm_cxx}' cmake "
   elsif arch == :marvell
-    "CC='#{compiler_prefix} #{marvell_cc}' CXX='#{compiler_prefix} #{marvell_cxx}' cmake "
+    "CC='#{compiler_prefix}#{marvell_cc}' CXX='#{compiler_prefix}#{marvell_cxx}' cmake "
   elsif arch == :x86
-    "CC='#{compiler_prefix} gcc' CXX='#{compiler_prefix} g++' cmake "
+    "CC='#{compiler_prefix}gcc' CXX='#{compiler_prefix}g++' cmake "
   else
     raise "Invalid machine type: #{arch}"
   end

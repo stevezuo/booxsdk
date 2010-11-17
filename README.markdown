@@ -41,3 +41,8 @@ which version of the libraries are installed on the device, you can
 link your application against the static libraries. You can build the
 static libraries by running
     rake build:arm:static
+
+## Notes for 64-bit hosts
+
+If you are running a 64-bit environment, please make sure you have
+32-bit runtime libraries installed. (For example, on Arch Linux, it is `multilib/lib32-gcc-libs`.)

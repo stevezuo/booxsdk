@@ -1382,6 +1382,22 @@ bool SysStatus::hasTouchScreen()
     return true;
 }
 
+bool SysStatus::isTTSEnabled()
+{
+#ifdef _WINDOWS
+    return true;
+#endif
+    return (qgetenv("ENABLE_TTS").toInt() > 0);
+}
+
+bool SysStatus::isDictionaryEnabled()
+{
+#ifdef _WINDOWS
+    return true;
+#endif
+    return (qgetenv("ENABLE_DICT").toInt() > 0);
+}
+
 void SysStatus::dbgUpdateBattery(int left, int status)
 {
     QDBusMessage message = QDBusMessage::createMethodCall(

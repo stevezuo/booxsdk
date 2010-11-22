@@ -130,6 +130,8 @@ public:
     // show browsing history or not
     static bool showBrowsingHistory();
 
+    static QString defaultAccessPoint();
+
 private:
     scoped_ptr<QSqlDatabase> database_;
 };

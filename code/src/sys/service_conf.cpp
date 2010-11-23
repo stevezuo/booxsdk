@@ -155,6 +155,7 @@ bool ServiceConfig::makeSureTableExist(QSqlDatabase& database)
 
 void ServiceConfig::loadDefaultServices()
 {
+    int enable_fb_epub = qgetenv("ENABLE_FB_EPUB").toInt();
     if (DEFAULT_SERVICES.size() <= 0)
     {
         // html based service.
@@ -173,7 +174,10 @@ void ServiceConfig::loadDefaultServices()
                                      OPEN_METHOD,
                                      "naboo_reader");
         naboo_viewer_service.mutable_extensions().push_back("pdf");
-        naboo_viewer_service.mutable_extensions().push_back("epub");
+        if (!enable_fb_epub)
+        {
+            naboo_viewer_service.mutable_extensions().push_back("epub");
+        }
         DEFAULT_SERVICES.push_back(naboo_viewer_service);
 
         // image service.
@@ -231,6 +235,11 @@ void ServiceConfig::loadDefaultServices()
         onyx_reader.mutable_extensions().push_back("bz2");
         onyx_reader.mutable_extensions().push_back("gz");
         onyx_reader.mutable_extensions().push_back("abf");
+
+        if (enable_fb_epub)
+        {
+            onyx_reader.mutable_extensions().push_back("epub");
+        }
 
         // Seems it can not open tar file.
         DEFAULT_SERVICES.push_back(onyx_reader);

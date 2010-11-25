@@ -5,6 +5,8 @@
 #ifndef ONYX_SYSTEM_PLATFORM_H__
 #define ONYX_SYSTEM_PLATFORM_H__
 
+#include <QString>
+
 namespace sys
 {
 

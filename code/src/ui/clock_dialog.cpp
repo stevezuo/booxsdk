@@ -109,7 +109,9 @@ int ClockDialog::exec()
         onyx::screen::ScreenProxy::GC,
         false,
         onyx::screen::ScreenCommand::WAIT_ALL);
-    return QDialog::exec();
+    int ret = QDialog::exec();
+    onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GU);
+    return ret;
 }
 
 }

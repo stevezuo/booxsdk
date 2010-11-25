@@ -24,6 +24,7 @@ public:
     int  popup(bool start_scan = true);
     void triggerScan();
     void connect(const QString & ssid, const QString &password);
+    bool connectToBestAP();
     bool connectToDefaultAP();
 
 protected:
@@ -84,8 +85,8 @@ private:
     void setConnecting(bool c);
     void stopAllTimers();
 
-    void enableAutoConnect(bool e) { auto_connect_ = e; }
-    bool allowAutoConnect() { return auto_connect_; }
+    void enableAutoConnect(bool e) { auto_connect_to_best_ap_ = e; }
+    bool allowAutoConnect() { return auto_connect_to_best_ap_; }
 
     void scanResults(WifiProfiles &);
     WifiProfiles & records(sys::SystemConfig& conf);
@@ -116,7 +117,8 @@ private:
     QTimer scan_timer_;
     int count_;     ///< Scan retry.
     WpaConnection::ConnectionState internal_state_;
-    bool auto_connect_;
+    bool auto_connect_to_best_ap_;      ///< Access points used successfully before.
+    bool auto_connect_to_default_ap_;    ///< If we have pre-installed access point.
     bool ap_dialog_visible_;
     bool wifi_enabled_;
 

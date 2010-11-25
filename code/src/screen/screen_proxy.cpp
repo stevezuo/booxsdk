@@ -347,3 +347,6 @@ ScreenProxy::WaveformPolicy ScreenProxy::waveformPolicy()
     return policy_;
 }
 
+}  //namespace screen
+
+}  //namespace onyx

@@ -617,5 +617,10 @@ bool SystemConfig::showBrowsingHistory()
     return qgetenv("SHOW_BROWSING_HISTORY").toInt()?true:false;
 }
 
+QString SystemConfig::defaultAccessPoint()
+{
+    return qgetenv("DEFAULT_ACCESS_POINT");
+}
+
 }
 

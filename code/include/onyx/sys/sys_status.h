@@ -123,6 +123,8 @@ class SysStatus : public QObject
     void snapshot(const QString &path);
 
     bool hasTouchScreen();
+    bool isTTSEnabled();
+    bool isDictionaryEnabled();
 
     // The following signals must be the same with system manager.
     // Need a better way to sync them.

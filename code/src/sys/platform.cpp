@@ -1,5 +1,6 @@
 
 #include "platform.h"
+#include <QtCore/qglobal.h>
 
 namespace sys
 {
@@ -30,3 +31,4 @@ int defaultRotation()
 }
 
 }    // namespace sys
+

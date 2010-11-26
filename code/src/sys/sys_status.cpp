@@ -21,6 +21,7 @@ static const QString TETHERED_DEVICE = "tethered";
 static const QString DEVICE_NAME = "OnyxBoox";
 static const QString ROOT_FOLDER = "/";
 static const QString DRM_CONTENT_DIR = "media/flash/DRM Contents";
+static const QString ADOBE_RESOURCE_DIR = "media/flash/resources/";  // TODO. Update the resource path
 static const QString DEVICE_FILE     = "media/flash/.adobe-digital-editions/device.xml";
 static const QString ACTIVATION_FILE = "media/flash/.adobe-digital-editions/activation.xml";
 
@@ -55,6 +56,20 @@ static void putDocumentFolder()
     QDir dir(path);
     qputenv("ADOBE_DE_DOC_FOLDER", dir.absoluteFilePath(DRM_CONTENT_DIR).toAscii());
     qDebug("ADOBE_DE_DOC_FOLDER : %s", qgetenv("ADOBE_DE_DOC_FOLDER").constData());
+}
+
+static void putResourceFolder()
+{
+    // set the folder of Digital Edition
+    QString path;
+#ifdef Q_WS_QWS
+    path = ROOT_FOLDER;
+#else
+    path = QDir::home().path();
+#endif
+    QDir dir(path);
+    qputenv("ADOBE_RESOURCE_FOLDER", dir.absoluteFilePath(ADOBE_RESOURCE_DIR).toAscii());
+    qDebug("ADOBE_RESOURCE_FOLDER : %s", qgetenv("ADOBE_RESOURCE_FOLDER").constData());
 }
 
 static void putDeviceName()
@@ -1302,6 +1317,7 @@ void SysStatus::addDRMEnvironment()
     putDocumentFolder();
     putDeviceName();
     putDeviceFile();
+    putResourceFolder();
 }
 
 // TODO, implement in system manager later.

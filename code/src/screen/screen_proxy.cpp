@@ -32,7 +32,7 @@ inline static void sendCommand(
     socket_.write(reinterpret_cast<const char *>(&command), sizeof(command));
     if (wait & ScreenCommand::WAIT_COMMAND_FINISH)
     {
-        if (socket_.waitForReadyRead(1000))
+        if (socket_.waitForReadyRead(3000))
         {
             socket_.read(reinterpret_cast<char *>(&command), sizeof(command));
         }

@@ -124,6 +124,12 @@ void PopupMenu::keyReleaseEvent(QKeyEvent *ke)
 {
     // Check the current selected type.
     ke->accept();
+
+    if (popup_time.elapsed() < MIN_ELAPSED)
+    {
+        return;
+    }
+
     switch (ke->key())
     {
     case Qt::Key_Left:

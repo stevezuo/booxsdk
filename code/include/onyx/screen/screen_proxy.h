@@ -67,7 +67,21 @@ public:
         INVALID = 0,    ///< For initial value.
         DW,             ///< Direct waveform.
         GU,             ///< Gray update waveform.
-        GC,             ///< Gray clear update waveform.
+        GC,             ///< Gray clear update waveform depends on system configuration.
+        GC4,            ///< 4 Gray scale update waveform.
+        GC8,            ///< 8 Gray scale update waveform.
+        GC16,           ///< 16 Gray scale update wvaeform.
+    };
+
+    /// Define waveform selection policy.
+    /// Waveform selection order
+    /// - Check policy at first, if policy is specified, use the specified policy.
+    /// - If policy is not specified, use default waveform
+    enum WaveformPolicy
+    {
+        INVALID_POLICY = 0,
+        PERFORMANCE_FIRST,
+        QUALITY_FIRST,
     };
 
     static ScreenProxy & instance()
@@ -88,6 +102,10 @@ public:
     Waveform saveWaveform();
     Waveform restoreWaveform();
 
+    void setWaveformPolicy(WaveformPolicy policy = QUALITY_FIRST);
+    WaveformPolicy waveformPolicy();
+
+    Waveform waveform();
     int & userData() { return user_data_; }
 
     void flush(const QWidget *widget,
@@ -120,6 +138,7 @@ private:
     QRect & screenRegion(const QWidget *widget, const QRect * region = 0);
 
     bool enable_update_;    ///< Enable update or not.
+    WaveformPolicy policy_; ///< Waveform selection policy
     Waveform waveform_;     ///< Default update waveform for normal use.
     Waveform previous_waveform_;     ///< Stored waveform.
     QRect rect_;            ///< The update region.

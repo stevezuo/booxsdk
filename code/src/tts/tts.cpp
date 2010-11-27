@@ -14,15 +14,16 @@ TTS::TTS(const QLocale & locale)
 : span_(3000), tts_impl_(0)
 {
     qDebug()<<"TTS begins to initialise";
-    if(loadPlugin()) {
-    tts_impl_->initialize(locale, sound());
+    if(loadPlugin())
+    {
+        tts_impl_->initialize(locale, sound());
 
-    connect(tts_impl_.get(), SIGNAL(synthDone(bool, QByteArray &)),
+        connect(tts_impl_.get(), SIGNAL(synthDone(bool, QByteArray &)),
             this, SLOT(onSynthDone(bool, QByteArray &)));
-    connect(&AsyncPlayer::instance(), SIGNAL(playFinished(int)), this, SLOT(onPlayFinished(int)));
-    connect(&timer_, SIGNAL(timeout()), this, SLOT(onTimeout()));
+        connect(&AsyncPlayer::instance(), SIGNAL(playFinished(int)), this, SLOT(onPlayFinished(int)));
+        connect(&timer_, SIGNAL(timeout()), this, SLOT(onTimeout()));
 
-    setState(TTS_STOPPED);
+        setState(TTS_STOPPED);
     }
     qDebug("Error", "Could not load the plugin");
 }
@@ -257,13 +258,19 @@ bool TTS::loadPlugin()
     QPluginLoader pluginLoader("/usr/share/tts/plugins/libtts_ej.so", this);
     qDebug()<<"TTS begins to create a plugin instance";
     pluginLoader.load();//explicitly load
-    if (!pluginLoader.isLoaded()) return false;
+    if (!pluginLoader.isLoaded())
+    {
+        return false;
+    }
     QObject *plugin = pluginLoader.instance();
-    if (plugin) {
+    if (plugin)
+    {
         qDebug()<<"TTS gets plugin, is to reset tts_impl_";
         tts_impl_.reset(qobject_cast<TTSInterface *>(plugin));
         if (tts_impl_)
+        {
             return true;
+        }
     }
     return false;
 }

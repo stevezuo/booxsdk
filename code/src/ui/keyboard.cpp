@@ -182,8 +182,7 @@ void initShiftMap()
     shift_map[code_vector[23]] = '.';
     shift_map[code_vector[2]] = '/';
     shift_map[code_vector[21]] = QChar(0x00A3);//£
-    shift_map[code_vector[1]]  = QChar(0x00A5);//￥
-    shift_map[code_vector[13]] = QChar(0x00A7);//§
+    shift_map[code_vector[1]]  = QChar(0x00A5);//�?    shift_map[code_vector[13]] = QChar(0x00A7);//§
     shift_map[code_vector[12]] = QChar(0x00A9);//©
 
     if (code_vector.size() > 26)
@@ -455,9 +454,9 @@ int getQKeyCode(uint code)
 
 KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     : QFrame(parent, f)
-    , shift_(0)
-    , lock_(0)
-    , is_handwriting_(0)
+    , shift_(false)
+    , lock_(false)
+    , is_handwriting_(false)
     , ver_layout_(0)
     , button_group_(0)
     , receiver_(0)
@@ -479,8 +478,8 @@ void KeyBoard::resetState()
 
 void KeyBoard::init()
 {
-    shift_ = 0;
-    lock_  = 0;
+    shift_ = false;
+    lock_  = false;
     initCodeVector();
     initShiftMap();
     initSpecialMaps();

@@ -19,7 +19,7 @@ static void loadKernelModule()
 #ifndef _WINDOWS
     QProcess loader;
     QStringList module;
-    module << soundModule();
+    module << sys::soundModule();
     loader.start("modprobe", module);
     const int TIME = 2000;
     if (loader.waitForStarted(TIME))

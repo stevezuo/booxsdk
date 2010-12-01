@@ -158,16 +158,11 @@ void PopupMenu::navigate(int key)
     QWidget * wnd = ui::moveFocus(this, key);
     if (wnd)
     {
-        wnd->setFocus();
-        ret = 1;
-    }
-
-    if (ret > 0)
-    {
         onyx::screen::instance().enableUpdate(false);
+        wnd->setFocus();
         repaint();
         onyx::screen::instance().enableUpdate(true);
-        onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW, false);
+        onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::DW, false);
     }
 }
 

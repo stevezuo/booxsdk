@@ -968,7 +968,7 @@ void SketchProxy::driverDrawLines(StrokeLines &lines,
     }
 
     QVector<QPoint> points;
-    qDebug("Driver draw lines:%d", lines.size());
+    //qDebug("Driver draw lines:%d", lines.size());
     StrokeLineIter iter = lines.begin();
     points.push_back((*iter).p1);
     for (; iter != lines.end(); ++iter)

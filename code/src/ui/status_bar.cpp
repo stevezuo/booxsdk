@@ -211,6 +211,7 @@ void StatusBar::closeUSBDialog()
     {
         dialog->reject();
         usb_connection_dialog_.reset(0);
+        onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
 }
 

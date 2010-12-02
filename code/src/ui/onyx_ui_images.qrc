@@ -200,6 +200,7 @@
     <file>images/signal_x.png</file>
 
     <file>images/websites.png</file>
+    <file>images/volume_strength.png</file>
 
   </qresource>
 </RCC>

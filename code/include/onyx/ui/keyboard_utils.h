@@ -55,6 +55,8 @@ typedef SpecialMaps::iterator SpecialMapIter;
 int standardKeySize();
 bool isRussian();
 bool isSwedish();
+bool isPolish();
+bool isHungarian();
 bool isEnglishLayout();
 
 }   // namespace ui

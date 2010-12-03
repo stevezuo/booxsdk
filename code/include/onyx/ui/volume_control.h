@@ -1,6 +1,8 @@
 #ifndef ONYX_VOLUME_CONTROL_H_
 #define ONYX_VOLUME_CONTROL_H_
 
+#include <QMap>
+#include <QImage>
 #include "onyx/base/base.h"
 #include "ui_global.h"
 
@@ -35,8 +37,6 @@ private:
     virtual void mouseReleaseEvent(QMouseEvent *);
 
     void createLayout();
-    void updatefgPath(int value);
-    void updatePath(QPainterPath & path, const QRect & rect);
 
 private:
     int current_;
@@ -47,6 +47,8 @@ private:
 
     QPainterPath bk_path_;
     QPainterPath fg_path_;
+
+    QMap<int, int>     map_;
 };
 
 class VolumeControlDialog : public QDialog
@@ -85,6 +87,8 @@ public:
     VolumeControl      control_;
     bool               update_parent_;
     bool               always_active_;
+
+    QImage image_;
 };
 
 };  // namespace ui

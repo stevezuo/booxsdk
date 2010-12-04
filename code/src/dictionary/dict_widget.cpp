@@ -7,6 +7,7 @@ static const int LOOKUP = 0;
 static const int DETAILS = 1;
 static const int WORD_LIST = 2;
 static const int DICTIONARY_LIST = 3;
+static const int RETRIEVING_WORD = 4;
 
 DictWidget::DictWidget(QWidget *parent, DictionaryManager & dict, tts::TTS *tts)
     : OnyxDialog(parent)
@@ -17,6 +18,7 @@ DictWidget::DictWidget(QWidget *parent, DictionaryManager & dict, tts::TTS *tts)
     , vbox2_(0)
     , dict_list_button_(tr("Dictionaries"), 0)
     , lookup_button_(tr("Lookup"), 0)
+    , retrieve_word_button_(tr("Retrieve Word"), 0)
     , word_list_button_(tr("Similar Words"), 0)
     , details_button_(tr("Explanation"), 0)
     , details_(0)
@@ -138,22 +140,36 @@ void DictWidget::keyReleaseEvent(QKeyEvent *ke)
     case Qt::Key_Left:
     case Qt::Key_Right:
     case Qt::Key_Down:
-        wnd = ui::moveFocus(this, key);
-        if (wnd)
+        if (internalState() != RETRIEVING_WORD)
         {
-            wnd->setFocus();
+            wnd = ui::moveFocus(this, key);
+            if (wnd)
+            {
+                wnd->setFocus();
+            }
+            ke->accept();
         }
-        ke->accept();
+        else
+        {
+            emit keyReleaseSignal(ke->key());
+        }
         return;
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        wnd = content_widget_.focusWidget();
-        btn = qobject_cast<QPushButton*>(wnd);
-        if (btn != 0)
+        if (internalState() != RETRIEVING_WORD)
         {
-             btn->click();
+            wnd = content_widget_.focusWidget();
+            btn = qobject_cast<QPushButton*>(wnd);
+            if (btn != 0)
+            {
+                 btn->click();
+            }
+            ke->accept();
         }
-        ke->accept();
+        else
+        {
+            emit keyReleaseSignal(ke->key());
+        }
         return ;
     default:
         break;
@@ -392,6 +408,7 @@ void DictWidget::createLayout()
     vbox1_.setContentsMargins(0, SPACING, 0, SPACING);
     vbox1_.setSpacing(V_SPACING);
     vbox1_.addWidget(&lookup_button_);
+    vbox1_.addWidget(&retrieve_word_button_);
     vbox1_.addWidget(&details_button_);
     vbox1_.addWidget(&word_list_button_);
     vbox1_.addWidget(&dict_list_button_);
@@ -421,6 +438,9 @@ void DictWidget::createLayout()
 
     connect(&dict_list_button_, SIGNAL(clicked(bool)), this,
             SLOT(onDictListClicked(bool)), Qt::QueuedConnection);
+
+    connect(&retrieve_word_button_, SIGNAL(clicked(bool)), this,
+            SLOT(onRetrieveWordClicked(bool)), Qt::QueuedConnection);
 
     connect(&list_widget_, SIGNAL(activated(const QModelIndex &)),
             this, SLOT(onItemClicked(const QModelIndex &)));
@@ -559,6 +579,16 @@ void DictWidget::onDictListClicked(bool)
     details_.hide();
     updateDictionaryList();
     onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC, false);
+}
+
+void DictWidget::onRetrieveWordClicked(bool)
+{
+    changeInternalState(RETRIEVING_WORD);
+    lookup_button_.setChecked(false);
+    word_list_button_.setChecked(false);
+    details_button_.setChecked(false);
+    dict_list_button_.setChecked(false);
+    retrieve_word_button_.setChecked(true);
 }
 
 void DictWidget::onCloseClicked()

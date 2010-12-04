@@ -60,6 +60,7 @@ private Q_SLOTS:
     void onLookupClicked(bool);
     void onWordListClicked(bool);
     void onDictListClicked(bool);
+    void onRetrieveWordClicked(bool);
     void onCloseClicked();
     void moreSimilarWords(bool);
 
@@ -73,6 +74,7 @@ private:
 
     OnyxPushButton dict_list_button_;
     OnyxPushButton lookup_button_;
+    OnyxPushButton retrieve_word_button_;
     OnyxPushButton word_list_button_;
     OnyxPushButton details_button_;
 

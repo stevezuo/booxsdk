@@ -11,7 +11,7 @@
 #include "onyx/sys/pm_conf.h"
 #include "onyx/sys/volume_conf.h"
 #include "onyx/sys/sys_utils.h"
-
+#include "onyx/sys/font_conf.h"
 #include "device_conf.h"
 
 namespace sys
@@ -30,6 +30,7 @@ SystemConfig::SystemConfig()
     DialupConfig::makeSureTableExist(*database_);
     DeviceConfig::makeSureTableExist(*database_);
     PageTurningConfig::makeSureTableExist(*database_);
+    FontConfig::makeSureTableExist(*database_);
 }
 
 SystemConfig::~SystemConfig()
@@ -103,6 +104,21 @@ bool SystemConfig::sudokuService(Service &service)
     return ServiceConfig::sudokuService(*database_, service);
 }
 
+bool SystemConfig::officeViewerService(Service & service)
+{
+    return ServiceConfig::officeViewerService(*database_, service);
+}
+
+bool SystemConfig::onyxReaderService(Service & service)
+{
+    return ServiceConfig::onyxReaderService(*database_, service);
+}
+
+bool SystemConfig::nabooReaderService(Service & service)
+{
+    return ServiceConfig::nabooReaderService(*database_, service);
+}
+
 bool SystemConfig::registerService(const Service &service,
                                    const QString &path)
 {
@@ -146,6 +162,16 @@ QLocale SystemConfig::locale()
 bool SystemConfig::setLocale(const QLocale & locale)
 {
     return LocaleConfig::setLocale(*database_, locale);
+}
+
+void SystemConfig::setDefaultFontFamily(const QString & name)
+{
+    return FontConfig::setDefaultFontFamily(*database_, name);
+}
+
+QString SystemConfig::defaultFontFamily()
+{
+    return FontConfig::defaultFontFamily(*database_);
 }
 
 bool SystemConfig::dictionaryRoots(QStringList & dirs)

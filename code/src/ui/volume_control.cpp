@@ -5,13 +5,6 @@
 
 namespace ui
 {
-
-static const int MARGIN = 0;
-static const int Y_POS  = 18;
-static const double PI  = 3.1415926;
-static const double angle = 15.0;
-static const int WIDTH  = 120;
-
 VolumeControl::VolumeControl(QWidget *parent)
     : QWidget(parent)
     , current_(0)
@@ -48,7 +41,6 @@ void VolumeControl::onVolumeChanged(int volume, bool is_mutel)
     }
     current_ = volume - min_;
 
-    updatefgPath(current_);
     onyx::screen::instance().enableUpdate(false);
     repaint();
     onyx::screen::instance().updateWidget(
@@ -63,32 +55,46 @@ void VolumeControl::paintEvent(QPaintEvent *pe)
 {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    p.fillPath(bk_path_, Qt::white);
-    p.fillPath(fg_path_, Qt::black);
+
+    map_.clear();
+    SystemConfig sys_conf;
+    QVector<int>  volumes = sys_conf.volumes();
+    int x = 2;
+    for (int i = 1 ;i < volumes.size(); ++i)
+    {
+        p.fillRect(x,height()-30,15,15,current_ >= volumes[i] ? Qt::white : Qt::black);
+        map_.insert(x,volumes[i]);
+        x += 20;
+    }
 }
 
 void VolumeControl::resizeEvent(QResizeEvent * event)
 {
-    int height = (static_cast<double>(width()) * tan(angle * PI / 180.0));
-    QRect rc(0, 0, width(), height);
-    updatePath(bk_path_, rc);
 
-    if (pressing_value_ > 0)
-    {
-        updatefgPath(pressing_value_);
-    }
-    else
-    {
-        updatefgPath(current_);
-    }
 }
 
 void VolumeControl::mousePressEvent(QMouseEvent *me)
 {
     // Check position.
     me->accept();
+    if ( me->y() < height() - 30 || me->y() > height() - 15 )
+    {
+        return;
+    }
+
     int x = me->x() < 0 ? 0 : me->x();
-    int value = x * max_ / (width() - 2) + 1;
+    int value = 0;
+    QMap<int, int>::const_iterator i = map_.begin();
+    while (i != map_.end()) 
+    {
+        if ( i.key() > x)
+        {
+            break;
+        }
+        value = i.value();
+        ++i;
+    }
+
     if (value > max_)
     {
         value = max_;
@@ -98,7 +104,9 @@ void VolumeControl::mousePressEvent(QMouseEvent *me)
     if (value != pressing_value_)
     {
         pressing_value_ = value;
-        updatefgPath(pressing_value_);
+#ifndef BUILD_FOR_ARM
+        current_ = value;
+#endif
         onyx::screen::instance().enableUpdate(false);
         repaint();
         onyx::screen::instance().updateWidget(
@@ -107,47 +115,19 @@ void VolumeControl::mousePressEvent(QMouseEvent *me)
             false,
             onyx::screen::ScreenCommand::WAIT_COMMAND_FINISH);
         onyx::screen::instance().enableUpdate(true);
-        timer_.stop();
-        timer_.start(300);
+
+        emit clicked(pressing_value_, pressing_value_);
     }
 }
 
 void VolumeControl::mouseMoveEvent(QMouseEvent *me)
 {
-    me->accept();
-    int x = me->x() < 0 ? 0 : me->x();
-    int value = x * max_ / (width() - 2) + 1;
-    if (value > max_)
-    {
-        value = max_;
-    }
 
-    if (value != pressing_value_)
-    {
-        pressing_value_ = value;
-        updatefgPath(pressing_value_);
-        onyx::screen::instance().enableUpdate(false);
-        repaint();
-        onyx::screen::instance().updateWidget(
-            this,
-            onyx::screen::ScreenProxy::DW,
-            false,
-            onyx::screen::ScreenCommand::WAIT_COMMAND_FINISH);
-        onyx::screen::instance().enableUpdate(true);
-        timer_.stop();
-        timer_.start(300);
-    }
 }
 
 void VolumeControl::mouseReleaseEvent(QMouseEvent *me)
 {
-    me->accept();
-    timer_.stop();
-    if (current_ != pressing_value_)
-    {
-        emit clicked(pressing_value_ * 100 / max_, pressing_value_);
-    }
-    pressing_value_ = -1;
+
 }
 
 void VolumeControl::onTimeout()
@@ -161,33 +141,7 @@ void VolumeControl::onTimeout()
 void VolumeControl::createLayout()
 {
     //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
-    setFixedSize(WIDTH, WIDTH *  tan(angle * PI / 180.0));
-}
-
-void VolumeControl::updatefgPath(int value)
-{
-    int w = (width() - MARGIN * 2) * value / max_;
-    int height = (static_cast<double>(w) * tan(angle * PI / 180.0));
-    int bk_height = WIDTH *  tan(angle * PI / 180.0);
-    QRect rc(MARGIN, bk_height - height + MARGIN, w, height - MARGIN);
-    updatePath(fg_path_, rc);
-}
-
-void VolumeControl::updatePath(QPainterPath & result, const QRect & rect)
-{
-    int x_start = rect.left();
-    int x_end   = rect.right();
-    int top     = rect.top();
-    int bottom  = rect.bottom();
-
-    QPainterPath path;
-    path.moveTo(x_end, top);
-    path.lineTo(x_start, bottom);
-    path.lineTo(x_end, bottom);
-    path.lineTo(x_end, top);
-    path.closeSubpath();
-
-    result = path;
+    setFixedSize(200,200);
 }
 
 void VolumeControl::onClicked(const int percent, const int value)
@@ -207,13 +161,16 @@ VolumeControlDialog::VolumeControlDialog(QWidget *parent)
     : QDialog(parent, static_cast<Qt::WindowFlags>(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint))
     , layout_(this)
     , control_(0)
-    , update_parent_(false)
+    , update_parent_(true)
     , always_active_(false)
+    , image_(":/images/volume_strength.png")
 {
     createLayout();
     setModal(false);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     setFocusPolicy(Qt::NoFocus);
+
+    // setWindowOpacity(0.4);
 }
 
 VolumeControlDialog::~VolumeControlDialog()
@@ -240,8 +197,8 @@ void VolumeControlDialog::ensureVisible()
     }
 
     QRect screen_rect = qApp->desktop()->screenGeometry();
-    int x = screen_rect.width() - width() - 10;
-    int y = screen_rect.bottom() - height() - 40;
+    int x = screen_rect.width()/2 - width()/2 ;
+    int y = screen_rect.bottom()/2 - height()/2 ;
 
     // Check position.
     QPoint new_pos(x, y);
@@ -251,9 +208,20 @@ void VolumeControlDialog::ensureVisible()
         move(new_pos);
     }
 
+    onyx::screen::instance().enableUpdate(false);
+    repaint();
+    /*
+    onyx::screen::instance().updateWidget(
+            this,
+            onyx::screen::ScreenProxy::DW,
+            true,
+            onyx::screen::ScreenCommand::WAIT_COMMAND_FINISH);
+            */
+    onyx::screen::instance().enableUpdate(true);
+
     // Make sure the widget is visible.
     onyx::screen::instance().flush();
-    onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GU);
+    onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GC, false, onyx::screen::ScreenCommand::WAIT_COMMAND_FINISH);
 }
 
 void VolumeControlDialog::moveEvent(QMoveEvent *e)
@@ -264,12 +232,17 @@ void VolumeControlDialog::moveEvent(QMoveEvent *e)
 void VolumeControlDialog::resizeEvent(QResizeEvent *e)
 {
     update_parent_ = true;
+
+    QPixmap pixmap=QPixmap::fromImage(image_);
+    setMask(pixmap.mask());
 }
 
 void VolumeControlDialog::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), QBrush(QColor(100, 100, 100)));
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.fillRect(rect(), QBrush(QColor(190, 190, 190)));
+    painter.drawImage(QPoint(0,0), image_);
 }
 
 void VolumeControlDialog::mouseMoveEvent(QMouseEvent *me)

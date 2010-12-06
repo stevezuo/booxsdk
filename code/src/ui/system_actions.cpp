@@ -66,6 +66,27 @@ void SystemActions::generateActions(const std::vector<int> & actions)
                 actions_.push_back(screen);
                 break;
             }
+        case FULL_SCREEN:
+            {
+                shared_ptr<QAction> fullScreen(new QAction(exclusiveGroup()));
+                fullScreen->setCheckable(true);
+                fullScreen->setText(QCoreApplication::tr("Full Screen"));
+                fullScreen->setIcon(QIcon(QPixmap(":/images/full_screen.png")));
+                fullScreen->setData(FULL_SCREEN);
+                actions_.push_back(fullScreen);
+                break;
+            }
+        case EXIT_FULL_SCREEN:
+            {
+                shared_ptr<QAction> exitFullScreen(new QAction(exclusiveGroup()));
+                exitFullScreen->setCheckable(true);
+                exitFullScreen->setText(QCoreApplication::tr("Exit Full Screen"));
+                exitFullScreen->setIcon(QIcon(QPixmap(
+                        ":/images/exit_full_screen.png")));
+                exitFullScreen->setData(EXIT_FULL_SCREEN);
+                actions_.push_back(exitFullScreen);
+                break;
+            }
         case MUSIC:
             {
                 if (sys::SystemConfig::isMusicPlayerAvailable())

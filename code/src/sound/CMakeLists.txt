@@ -16,7 +16,7 @@ ADD_LIBRARY(sound ${srcs})
 add_definitions(-DSAMPLE_ROOT="${CMAKE_SOURCE_DIR}/unittest/data")
 FILE(GLOB WAV_UNITTEST_SRCS unittest/wave_unittest.cpp)
 ADD_EXECUTABLE(wav_unittest ${WAV_UNITTEST_SRCS})
-TARGET_LINK_LIBRARIES(wav_unittest sound
+TARGET_LINK_LIBRARIES(wav_unittest sound onyx_sys
    gtest_main
    ${QT_LIBRARIES}
    ${ADD_LIB}
@@ -29,7 +29,7 @@ ADD_TEST(WavUnittest ${TEST_OUTPUT_PATH}/wav_unittest)
 FILE(GLOB ASYNC_PLAYER_UNITTEST_SRCS unittest/async_player_unittest.cpp)
 
 ADD_EXECUTABLE(async_player_unittest ${ASYNC_PLAYER_UNITTEST_SRCS})
-TARGET_LINK_LIBRARIES(async_player_unittest sound
+TARGET_LINK_LIBRARIES(async_player_unittest sound onyx_sys
    gtest_main
    ${QT_LIBRARIES}
    ${ADD_LIB}
@@ -43,7 +43,7 @@ ADD_TEST(AsyncPlayerUnittest ${TEST_OUTPUT_PATH}/async_player_unittest)
 FILE(GLOB SOUND_UNITTEST_SRCS unittest/sound_unittest.cpp)
 
 ADD_EXECUTABLE(sound_unittest ${SOUND_UNITTEST_SRCS})
-TARGET_LINK_LIBRARIES(sound_unittest sound
+TARGET_LINK_LIBRARIES(sound_unittest sound onyx_sys
    gtest_main
    ${QT_LIBRARIES}
    ${ADD_LIB}

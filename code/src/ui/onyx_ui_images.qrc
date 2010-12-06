@@ -83,6 +83,8 @@
     <file>images/delete.png</file>
     <file>images/fast_update.png</file>
     <file>images/full_update.png</file>
+    <file>images/full_screen.png</file>
+    <file>images/exit_full_screen.png</file>
     <file>images/tts.png</file>
     <file>images/speaker.png</file>
     <file>images/speaker_item.png</file>

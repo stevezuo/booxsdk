@@ -11,7 +11,7 @@
 #include "onyx/sys/pm_conf.h"
 #include "onyx/sys/volume_conf.h"
 #include "onyx/sys/sys_utils.h"
-
+#include "onyx/sys/font_conf.h"
 #include "device_conf.h"
 
 namespace sys
@@ -30,6 +30,7 @@ SystemConfig::SystemConfig()
     DialupConfig::makeSureTableExist(*database_);
     DeviceConfig::makeSureTableExist(*database_);
     PageTurningConfig::makeSureTableExist(*database_);
+    FontConfig::makeSureTableExist(*database_);
 }
 
 SystemConfig::~SystemConfig()
@@ -161,6 +162,16 @@ QLocale SystemConfig::locale()
 bool SystemConfig::setLocale(const QLocale & locale)
 {
     return LocaleConfig::setLocale(*database_, locale);
+}
+
+void SystemConfig::setDefaultFontFamily(const QString & name)
+{
+    return FontConfig::setDefaultFontFamily(*database_, name);
+}
+
+QString SystemConfig::defaultFontFamily()
+{
+    return FontConfig::defaultFontFamily(*database_);
 }
 
 bool SystemConfig::dictionaryRoots(QStringList & dirs)

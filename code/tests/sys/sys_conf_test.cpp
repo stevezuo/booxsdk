@@ -104,6 +104,33 @@ TEST(SysConfTest, deviceID)
     EXPECT_TRUE(a == b);
 }
 
+TEST(SysConfTest, FontConfig)
+{
+    SystemConfig conf;
+    {
+    QString b("song");
+    conf.setDefaultFontFamily(b);
+    QString a = conf.defaultFontFamily();
+   EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str() ); 
+    }
+    {
+    QString b("hei");
+    conf.setDefaultFontFamily(b);
+    QString a = conf.defaultFontFamily();
+    EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
+    }
+    {
+QString b("song");
+    conf.setDefaultFontFamily(b);
+    QString a = conf.defaultFontFamily();
+     EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
+    }
+    {
+QString b("song");
+    QString a = conf.defaultFontFamily();
+EXPECT_TRUE(a == b);
+    }
+}
 /*
 TEST(SysConfTest, noteExportDir)
 {

@@ -154,7 +154,6 @@ void PopupMenu::keyReleaseEvent(QKeyEvent *ke)
 /// Navigate according to the key.
 void PopupMenu::navigate(int key)
 {
-//    int ret = -1;
     QWidget * wnd = ui::moveFocus(this, key);
     if (wnd)
     {

@@ -41,6 +41,9 @@ public:
     bool dictionaryService(Service &);
     bool rssService(Service &);
     bool sudokuService(Service &);
+    bool officeViewerService(Service & service);
+    bool onyxReaderService(Service & service);
+    bool nabooReaderService(Service &  service);
     bool registerService(const Service &, const QString &);
     bool unRegisterService(const Service &);
 

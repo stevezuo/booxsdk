@@ -103,6 +103,21 @@ bool SystemConfig::sudokuService(Service &service)
     return ServiceConfig::sudokuService(*database_, service);
 }
 
+bool SystemConfig::officeViewerService(Service & service)
+{
+    return ServiceConfig::officeViewerService(*database_, service);
+}
+
+bool SystemConfig::onyxReaderService(Service & service)
+{
+    return ServiceConfig::onyxReaderService(*database_, service);
+}
+
+bool SystemConfig::nabooReaderService(Service & service)
+{
+    return ServiceConfig::nabooReaderService(*database_, service);
+}
+
 bool SystemConfig::registerService(const Service &service,
                                    const QString &path)
 {

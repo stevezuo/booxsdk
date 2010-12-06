@@ -408,7 +408,7 @@ void DictWidget::createLayout()
     vbox1_.setContentsMargins(0, SPACING, 0, SPACING);
     vbox1_.setSpacing(V_SPACING);
     vbox1_.addWidget(&lookup_button_);
-    vbox1_.addWidget(&retrieve_word_button_);
+    //vbox1_.addWidget(&retrieve_word_button_);
     vbox1_.addWidget(&details_button_);
     vbox1_.addWidget(&word_list_button_);
     vbox1_.addWidget(&dict_list_button_);

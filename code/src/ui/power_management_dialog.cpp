@@ -240,9 +240,9 @@ bool PowerManagementDialog::event(QEvent* qe)
     bool ret = QDialog::event(qe);
     if (qe->type() == QEvent::UpdateRequest)
     {
-        onyx::screen::instance().sync(&shadows_.hor_shadow());
-        onyx::screen::instance().sync(&shadows_.ver_shadow());
-        onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GU);
+        // onyx::screen::instance().sync(&shadows_.hor_shadow());
+        // onyx::screen::instance().sync(&shadows_.ver_shadow());
+        onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW);
     }
     return ret;
 }

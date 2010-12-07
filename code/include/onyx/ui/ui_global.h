@@ -165,6 +165,8 @@ enum SystemAction
     ROTATE_SCREEN,
     MUSIC,
     ABOUT_INFO,
+    FULL_SCREEN,
+    EXIT_FULL_SCREEN,
 };
 
 enum AnnotationMode

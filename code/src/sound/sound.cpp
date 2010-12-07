@@ -9,6 +9,7 @@
 #endif
 
 #include "onyx/sound/sound.h"
+#include "onyx/sys/platform.h"
 #include <QProcess>
 
 /// Before using sound driver, make sure the sound module has been loaded.
@@ -18,12 +19,7 @@ static void loadKernelModule()
 #ifndef _WINDOWS
     QProcess loader;
     QStringList module;
-    QString mod = qgetenv("SOUND_MODULE");
-    if (mod.isEmpty())
-    {
-      mod = "snd-soc-imx-3stack-wm8711";
-    }
-    module << mod;
+    module << sys::soundModule();
     loader.start("modprobe", module);
     const int TIME = 2000;
     if (loader.waitForStarted(TIME))

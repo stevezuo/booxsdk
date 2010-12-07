@@ -20,12 +20,20 @@ public:
     FontConfig();
     ~FontConfig();
 
+    static QString defaultFontFamily(QSqlDatabase&);
+    static void setDefaultFontFamily(QSqlDatabase&, const QString&);
 private:
+    friend class SystemConfig;
+
+    static bool makeSureTableExist(QSqlDatabase& db);
+ 
     QString getFontFamily(QSqlDatabase &, QFontDatabase::WritingSystem);
     void setFontFamily(QSqlDatabase&, QFontDatabase::WritingSystem, const QString&);
 
     bool installFont(QSqlDatabase&, const QString &);
     bool removeFont(QSqlDatabase&, const QString &);
+
+
 
     void reset(QSqlDatabase&);
 };

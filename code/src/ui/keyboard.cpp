@@ -46,6 +46,16 @@ bool isEnglishLayout()
 {
     return is_english;
 }
+bool isPolish()
+{
+    return (currentLanguage() == QLocale::Polish ||
+            currentCountry()  == QLocale::Poland);
+}
+bool isHungarian()
+{
+    return (currentLanguage() == QLocale::Hungarian ||
+            currentCountry()  == QLocale::Hungary);
+}
 
 int standardKeySize()
 {
@@ -56,7 +66,15 @@ int standardKeySize()
     else if (isSwedish())
     {
         return 47;
-    }       
+    }
+    else if (isPolish())
+    {
+        return 43;
+    }
+    else if (isHungarian())
+    {
+        return 43;
+    }
     return 52;
 }
 
@@ -127,12 +145,64 @@ void initEnglishCode(QVector<QChar> & code_vector)
     code_vector.push_back(QChar('z'));     // 25
 }
 
+void initPolishCode(QVector<QChar> & code_vector)
+{
+    initEnglishCode(code_vector);
+    code_vector.push_back(QChar(0x00D3));   //O acute  // 26
+    code_vector.push_back(QChar(0x00F3));   //o acute  // 27
+    code_vector.push_back(QChar(0x0104));  //A ogonek   // 28
+    code_vector.push_back(QChar(0x0105));  //a ogonek   // 29
+    code_vector.push_back(QChar(0x0106));  //C acute   // 30
+    code_vector.push_back(QChar(0x0107));  //c acute  // 31
+    code_vector.push_back(QChar(0x0118));  //E ogonek  // 32
+    code_vector.push_back(QChar(0x0119));  //e ogonek   // 33
+    code_vector.push_back(QChar(0x0143));  //N acute   // 34
+    code_vector.push_back(QChar(0x0144));  //n acute   // 35
+    code_vector.push_back(QChar(0x015A));  //S acute   // 36
+    code_vector.push_back(QChar(0x015B));  //s acute   // 37
+    code_vector.push_back(QChar(0x0179));  //Z acute  // 38
+    code_vector.push_back(QChar(0x017A));  //z acute   // 39
+    code_vector.push_back(QChar(0x017B));  //Z dot above   // 40
+    code_vector.push_back(QChar(0x017C));  //z dot above   // 41
+    code_vector.push_back(QChar(0x0141));  //L stroke  // 42
+    code_vector.push_back(QChar(0x0142));  //l stroke  // 43
+}
+void initHungarianCode(QVector<QChar> & code_vector)
+{
+    initEnglishCode(code_vector);
+    code_vector.push_back(QChar(0x00C1));   //A acute  // 26
+    code_vector.push_back(QChar(0x00E1));   //a acute  // 27
+    code_vector.push_back(QChar(0x00C9));  //E acute   // 28
+    code_vector.push_back(QChar(0x00E9));  //e acute   // 29
+    code_vector.push_back(QChar(0x00CD));  //I acute   // 30
+    code_vector.push_back(QChar(0x00ED));  //i acute  // 31
+    code_vector.push_back(QChar(0x00D3));   //O acute  // 32
+    code_vector.push_back(QChar(0x00F3));   //o acute  // 33
+    code_vector.push_back(QChar(0x00D6));  //O double dot above   // 34
+    code_vector.push_back(QChar(0x00F6));  //o double dot above   // 35
+    code_vector.push_back(QChar(0x0150));  //O double acute   // 36
+    code_vector.push_back(QChar(0x0151));  //o double acute   // 37
+    code_vector.push_back(QChar(0x00DA));  //U acute  // 38
+    code_vector.push_back(QChar(0x00FA));  //u acute   // 39
+    code_vector.push_back(QChar(0x00DC));  //U double dot above   // 40
+    code_vector.push_back(QChar(0x00FC));  //u double dot above   // 41
+    code_vector.push_back(QChar(0x0170));  //U double acute  // 42
+    code_vector.push_back(QChar(0x0171));  //u double acute  // 43
+}
 void initCodeVector()
 {
     code_vector.clear();
     if (isRussian() && !isEnglishLayout())
     {
         initRussianCode(code_vector);
+    }
+    else if(isPolish())
+    {
+        initPolishCode(code_vector);
+    }
+    else if(isHungarian())
+    {
+        initHungarianCode(code_vector);
     }
     else
     {
@@ -437,6 +507,104 @@ void initRussianKeyboard()
         setKeyUnicode(4, index++, SwitchLanguage);
     }
 }
+void initPolishKeyboard()
+{
+    int index = 0;
+    if (!keyboard_standard[0].isEmpty())
+    {
+        keyboard_standard[0].clear();
+    }
+    keyboard_standard[0].resize(12);
+    setKey(0, index++, '1');
+    setKey(0, index++, '2');
+    setKey(0, index++, '3');
+    setKey(0, index++, '4');
+    setKey(0, index++, '5');
+    setKey(0, index++, '6');
+    setKey(0, index++, '7');
+    setKey(0, index++, '8');
+    setKey(0, index++, '9');
+    setKey(0, index++, '0');
+    setKey(0, index++, code_vector[27]);
+    setKey(0, index++, code_vector[29]);
+
+    if (!keyboard_standard[1].isEmpty())
+    {
+        keyboard_standard[1].clear();
+    }
+    keyboard_standard[1].resize(12);
+    index = 0;
+    setKey(1, index++, code_vector[16]);
+    setKey(1, index++, code_vector[22]);
+    setKey(1, index++, code_vector[4]);
+    setKey(1, index++, code_vector[17]);
+    setKey(1, index++, code_vector[19]);
+    setKey(1, index++, code_vector[24]);
+    setKey(1, index++, code_vector[20]);
+    setKey(1, index++, code_vector[8]);
+    setKey(1, index++, code_vector[14]);
+    setKey(1, index++, code_vector[15]);
+    setKey(1, index++, code_vector[31]);
+    setKey(1, index++, code_vector[33]);
+
+    if (!keyboard_standard[2].isEmpty())
+    {
+        keyboard_standard[2].clear();
+    }
+    keyboard_standard[2].resize(12);
+    index = 0;
+    setKey(2, index++, code_vector[0]);
+    setKey(2, index++, code_vector[18]);
+    setKey(2, index++, code_vector[3]);
+    setKey(2, index++, code_vector[5]);
+    setKey(2, index++, code_vector[6]);
+    setKey(2, index++, code_vector[7]);
+    setKey(2, index++, code_vector[9]);
+    setKey(2, index++, code_vector[10]);
+    setKey(2, index++, code_vector[11]);
+    setKey(2, index++, code_vector[12]);
+    setKey(2, index++, code_vector[35]);
+    setKey(2, index++, code_vector[37]);
+
+    if (!keyboard_standard[3].isEmpty())
+    {
+        keyboard_standard[3].clear();
+    }
+    keyboard_standard[3].resize(9);
+    index = 0;
+    setKeyUnicode(3, index++, CapLock);
+    setKey(3, index++, code_vector[25]);
+    setKey(3, index++, code_vector[23]);
+    setKey(3, index++, code_vector[2]);
+    setKey(3, index++, code_vector[21]);
+    setKey(3, index++, code_vector[1]);
+    setKey(3, index++, code_vector[13]);
+    setKeyUnicode(3, index++, BackSpace);
+    setKey(3, index++, code_vector[43]);
+
+    if (!keyboard_standard[4].isEmpty())
+    {
+        keyboard_standard[4].clear();
+    }
+    bool has_touch = SysStatus::instance().hasTouchScreen();
+    keyboard_standard[4].resize(has_touch ? 6 : 5);
+    index = 0;
+    setKeyUnicode(4, index++, ShiftCode);
+    setKeyUnicode(4, index++, Blank);
+    setKeyUnicode(4, index++, EnterCode);
+    if (has_touch)
+    {
+        setKeyUnicode(4, index++, HandWriting);
+    }
+    setKey(4, index++, code_vector[39]);
+    setKey(4, index++, code_vector[41]);
+}
+
+void initHungarianKeyboard()
+{
+    //hungarian keyboard has the same key arrangement as polish keyboard
+    initPolishKeyboard();
+}
 
 int getQKeyCode(uint code)
 {
@@ -464,7 +632,7 @@ KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     , finish_character_timer_(finish_charater_interval, this, SLOT(handleFinishCharacterTimeOut()))
     , auto_select_timer_(auto_select_interval, this, SLOT(handleAutoSelect()))
 {
-    is_english = !isRussian();
+    is_english = !isRussian() && !isPolish() && !isHungarian();
     init();
 }
 
@@ -487,6 +655,14 @@ void KeyBoard::init()
     if (isRussian() && !isEnglishLayout())
     {
         initRussianKeyboard();
+    }
+    else if(isPolish())
+    {
+        initPolishKeyboard();
+    }
+    else if(isHungarian())
+    {
+        initHungarianKeyboard();
     }
     else
     {

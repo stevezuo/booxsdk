@@ -211,6 +211,7 @@ void StatusBar::closeUSBDialog()
     {
         dialog->reject();
         usb_connection_dialog_.reset(0);
+        onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
     }
 }
 
@@ -351,7 +352,7 @@ void StatusBar::onVolumeChanged(int new_volume, bool is_mute)
     {
         qDebug("Volume Changed, Ensure Volume Dialog Visible");
         volume_control_dialog->ensureVisible();
-        onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
+        // onyx::screen::instance().flush(volume_control_dialog, onyx::screen::ScreenProxy::GC, false, onyx::screen::ScreenCommand::WAIT_ALL);
     }
     hide_volume_dialog_timer_.start();
 }

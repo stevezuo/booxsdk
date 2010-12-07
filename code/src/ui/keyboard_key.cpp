@@ -1,4 +1,5 @@
 #include "onyx/sys/sys.h"
+#include "onyx/ui/keyboard_utils.h"
 #include "onyx/ui/keyboard_key.h"
 #include "onyx/screen/screen_proxy.h"
 
@@ -57,7 +58,15 @@ static QSize getKeySize(int code)
 
     if (ch.isNumber())
     {
-        if (isSwedish()) return QSize(47,47);
+        if (isSwedish())
+        {
+            return QSize(47,47);
+        }
+
+        if (isPolish() || isHungarian())
+        {
+            return QSize(standard_key_size, standard_key_size);
+        }
         return QSize(52, 52);
     }
 
@@ -75,7 +84,7 @@ static QSize getKeySize(int code)
     {
         bool has_touch = SysStatus::instance().hasTouchScreen();
         int len = (standard_key_size * (has_touch ? 4 : 6)) + (has_touch ? 12 : 20);
-        if (isRussian() && isEnglishLayout())
+        if ((isRussian() && isEnglishLayout()) || isPolish() || isHungarian())
         {
             len = standard_key_size * (has_touch ? 2 : 4) + (has_touch ? 4 : 12);
         }

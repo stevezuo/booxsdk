@@ -437,6 +437,7 @@ bool Section::arrangeItems(QWidget *parent, BaseActions *base_actions, int rows,
     if (size > max)
     {
         qWarning("Too many items.");
+        qDebug() << "size: " << size << "max: " <<max;
     }
 
     // Create menu items for the group.

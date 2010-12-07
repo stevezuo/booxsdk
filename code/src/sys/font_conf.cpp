@@ -5,7 +5,7 @@
 
 namespace sys
 {
-
+/*
 /// TODO, not fully correct.
 static bool getSystemFontDir(QString & path)
 {
@@ -23,7 +23,7 @@ static bool getSystemFontDir(QString & path)
     path += "/lib/fonts";
     return true;
 }
-
+*/
 FontConfig::FontConfig()
 {
 }
@@ -32,22 +32,64 @@ FontConfig::~FontConfig()
 {
 }
 
+bool FontConfig::makeSureTableExist(QSqlDatabase& database)
+{
+    QSqlQuery query(database);
+    bool ok = query.exec("create table if not exists fonts ("
+                         "key text primary key, "
+                         "value text "
+                         ")");
+    if (ok)
+    {
+        return query.exec("create index if not exists key_index on fonts (key) ");
+    }
+    return false;
+}
+
+void FontConfig::setDefaultFontFamily(QSqlDatabase & database,
+                               const QString& value)
+{
+    QSqlQuery query(database);
+    query.prepare( "INSERT OR REPLACE into fonts values "
+		   "(:key, :value)");
+    query.addBindValue("default");
+    query.addBindValue(value);
+    query.exec();
+}
+
+QString FontConfig::defaultFontFamily(QSqlDatabase &database)
+{
+    QString family;
+    QSqlQuery query(database);
+    query.prepare( "SELECT * from fonts where "
+		   "key = :key");
+    query.addBindValue("default");
+    query.exec();
+    while (query.next())
+    {
+	family = query.value(1).toString();
+	return family;
+    }       
+    return QString();
+}
+
+// The follow not be used
+/*
 QString FontConfig::getFontFamily(QSqlDatabase &database,
                                   QFontDatabase::WritingSystem system)
 {
-    /*
+    
     QString ret;
     QString family;
-    QSqlQuery query(database);
+    statement st(database);
     st  << "SELECT family from fonts where writing = :writing",
         into(family),
         use(static_cast<int>(system));
     if (st.exec())
     {
         ret.fromUtf8(family.c_str());
-    }
-    return ret;
-    */
+	return ret;
+    }       
     return QString();
 }
 
@@ -55,14 +97,12 @@ void FontConfig::setFontFamily(QSqlDatabase & database,
                                QFontDatabase::WritingSystem system,
                                const QString& value)
 {
-    /*
     base::string family(value.toUtf8().data());
     statement st(database);
     st  << "INSERT OR REPLACE into fonts values (:family, :system)",
         use(family),
         use(static_cast<int>(system));
     st.exec();
-    */
 }
 
 bool FontConfig::installFont(QSqlDatabase& database,
@@ -75,7 +115,6 @@ bool FontConfig::installFont(QSqlDatabase& database,
         getSystemFontDir(SYSTEM_FONT_DIR);
     }
 
-    /*
     // Just create a symbol link. Don't need to copy it.
     boost::filesystem::path src(path);
     boost::filesystem::path dst(SYSTEM_FONT_DIR + src.file_string());
@@ -89,7 +128,6 @@ bool FontConfig::installFont(QSqlDatabase& database,
 
     // Also need to clean the font database cache. TODO
     return boost::filesystem::exists(dst);
-    */
     return true;
 }
 
@@ -102,7 +140,6 @@ bool FontConfig::removeFont(QSqlDatabase& database,
 
 void FontConfig::reset(QSqlDatabase& database)
 {
-    /*
     typedef std::map<QFontDatabase::WritingSystem, QString> FontsTable;
     typedef FontsTable::iterator FontsTableIter;
     static FontsTable fonts;
@@ -126,7 +163,6 @@ void FontConfig::reset(QSqlDatabase& database)
             use(static_cast<int>(it->first)),
             use(it->second.toStdString());
     }
-    */
 }
-
+*/
 }

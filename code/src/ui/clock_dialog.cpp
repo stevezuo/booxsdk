@@ -46,11 +46,8 @@ void ClockDialog::createLayout()
     reading_layout_.setContentsMargins(0, 0, 0, 0);
 
     // time
-    QDateTime current(QDateTime::currentDateTime());
     time_layout_.addWidget(&time_number_);
-    QString string = current.toString(DATE_FORMAT);
     time_number_.setStyleSheet(LABEL_STYLE);
-    time_number_.setText(string);
 
     // spacing.
     time_layout_.addSpacing(100);
@@ -58,9 +55,6 @@ void ClockDialog::createLayout()
     // year
     year_label_.setWordWrap(true);
     year_label_.setTextFormat(Qt::RichText);
-    QString y("%1<br>%2-%3");
-    y = y.arg(current.date().year()).arg(current.date().month()).arg(current.date().day());
-    year_label_.setText(y);
     time_layout_.addWidget(&year_label_, 100);
     layout_.addLayout(&time_layout_);
 
@@ -75,6 +69,36 @@ void ClockDialog::createLayout()
     // label
     reading_label_.setWordWrap(true);
     reading_layout_.addWidget(&reading_label_);
+    layout_.addLayout(&reading_layout_);
+}
+
+int ClockDialog::exec()
+{
+    shadows_.show(true);
+    updateText();
+    show();
+    onyx::screen::instance().flush();
+    onyx::screen::instance().updateWidgetRegion(
+        0,
+        outbounding(parentWidget()),
+        onyx::screen::ScreenProxy::GC,
+        false,
+        onyx::screen::ScreenCommand::WAIT_ALL);
+    int ret = QDialog::exec();
+    onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GU);
+    return ret;
+}
+
+void ClockDialog::updateText()
+{
+    QDateTime current(QDateTime::currentDateTime());
+    QString string = current.toString(DATE_FORMAT);
+    time_number_.setText(string);
+
+    QString y("%1<br>%2-%3");
+    y = y.arg(current.date().year()).arg(current.date().month()).arg(current.date().day());
+    year_label_.setText(y);
+
     int seconds = start_.secsTo(QDateTime::currentDateTime());
 
     if (seconds < 60)
@@ -94,24 +118,6 @@ void ClockDialog::createLayout()
         str = str.arg(seconds / 3600).arg((seconds % 3600) / 60);
         reading_label_.setText(str);
     }
-
-    layout_.addLayout(&reading_layout_);
-}
-
-int ClockDialog::exec()
-{
-    shadows_.show(true);
-    show();
-    onyx::screen::instance().flush();
-    onyx::screen::instance().updateWidgetRegion(
-        0,
-        outbounding(parentWidget()),
-        onyx::screen::ScreenProxy::GC,
-        false,
-        onyx::screen::ScreenCommand::WAIT_ALL);
-    int ret = QDialog::exec();
-    onyx::screen::instance().updateWidget(0, onyx::screen::ScreenProxy::GU);
-    return ret;
 }
 
 }

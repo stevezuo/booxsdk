@@ -278,7 +278,7 @@ void StatusBar::onMessageAreaClicked()
 
     int current = 1, total = 1;
     StatusBarItem * wnd = item(PROGRESS, false);
-    if (wnd && wnd->isVisible())
+    if (wnd)
     {
         StatusBarItemProgress * p = static_cast<StatusBarItemProgress *>(wnd);
         p->progress(current, total);

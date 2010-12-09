@@ -231,6 +231,22 @@ void SysStatus::installSlots()
     }
 
     if (!connection_.connect(service, object, iface,
+                             "volumeUpPressed",
+                             this,
+                             SLOT(onVolumeUpPressed())))
+    {
+        qDebug("\nCan not connect the volumeUpPressed\n");
+    }
+
+    if (!connection_.connect(service, object, iface,
+                             "volumeDownPressed",
+                             this,
+                             SLOT(onVolumeDownPressed())))
+    {
+        qDebug("\nCan not connect the volumeDownPressed\n");
+    }
+
+    if (!connection_.connect(service, object, iface,
                              "stylusChanged",
                              this,
                              SLOT(onStylusChanged(bool))))
@@ -1528,6 +1544,16 @@ void SysStatus::onDownloadStateChanged(const QString &url,
 void SysStatus::onVolumeChanged(int new_volume, bool is_mute)
 {
     emit volumeChanged(new_volume, is_mute);
+}
+
+void SysStatus::onVolumeUpPressed()
+{
+    emit volumeUpPressed();
+}
+
+void SysStatus::onVolumeDownPressed()
+{
+    emit volumeDownPressed();
 }
 
 void SysStatus::onRequestDRMUserInfo(const QString &string, const QString & param)

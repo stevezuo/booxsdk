@@ -20,6 +20,7 @@ public:
 
 private:
     void createLayout();
+    void updateText();
 
 private:
     QDateTime start_;

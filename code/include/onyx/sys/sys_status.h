@@ -148,6 +148,8 @@ class SysStatus : public QObject
     void inUSBSlaveMode();
 
     void volumeChanged(int new_volume, bool is_mute);
+    void volumeUpPressed();
+    void volumeDownPressed();
 
     void aboutToSuspend();
     void wakeup();
@@ -178,6 +180,8 @@ class SysStatus : public QObject
     void onScreenRotated(const int);
 
     void onVolumeChanged(int new_volume, bool is_mute);
+    void onVolumeUpPressed();
+    void onVolumeDownPressed();
 
     void onAboutToSuspend();
     void onWakeup();

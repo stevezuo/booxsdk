@@ -12,6 +12,7 @@
 #include "onyx/sys/volume_conf.h"
 #include "onyx/sys/sys_utils.h"
 #include "onyx/sys/font_conf.h"
+#include "onyx/sys/misc_conf.h"
 #include "device_conf.h"
 
 namespace sys
@@ -31,6 +32,7 @@ SystemConfig::SystemConfig()
     DeviceConfig::makeSureTableExist(*database_);
     PageTurningConfig::makeSureTableExist(*database_);
     FontConfig::makeSureTableExist(*database_);
+    MiscConfig::makeSureTableExist(*database_);
 }
 
 SystemConfig::~SystemConfig()
@@ -646,6 +648,16 @@ bool SystemConfig::showBrowsingHistory()
 QString SystemConfig::defaultAccessPoint()
 {
     return qgetenv("DEFAULT_ACCESS_POINT");
+}
+
+bool SystemConfig::setMiscValue(const QString &key, const QString &value)
+{
+    return MiscConfig::setValue(*database_, key, value);
+}
+
+QString SystemConfig::miscValue(const QString &key)
+{
+    return MiscConfig::getValue(*database_, key);
 }
 
 }

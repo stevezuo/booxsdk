@@ -131,6 +131,27 @@ QString b("song");
 EXPECT_TRUE(a == b);
     }
 }
+
+TEST(SysConfTest, MiscConfig)
+{
+    SystemConfig conf;
+    static const QString KEY = "key1";
+    static const QString VALUE = "value1";
+    static const QString KEY2 = "key2";
+    static const QString VALUE2 = "value2";
+    conf.setMiscValue(KEY, VALUE);
+    QString actual = conf.miscValue(KEY);
+    EXPECT_TRUE(VALUE == actual);
+
+    conf.setMiscValue(KEY2, VALUE2);
+    actual = conf.miscValue(KEY2);
+    EXPECT_TRUE(VALUE2 == actual);
+
+    conf.setMiscValue(KEY, "");
+    actual = conf.miscValue(KEY);
+    EXPECT_TRUE(VALUE != actual);
+}
+
 /*
 TEST(SysConfTest, noteExportDir)
 {

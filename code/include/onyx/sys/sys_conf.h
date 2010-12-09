@@ -11,6 +11,7 @@
 #include "font_conf.h"
 #include "wifi_conf.h"
 #include "dialup_conf.h"
+#include "misc_conf.h"
 
 using namespace base;
 
@@ -97,6 +98,11 @@ public:
     bool clearDialupProfiles();
     bool loadDialupProfiles(DialupProfiles & all);
     bool saveDialupProfiles(DialupProfiles & all);
+
+    // Use MiscConfig
+    bool setMiscValue(const QString &key, const QString &value);
+    QString miscValue(const QString &key);
+    QString startupSettingType();
 
     // Page turning direction.
     static int direction(const QPoint & old_position, const QPoint & new_position);

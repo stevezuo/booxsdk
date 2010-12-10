@@ -312,7 +312,6 @@ void StatusBar::onBatteryClicked()
 {
     PowerManagementDialog dialog(0, sys::SysStatus::instance());
     dialog.exec();
-    onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GU);
 }
 
 void StatusBar::onClockClicked()

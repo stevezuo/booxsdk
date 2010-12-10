@@ -31,6 +31,17 @@ public:
 typedef QVector<ThumbnailPage> ThumbnailPages;
 typedef ThumbnailPages::iterator ThumbnailPagesIter;
 
+struct ThumbnailLayoutContext
+{
+    int               rows;
+    int               columns;
+    int               space;
+    TextDirection     txt_dir;
+    float             txt_ratio;
+
+    ThumbnailLayoutContext() : rows(2), columns(2), space(10), txt_dir(TEXT_BOTTOM), txt_ratio(0.1f) {}
+};
+
 class ThumbnailLayout
 {
 public:
@@ -38,34 +49,19 @@ public:
     ~ThumbnailLayout();
 
     void setWidgetSize(const QSize &s);
-
-    void setRow(const int r);
-    int  numRow();
-
-    void setColumn(const int c);
-    int  numColumn();
-
-    void setSpace(const int s);
-    int  space();
-
+    const ThumbnailLayoutContext & context() const { return context_; }
+    void updateContext(const ThumbnailLayoutContext & other);
     bool hitTest(const QPoint &pos, int &page);
 
-    void setTextRatio(const float r);
-    void setTextDirection(const TextDirection d);
-    TextDirection textDirection();
-
     ThumbnailPages& pages();
+
+private:
     void updatePages();
 
 private:
-    ThumbnailPages    pages_;
-    int               rows_;
-    int               columns_;
-    int               space_;
-    TextDirection     txt_dir_;
-    float             txt_ratio_;
-
-    QSize             widget_;
+    ThumbnailPages          pages_;
+    ThumbnailLayoutContext  context_;
+    QSize                   widget_;
 };
 
 }; // namespace ui

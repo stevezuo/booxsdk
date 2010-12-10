@@ -1596,14 +1596,4 @@ void SysStatus::onReport3GNetwork(const int signal, const int total, const int n
     emit report3GNetwork(signal, total, network);
 }
 
-void SysStatus::onVolumeUpPressed()
-{
-    emit  volumeUpPressed();
-}
-
-void SysStatus::onVolumeDownPressed()
-{
-    emit  volumeUpPressed();
-}
-
 }   // namespace sys

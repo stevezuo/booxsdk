@@ -171,6 +171,9 @@ class SysStatus : public QObject
 
     void report3GNetwork(const int signal, const int total, const int network);
 
+    void volumeUpPressed();
+    void volumeDownPressed();
+
   private slots:
     void onBatteryChanged(int, int);
     void onMountTreeChanged(bool mounted, const QString &mount_point);
@@ -203,6 +206,8 @@ class SysStatus : public QObject
     void onLoanReturnFinished(const QString & string);
     void onReportWorkflowError(const QString & workflow, const QString & error_code);
     void onReport3GNetwork(const int signal, const int total, const int network);
+    void onVolumeUpPressed();
+    void onVolumeDownPressed();
 
   private:
     SysStatus();

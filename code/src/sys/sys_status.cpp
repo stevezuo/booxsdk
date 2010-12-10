@@ -310,6 +310,21 @@ void SysStatus::installSlots()
         qDebug("\nCan not connect the signalStrengthChanged signal\n");
     }
 
+    if (!connection_.connect(service, object, iface,
+                             "volumeUpPressed",
+                             this,
+                             SLOT(onVolumeUpPressed())))
+    {
+        qDebug("\nCan not connect the volumeUpPressed signal\n");
+    }
+
+    if (!connection_.connect(service, object, iface,
+                             "volumeDownPressed",
+                             this,
+                             SLOT(onVolumeDownPressed())))
+    {
+        qDebug("\nCan not connect the volumeDownPressed signal\n");
+    }
     
 }
 
@@ -1580,4 +1595,15 @@ void SysStatus::onReport3GNetwork(const int signal, const int total, const int n
 {
     emit report3GNetwork(signal, total, network);
 }
+
+void SysStatus::onVolumeUpPressed()
+{
+    emit  volumeUpPressed();
+}
+
+void SysStatus::onVolumeDownPressed()
+{
+    emit  volumeUpPressed();
+}
+
 }   // namespace sys

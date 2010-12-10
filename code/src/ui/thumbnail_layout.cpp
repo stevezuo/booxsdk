@@ -90,15 +90,12 @@ ThumbnailLayout::~ThumbnailLayout()
 void ThumbnailLayout::setWidgetSize(const QSize &s)
 {
     widget_ = s;
-
     updatePages();
 }
 
 void ThumbnailLayout::setRow(const int r)
 {
     rows_ = r;
-
-    updatePages();
 }
 
 int  ThumbnailLayout::numRow()
@@ -109,8 +106,6 @@ int  ThumbnailLayout::numRow()
 void ThumbnailLayout::setColumn(const int c)
 {
     columns_ = c;
-
-    updatePages();
 }
 
 int  ThumbnailLayout::numColumn()
@@ -121,7 +116,6 @@ int  ThumbnailLayout::numColumn()
 void ThumbnailLayout::setSpace(const int s)
 {
     space_ = s;
-
     updatePages();
 }
 
@@ -133,14 +127,12 @@ int  ThumbnailLayout::space()
 void ThumbnailLayout::setTextRatio(const float r)
 {
     txt_ratio_ = r;
-
     updatePages();
 }
 
 void ThumbnailLayout::setTextDirection(const TextDirection d)
 {
     txt_dir_ = d;
-
     updatePages();
 }
 

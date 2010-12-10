@@ -55,6 +55,7 @@ public:
     TextDirection textDirection();
 
     ThumbnailPages& pages();
+    void updatePages();
 
 private:
     ThumbnailPages    pages_;
@@ -65,9 +66,6 @@ private:
     float             txt_ratio_;
 
     QSize             widget_;
-
-private:
-    void updatePages();
 };
 
 }; // namespace ui

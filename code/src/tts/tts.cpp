@@ -25,7 +25,6 @@ TTS::TTS(const QLocale & locale)
 
         setState(TTS_STOPPED);
     }
-    qDebug("Error", "Could not load the plugin");
 }
 
 TTS::~TTS()
@@ -255,21 +254,31 @@ Sound & TTS::sound()
 
 bool TTS::loadPlugin()
 {
-    QPluginLoader pluginLoader("/usr/share/tts/plugins/libtts_ej.so", this);
-    qDebug()<<"TTS begins to create a plugin instance";
-    pluginLoader.load();//explicitly load
-    if (!pluginLoader.isLoaded())
+    QDir dir("/usr/share/tts/plugins");
+    QDir::Filters filters = QDir::Files|QDir::NoDotAndDotDot;
+    QFileInfoList all = dir.entryInfoList(filters);
+    for(QFileInfoList::iterator iter = all.begin(); iter != all.end(); ++iter)
     {
-        return false;
-    }
-    QObject *plugin = pluginLoader.instance();
-    if (plugin)
-    {
-        qDebug()<<"TTS gets plugin, is to reset tts_impl_";
-        tts_impl_.reset(qobject_cast<TTSInterface *>(plugin));
-        if (tts_impl_)
+        if (iter->isFile())
         {
-            return true;
+            QPluginLoader pluginLoader(iter->absoluteFilePath(), this);
+            qDebug() << "TTS begins to create a plugin instance " << iter->absoluteFilePath();
+            pluginLoader.load();
+            if (!pluginLoader.isLoaded())
+            {
+                qDebug() << "Could not load tts plugin: " << iter->absoluteFilePath(); 
+                continue;
+            }
+            QObject *plugin = pluginLoader.instance();
+            if (plugin)
+            {
+                qDebug() << "TTS gets plugin, is to reset tts_impl_";
+                tts_impl_.reset(qobject_cast<TTSInterface *>(plugin));
+                if (tts_impl_)
+                {
+                    return true;
+                }
+            }
         }
     }
     return false;

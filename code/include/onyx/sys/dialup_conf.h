@@ -25,9 +25,13 @@ public:
     void toByteArray(QByteArray & data);
     void fromByteArray(QByteArray & data);
 
-    // Profile name.
-    QString name();
-    void setName(const QString &name);
+    // Display name.
+    QString displayName();
+    void setDisplayName(const QString &name);
+
+    // apn AKA peer.
+    QString apn();
+    void setApn(const QString &apn);
 
     QString number();
     void setNumber(const QString &number);

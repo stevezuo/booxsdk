@@ -5,7 +5,8 @@
 namespace sys
 {
 
-static const QString NAME_TAG = "name";
+static const QString NAME_TAG = "display";
+static const QString APN_TAG = "apn";
 static const QString NUMBER_TAG = "number";
 static const QString USERNAME_TAG = "username";
 static const QString PASSWORD_TAG = "password";
@@ -43,14 +44,24 @@ void DialupProperties::fromByteArray(QByteArray & data)
     stream >> *this;
 }
 
-QString DialupProperties::name()
+QString DialupProperties::displayName()
 {
     return value(NAME_TAG).toString();
 }
 
-void DialupProperties::setName(const QString &name)
+void DialupProperties::setDisplayName(const QString &name)
 {
     insert(NAME_TAG, name);
+}
+
+QString DialupProperties::apn()
+{
+    return value(APN_TAG).toString();
+}
+
+void DialupProperties::setApn(const QString &apn)
+{
+    insert(APN_TAG, apn);
 }
 
 QString DialupProperties::number()

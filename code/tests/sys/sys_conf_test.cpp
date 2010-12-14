@@ -108,27 +108,27 @@ TEST(SysConfTest, FontConfig)
 {
     SystemConfig conf;
     {
-    QString b("song");
-    conf.setDefaultFontFamily(b);
-    QString a = conf.defaultFontFamily();
-   EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str() ); 
+        QString b("song");
+        conf.setDefaultFontFamily(b);
+        QString a = conf.defaultFontFamily();
+        EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str() ); 
     }
     {
-    QString b("hei");
-    conf.setDefaultFontFamily(b);
-    QString a = conf.defaultFontFamily();
-    EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
+        QString b("hei");
+        conf.setDefaultFontFamily(b);
+        QString a = conf.defaultFontFamily();
+        EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
     }
     {
-QString b("song");
-    conf.setDefaultFontFamily(b);
-    QString a = conf.defaultFontFamily();
-     EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
+        QString b("song");
+        conf.setDefaultFontFamily(b);
+        QString a = conf.defaultFontFamily();
+        EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
     }
     {
-QString b("song");
-    QString a = conf.defaultFontFamily();
-EXPECT_TRUE(a == b);
+        QString b("song");
+        QString a = conf.defaultFontFamily();
+        EXPECT_TRUE(a == b);
     }
 }
 
@@ -162,5 +162,21 @@ TEST(SysConfTest, noteExportDir)
 }
 */
 
+TEST(SysConfTest, DialupConf)
+{
+    SystemConfig conf;
+    DialupProfiles all;
+    conf.loadDialupProfiles(all);
+
+    DialupProfile a;
+    a.setDisplayName("china unicom");
+    a.setApn("unicom");
+    all.push_back(a);
+    conf.saveDialupProfiles(all);
+
+    DialupProfiles result;
+    conf.loadDialupProfiles(result);
+    EXPECT_TRUE(all == result);
 }
 
+}

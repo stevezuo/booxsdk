@@ -50,6 +50,8 @@ struct APN
     QString peer;
 };
 
+/// TODO, we need to add a filter to file system, so that we can
+/// display only part of them.
 static const APN APNS[] =
 {
     {"Mts", "mts", "mts", "mts"},
@@ -80,7 +82,7 @@ DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
     , network_label_(0)
     , state_widget_(0)
     , input_layout_(0)
-    , disconnect_button_(tr("Disconnect"), this)
+    , disconnect_button_(tr("Disconnect"), 0)
     , top_label_(0)
     , title_icon_label_(this)
     , title_text_label_(tr("3G Connection"), this)
@@ -182,21 +184,12 @@ int  DialUpDialog::popup()
 
 void DialUpDialog::keyPressEvent(QKeyEvent *ke)
 {
-    ke->accept();
     if (ke->key() == Qt::Key_Escape)
     {
+        ke->accept();
         accept();
     }
-
-    // Disable the parent widget to update screen.
-
-    // Can not use flush here, could be caused by the keyboard event.
-    /*
-    onyx::screen::instance().enableUpdate(false);
-    QApplication::processEvents();
-    onyx::screen::instance().enableUpdate(true);
-    onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW);
-    */
+    QDialog::keyPressEvent(ke);
 }
 
 void DialUpDialog::keyReleaseEvent(QKeyEvent *ke)
@@ -310,11 +303,12 @@ void DialUpDialog::createLayout()
     // input_layout_.addWidget(&number_label_, 0, 0);
     // input_layout_.addWidget(&number_edit_, 0, 1);
 
+    // Disable checkable, otherwise, we cannot use keyboard to navigate buttons.
     for(int i = 0; i < APNS_COUNT; ++i)
     {
         OnyxPushButton *btn = new OnyxPushButton(APNS[i].apn, 0);
         btn->setAutoExclusive(true);
-        btn->setCheckable(true);
+        // btn->setCheckable(true);
         btn->setData(i);
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
@@ -323,11 +317,12 @@ void DialUpDialog::createLayout()
         {
             btn->setChecked(true);
         }
+
     }
 
     input_layout_.addWidget(&disconnect_button_);
     disconnect_button_.setAutoExclusive(true);
-    disconnect_button_.setCheckable(true);
+    // disconnect_button_.setCheckable(true);
     QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
     content_layout_.addStretch(0);
 
@@ -468,7 +463,6 @@ void DialUpDialog::onDisconnectClicked(bool)
 
 void DialUpDialog::onGetFocus(OnyxLineEdit *object)
 {
-
 }
 
 void DialUpDialog::onCloseClicked()

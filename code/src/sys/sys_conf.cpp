@@ -670,5 +670,18 @@ QString SystemConfig::miscValue(const QString &key)
     return MiscConfig::getValue(*database_, key);
 }
 
+int SystemConfig::screenUpdateGCInterval()
+{
+    const int DEFAULT_GC_INTERVAL = 1;
+    QString value = MiscConfig::getValue(*database_, "screen_update_setting");
+    bool ok;
+    int interval = value.toInt(&ok, 10);
+    if (!ok)
+    {
+        interval = DEFAULT_GC_INTERVAL;
+    }
+    return interval;
+}
+
 }
 

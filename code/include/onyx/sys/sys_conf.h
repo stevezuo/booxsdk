@@ -105,7 +105,7 @@ public:
     // Use MiscConfig
     bool setMiscValue(const QString &key, const QString &value);
     QString miscValue(const QString &key);
-    QString startupSettingType();
+    int screenUpdateGCInterval();
 
     // Page turning direction.
     static int direction(const QPoint & old_position, const QPoint & new_position);

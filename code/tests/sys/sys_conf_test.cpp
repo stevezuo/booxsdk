@@ -179,4 +179,16 @@ TEST(SysConfTest, DialupConf)
     EXPECT_TRUE(all == result);
 }
 
+TEST(SysConfTest, pincode)
+{
+    QString pincode = "1234";
+    SystemConfig::setDefaultPincode(pincode);
+    EXPECT_TRUE(SystemConfig::defaultPincode() == pincode);
+
+    pincode = "5678";
+    SystemConfig::setDefaultPincode(pincode);
+    EXPECT_TRUE(SystemConfig::defaultPincode() == pincode);
+}
+
+
 }

@@ -512,6 +512,16 @@ bool SystemConfig::saveDialupProfiles(DialupProfiles & all)
     return DialupConfig::save(*database_, all);
 }
 
+QString SystemConfig::defaultPincode()
+{
+    return DialupConfig::defaultPincode();
+}
+
+void SystemConfig::setDefaultPincode(const QString &pincode)
+{
+    return DialupConfig::setDefaultPincode(pincode);
+}
+
 /// This function returns 1 for next page. It returns -1 for previous page.
 /// If the distance is too small, it returns 0.
 /// Caller can the direction by using setDirection.

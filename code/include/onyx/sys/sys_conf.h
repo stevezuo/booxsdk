@@ -99,6 +99,9 @@ public:
     bool loadDialupProfiles(DialupProfiles & all);
     bool saveDialupProfiles(DialupProfiles & all);
 
+    static QString defaultPincode();
+    static void setDefaultPincode(const QString &);
+
     // Use MiscConfig
     bool setMiscValue(const QString &key, const QString &value);
     QString miscValue(const QString &key);

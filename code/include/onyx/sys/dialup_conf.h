@@ -64,6 +64,9 @@ private:
     static bool load(QSqlDatabase& db, DialupProfiles & all);
     static bool save(QSqlDatabase& db, DialupProfiles & all);
     static bool clear(QSqlDatabase& db);
+
+    static QString defaultPincode();
+    static void setDefaultPincode(const QString &);
 };
 
 

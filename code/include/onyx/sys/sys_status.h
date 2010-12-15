@@ -49,6 +49,7 @@ class SysStatus : public QObject
 
   public slots:
     bool batteryStatus(int& left, int& status);
+    bool updateBatteryStatus();
 
     bool isUSBMounted();
     bool isSDMounted();

@@ -366,6 +366,29 @@ bool SysStatus::batteryStatus(int& current,
     return false;
 }
 
+/// Ask system manager to broadcast battery signals to all listeners.
+bool SysStatus::updateBatteryStatus()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        service,            // destination
+        object,             // path
+        iface,              // interface
+        "updateBatteryStatus"      // method.
+    );
+
+    // Call.
+    QDBusMessage reply = connection_.call(message);
+    if (reply.type() == QDBusMessage::ReplyMessage)
+    {
+        return true;
+    }
+    else if (reply.type() == QDBusMessage::ErrorMessage)
+    {
+        qWarning("%s", qPrintable(reply.errorMessage()));
+    }
+    return false;
+}
+
 /// Query whether USB is mounted or not.
 /// TODO: improve it
 bool SysStatus::isUSBMounted()

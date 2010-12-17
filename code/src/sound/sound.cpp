@@ -22,10 +22,11 @@ static void loadKernelModule()
     module << sys::soundModule();
     loader.start("modprobe", module);
     const int TIME = 5000;
-    if (loader.waitForStarted(TIME))
+    if (!loader.waitForStarted(TIME))
     {
-        loader.waitForFinished(TIME);
+        qWarning("Could not start modprobe.");
     }
+    loader.waitForFinished(TIME);
 
     // Have to ensure the module has been loaded.
     loader.start("lsmod");

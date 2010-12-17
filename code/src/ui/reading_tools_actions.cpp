@@ -236,7 +236,7 @@ void ReadingToolsActions::generateActions(const vector<ReadingToolsType> & value
         case CLOCK_TOOL:
             {
                 act->setText(QCoreApplication::tr("Clock"));
-                act->setIcon(QIcon(QPixmap(":/images/speed.png")));
+                act->setIcon(QIcon(QPixmap(":/images/clock_tool.png")));
             }
             break;
         default:

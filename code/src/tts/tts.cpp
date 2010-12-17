@@ -244,10 +244,15 @@ Sound & TTS::sound()
 {
     if (!sound_)
     {
-        sound_.reset(new Sound);
-        sound_->setBitsPerSample(BPS);
-        sound_->setChannels(CHANNELS);
-        sound_->setSamplingRate(SAMPLE_RATE);
+        bool open = (qgetenv("DISABLE_TTS_SOUND_DEV").toInt() <= 0);
+        qDebug("open sound device or not %d", open);
+        sound_.reset(new Sound(open));
+        if (open)
+        {
+            sound_->setBitsPerSample(BPS);
+            sound_->setChannels(CHANNELS);
+            sound_->setSamplingRate(SAMPLE_RATE);
+        }
     }
     return *sound_;
 }

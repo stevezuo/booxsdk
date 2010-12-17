@@ -238,11 +238,12 @@ void PowerManagementDialog::onShutdownButtonChanged(bool state)
 bool PowerManagementDialog::event(QEvent* qe)
 {
     bool ret = QDialog::event(qe);
-    if (qe->type() == QEvent::UpdateRequest)
+    if (qe->type() == QEvent::UpdateRequest
+            && onyx::screen::instance().isUpdateEnabled())
     {
-        onyx::screen::instance().sync(&shadows_.hor_shadow());
-        onyx::screen::instance().sync(&shadows_.ver_shadow());
-        onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GU);
+        // onyx::screen::instance().sync(&shadows_.hor_shadow());
+        // onyx::screen::instance().sync(&shadows_.ver_shadow());
+        onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW);
     }
     return ret;
 }
@@ -260,7 +261,6 @@ void PowerManagementDialog::onOkClicked(bool)
     }
 
     accept();
-    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GU);
 }
 
 }   // namespace ui

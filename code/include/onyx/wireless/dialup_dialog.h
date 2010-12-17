@@ -61,7 +61,6 @@ private:
     void saveConf();
 
 private:
-
     QVBoxLayout  big_box_;
     QWidget title_widget_;
 
@@ -88,6 +87,7 @@ private:
     QTimer timer_;
     bool connecting_;
 
+    DialupProfiles all_peers_;
     DialupProfile profile_;
 };
 

@@ -45,12 +45,19 @@ ScreenProxy::ScreenProxy()
   , waveform_(ScreenProxy::GC)
   , previous_waveform_(ScreenProxy::GC)
   , user_data_(0)
+  , gc_interval_(1)
+  , gu_count_(0)
 {
     connect();
 }
 
 ScreenProxy::~ScreenProxy()
 {
+}
+
+void ScreenProxy::setGCInterval(const int interval)
+{
+    this->gc_interval_ = interval;
 }
 
 /// Make sure the previous update request has been processed.
@@ -345,6 +352,45 @@ void ScreenProxy::setWaveformPolicy(WaveformPolicy policy)
 ScreenProxy::WaveformPolicy ScreenProxy::waveformPolicy()
 {
     return policy_;
+}
+
+void ScreenProxy::updateWidgetWithGCInterval(const QWidget *widget,
+        const QRect *rect,
+        Waveform waveform,
+        bool update_whole,
+        ScreenCommand::WaitMode wait)
+{
+    if (INVALID == waveform || GU == waveform)
+    {
+        waveform = GU;
+        increaseGUCount();
+        if (0 != gc_interval_ && gu_count_ >= gc_interval_)
+        {
+            waveform = GC;
+        }
+    }
+    if (GC == waveform)
+    {
+        resetGUCount();
+    }
+    if (NULL == rect)
+    {
+        updateWidget(widget, waveform, update_whole, wait);
+    }
+    else
+    {
+        updateWidgetRegion(widget, *rect, waveform, update_whole, wait);
+    }
+}
+
+void ScreenProxy::increaseGUCount()
+{
+    ++gu_count_;
+}
+
+void ScreenProxy::resetGUCount()
+{
+    gu_count_ = 0;
 }
 
 }  //namespace screen

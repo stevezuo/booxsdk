@@ -108,29 +108,50 @@ TEST(SysConfTest, FontConfig)
 {
     SystemConfig conf;
     {
-    QString b("song");
-    conf.setDefaultFontFamily(b);
-    QString a = conf.defaultFontFamily();
-   EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str() ); 
+        QString b("song");
+        conf.setDefaultFontFamily(b);
+        QString a = conf.defaultFontFamily();
+        EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str() ); 
     }
     {
-    QString b("hei");
-    conf.setDefaultFontFamily(b);
-    QString a = conf.defaultFontFamily();
-    EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
+        QString b("hei");
+        conf.setDefaultFontFamily(b);
+        QString a = conf.defaultFontFamily();
+        EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
     }
     {
-QString b("song");
-    conf.setDefaultFontFamily(b);
-    QString a = conf.defaultFontFamily();
-     EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
+        QString b("song");
+        conf.setDefaultFontFamily(b);
+        QString a = conf.defaultFontFamily();
+        EXPECT_STREQ(b.toStdString().c_str() ,a.toStdString().c_str()); 
     }
     {
-QString b("song");
-    QString a = conf.defaultFontFamily();
-EXPECT_TRUE(a == b);
+        QString b("song");
+        QString a = conf.defaultFontFamily();
+        EXPECT_TRUE(a == b);
     }
 }
+
+TEST(SysConfTest, MiscConfig)
+{
+    SystemConfig conf;
+    static const QString KEY = "key1";
+    static const QString VALUE = "value1";
+    static const QString KEY2 = "key2";
+    static const QString VALUE2 = "value2";
+    conf.setMiscValue(KEY, VALUE);
+    QString actual = conf.miscValue(KEY);
+    EXPECT_TRUE(VALUE == actual);
+
+    conf.setMiscValue(KEY2, VALUE2);
+    actual = conf.miscValue(KEY2);
+    EXPECT_TRUE(VALUE2 == actual);
+
+    conf.setMiscValue(KEY, "");
+    actual = conf.miscValue(KEY);
+    EXPECT_TRUE(VALUE != actual);
+}
+
 /*
 TEST(SysConfTest, noteExportDir)
 {
@@ -141,5 +162,33 @@ TEST(SysConfTest, noteExportDir)
 }
 */
 
+TEST(SysConfTest, DialupConf)
+{
+    SystemConfig conf;
+    DialupProfiles all;
+    conf.loadDialupProfiles(all);
+
+    DialupProfile a;
+    a.setDisplayName("china unicom");
+    a.setApn("unicom");
+    all.push_back(a);
+    conf.saveDialupProfiles(all);
+
+    DialupProfiles result;
+    conf.loadDialupProfiles(result);
+    EXPECT_TRUE(all == result);
 }
 
+TEST(SysConfTest, pincode)
+{
+    QString pincode = "1234";
+    SystemConfig::setDefaultPincode(pincode);
+    EXPECT_TRUE(SystemConfig::defaultPincode() == pincode);
+
+    pincode = "5678";
+    SystemConfig::setDefaultPincode(pincode);
+    EXPECT_TRUE(SystemConfig::defaultPincode() == pincode);
+}
+
+
+}

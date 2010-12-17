@@ -21,11 +21,12 @@ static void loadKernelModule()
     QStringList module;
     module << sys::soundModule();
     loader.start("modprobe", module);
-    const int TIME = 2000;
-    if (loader.waitForStarted(TIME))
+    const int TIME = 5000;
+    if (!loader.waitForStarted(TIME))
     {
-        loader.waitForFinished(TIME);
+        qWarning("Could not start modprobe.");
     }
+    loader.waitForFinished(TIME);
 
     // Have to ensure the module has been loaded.
     loader.start("lsmod");

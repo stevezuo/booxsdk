@@ -12,6 +12,7 @@
 #include "onyx/sys/volume_conf.h"
 #include "onyx/sys/sys_utils.h"
 #include "onyx/sys/font_conf.h"
+#include "onyx/sys/misc_conf.h"
 #include "device_conf.h"
 
 namespace sys
@@ -31,6 +32,7 @@ SystemConfig::SystemConfig()
     DeviceConfig::makeSureTableExist(*database_);
     PageTurningConfig::makeSureTableExist(*database_);
     FontConfig::makeSureTableExist(*database_);
+    MiscConfig::makeSureTableExist(*database_);
 }
 
 SystemConfig::~SystemConfig()
@@ -510,6 +512,16 @@ bool SystemConfig::saveDialupProfiles(DialupProfiles & all)
     return DialupConfig::save(*database_, all);
 }
 
+QString SystemConfig::defaultPincode()
+{
+    return DialupConfig::defaultPincode();
+}
+
+void SystemConfig::setDefaultPincode(const QString &pincode)
+{
+    return DialupConfig::setDefaultPincode(pincode);
+}
+
 /// This function returns 1 for next page. It returns -1 for previous page.
 /// If the distance is too small, it returns 0.
 /// Caller can the direction by using setDirection.
@@ -646,6 +658,29 @@ bool SystemConfig::showBrowsingHistory()
 QString SystemConfig::defaultAccessPoint()
 {
     return qgetenv("DEFAULT_ACCESS_POINT");
+}
+
+bool SystemConfig::setMiscValue(const QString &key, const QString &value)
+{
+    return MiscConfig::setValue(*database_, key, value);
+}
+
+QString SystemConfig::miscValue(const QString &key)
+{
+    return MiscConfig::getValue(*database_, key);
+}
+
+int SystemConfig::screenUpdateGCInterval()
+{
+    const int DEFAULT_GC_INTERVAL = 1;
+    QString value = MiscConfig::getValue(*database_, "screen_update_setting");
+    bool ok;
+    int interval = value.toInt(&ok, 10);
+    if (!ok)
+    {
+        interval = DEFAULT_GC_INTERVAL;
+    }
+    return interval;
 }
 
 }

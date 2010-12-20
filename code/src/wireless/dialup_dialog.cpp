@@ -44,12 +44,14 @@ QPushButton:disabled                    \
 
 struct APN
 {
-    QString apn;
+    QString display_name;
     QString username;
     QString password;
-    QString peer;
+    QString apn;
 };
 
+/// TODO, we need to add a filter to file system, so that we can
+/// display only part of them.
 static const APN APNS[] =
 {
     {"Mts", "mts", "mts", "mts"},
@@ -80,7 +82,7 @@ DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
     , network_label_(0)
     , state_widget_(0)
     , input_layout_(0)
-    , disconnect_button_(tr("Disconnect"), this)
+    , disconnect_button_(tr("Disconnect"), 0)
     , top_label_(0)
     , title_icon_label_(this)
     , title_text_label_(tr("3G Connection"), this)
@@ -122,34 +124,41 @@ QString DialUpDialog::address()
 void DialUpDialog::loadConf()
 {
     sys::SystemConfig conf;
-    DialupProfiles all;
-    conf.loadDialupProfiles(all);
-    if (all.size() > 0)
+    conf.loadDialupProfiles(all_peers_);
+    if (all_peers_.size() > 0)
     {
-        profile_ = all.front();
+        profile_ = all_peers_.front();
     }
     else
     {
         for(int i = 0; i < APNS_COUNT; ++i)
         {
-            if (DialupProfile::defaultPeer().compare(APNS[i].peer, Qt::CaseInsensitive) == 0)
-            {
-                profile_.setName(APNS[i].peer);
-                profile_.setUsername(APNS[i].username);
-                profile_.setPassword(APNS[i].password);
-                break;
-            }
-        }
-
-        if (profile_.name().isEmpty())
-        {
-            // By default use the first one.
-            profile_.setName(APNS[0].peer);
-            profile_.setUsername(APNS[0].username);
-            profile_.setPassword(APNS[0].password);
+            DialupProfile tmp;
+            tmp.setDisplayName(APNS[i].display_name);
+            tmp.setUsername(APNS[i].username);
+            tmp.setPassword(APNS[i].password);
+            tmp.setApn(APNS[i].apn);
+            all_peers_.push_back(tmp);
         }
     }
 
+    // Choose default peer.
+    for(int i = 0; i < all_peers_.size(); ++i)
+    {
+        DialupProfile tmp(all_peers_[i]);
+        if (DialupProfile::defaultPeer().compare(tmp.apn(), Qt::CaseInsensitive) == 0)
+        {
+            profile_ = tmp;
+            break;
+        }
+    }
+
+    if (profile_.apn().isEmpty())
+    {
+        // By default use the first one.
+        DialupProfile tmp(all_peers_[0]);
+        profile_ = tmp;
+    }
 }
 
 void DialUpDialog::saveConf()
@@ -172,31 +181,24 @@ int  DialUpDialog::popup()
     // connect to default network.
     for(int i = 0; i < APNS_COUNT; ++i)
     {
-        if (profile_.name() == APNS[i].peer && sys_.isPowerSwitchOn())
+        /*
+        if (profile_.apn() == APNS[i].peer && sys_.isPowerSwitchOn())
         {
             // connect(APNS[i].peer, APNS[i].username, APNS[i].password);
         }
+        */
     }
     return exec();
 }
 
 void DialUpDialog::keyPressEvent(QKeyEvent *ke)
 {
-    ke->accept();
     if (ke->key() == Qt::Key_Escape)
     {
+        ke->accept();
         accept();
     }
-
-    // Disable the parent widget to update screen.
-
-    // Can not use flush here, could be caused by the keyboard event.
-    /*
-    onyx::screen::instance().enableUpdate(false);
-    QApplication::processEvents();
-    onyx::screen::instance().enableUpdate(true);
-    onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW);
-    */
+    QDialog::keyPressEvent(ke);
 }
 
 void DialUpDialog::keyReleaseEvent(QKeyEvent *ke)
@@ -310,16 +312,16 @@ void DialUpDialog::createLayout()
     // input_layout_.addWidget(&number_label_, 0, 0);
     // input_layout_.addWidget(&number_edit_, 0, 1);
 
-    for(int i = 0; i < APNS_COUNT; ++i)
+    // Disable checkable, otherwise, we cannot use keyboard to navigate buttons.
+    for(int i = 0; i < all_peers_.size(); ++i)
     {
-        OnyxPushButton *btn = new OnyxPushButton(APNS[i].apn, 0);
+        OnyxPushButton *btn = new OnyxPushButton(all_peers_[i].displayName(), 0);
         btn->setAutoExclusive(true);
-        btn->setCheckable(true);
         btn->setData(i);
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), this, SLOT(onApnClicked(bool)));
-        if (APNS[i].peer.compare(profile_.name(), Qt::CaseInsensitive) == 0)
+        if (all_peers_[i].apn().compare(profile_.apn(), Qt::CaseInsensitive) == 0)
         {
             btn->setChecked(true);
         }
@@ -327,7 +329,6 @@ void DialUpDialog::createLayout()
 
     input_layout_.addWidget(&disconnect_button_);
     disconnect_button_.setAutoExclusive(true);
-    disconnect_button_.setCheckable(true);
     QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
     content_layout_.addStretch(0);
 
@@ -346,7 +347,7 @@ void DialUpDialog::connect(const QString & peer,
                            const QString & username,
                            const QString & password)
 {
-    profile_.setName(peer);
+    profile_.setApn(peer);
     profile_.setUsername(username);
     profile_.setPassword(password);
     if (!sys_.connect3g(peer, username, password))
@@ -382,7 +383,6 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
         QString result("Connected. Address: %1");
         result = result.arg(qPrintable(address()));
         state_widget_.setText(result);
-        saveConf();
         QTimer::singleShot(1500, this, SLOT(accept()));
     }
     else if (status == TG_DISCONNECTED)
@@ -410,7 +410,7 @@ void DialUpDialog::onApnClicked(bool)
         if (buttons_.at(i)->isChecked())
         {
             onDisconnectClicked(true);
-            connect(APNS[i].peer, APNS[i].username.toLocal8Bit().constData(), APNS[i].password.toLocal8Bit().constData());
+            connect(all_peers_[i].apn(), all_peers_[i].username().toLocal8Bit().constData(), all_peers_[i].password().toLocal8Bit().constData());
             onConnectClicked(true);
             return;
         }
@@ -468,7 +468,6 @@ void DialUpDialog::onDisconnectClicked(bool)
 
 void DialUpDialog::onGetFocus(OnyxLineEdit *object)
 {
-
 }
 
 void DialUpDialog::onCloseClicked()

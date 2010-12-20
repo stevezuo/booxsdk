@@ -231,6 +231,22 @@ void SysStatus::installSlots()
     }
 
     if (!connection_.connect(service, object, iface,
+                             "volumeUpPressed",
+                             this,
+                             SLOT(onVolumeUpPressed())))
+    {
+        qDebug("\nCan not connect the volumeUpPressed\n");
+    }
+
+    if (!connection_.connect(service, object, iface,
+                             "volumeDownPressed",
+                             this,
+                             SLOT(onVolumeDownPressed())))
+    {
+        qDebug("\nCan not connect the volumeDownPressed\n");
+    }
+
+    if (!connection_.connect(service, object, iface,
                              "stylusChanged",
                              this,
                              SLOT(onStylusChanged(bool))))
@@ -294,6 +310,21 @@ void SysStatus::installSlots()
         qDebug("\nCan not connect the signalStrengthChanged signal\n");
     }
 
+    if (!connection_.connect(service, object, iface,
+                             "volumeUpPressed",
+                             this,
+                             SLOT(onVolumeUpPressed())))
+    {
+        qDebug("\nCan not connect the volumeUpPressed signal\n");
+    }
+
+    if (!connection_.connect(service, object, iface,
+                             "volumeDownPressed",
+                             this,
+                             SLOT(onVolumeDownPressed())))
+    {
+        qDebug("\nCan not connect the volumeDownPressed signal\n");
+    }
     
 }
 
@@ -326,6 +357,29 @@ bool SysStatus::batteryStatus(int& current,
         QList<QVariant> args = reply.arguments();
         current = args[1].toInt();
         status = args[2].toInt();
+        return true;
+    }
+    else if (reply.type() == QDBusMessage::ErrorMessage)
+    {
+        qWarning("%s", qPrintable(reply.errorMessage()));
+    }
+    return false;
+}
+
+/// Ask system manager to broadcast battery signals to all listeners.
+bool SysStatus::updateBatteryStatus()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        service,            // destination
+        object,             // path
+        iface,              // interface
+        "updateBatteryStatus"      // method.
+    );
+
+    // Call.
+    QDBusMessage reply = connection_.call(message);
+    if (reply.type() == QDBusMessage::ReplyMessage)
+    {
         return true;
     }
     else if (reply.type() == QDBusMessage::ErrorMessage)
@@ -1530,6 +1584,16 @@ void SysStatus::onVolumeChanged(int new_volume, bool is_mute)
     emit volumeChanged(new_volume, is_mute);
 }
 
+void SysStatus::onVolumeUpPressed()
+{
+    emit volumeUpPressed();
+}
+
+void SysStatus::onVolumeDownPressed()
+{
+    emit volumeDownPressed();
+}
+
 void SysStatus::onRequestDRMUserInfo(const QString &string, const QString & param)
 {
     emit requestDRMUserInfo(string, param);
@@ -1554,4 +1618,5 @@ void SysStatus::onReport3GNetwork(const int signal, const int total, const int n
 {
     emit report3GNetwork(signal, total, network);
 }
+
 }   // namespace sys

@@ -50,6 +50,20 @@ TEST(ThumbnailTest, SaveAndLoad)
     current.remove(current.filePath(thumbs.databaseName()));
 }
 
+TEST(ThumbnailTest, hasThumb)
+{
+    QFileInfo info("C:\\onyx\\sdk\\doc\\html\\3rdparty.html");
+    cms::ContentThumbnail thumbdb(info.absolutePath());
+    EXPECT_FALSE(thumbdb.hasThumbnail(info.fileName(), cms::THUMBNAIL_LARGE));
 
+    if (!thumbdb.hasThumbnail(info.fileName(), cms::THUMBNAIL_LARGE))
+    {
+        thumbdb.storeThumbnail(info.fileName(),
+                               cms::THUMBNAIL_LARGE,
+                               QImage());
+    }
+
+    EXPECT_TRUE(thumbdb.hasThumbnail(info.fileName(), cms::THUMBNAIL_LARGE));
+}
 
 }   // end of namespace

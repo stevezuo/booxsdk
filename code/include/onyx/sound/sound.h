@@ -8,7 +8,7 @@
 class Sound
 {
 public:
-    Sound(const char *dev = "/dev/dsp");
+    Sound(bool open = true, const char *dev = "/dev/dsp");
     ~Sound();
 
 public:
@@ -34,10 +34,10 @@ public:
     inline bool isEnabled() { return enable_; }
     inline void enable(bool enable = true) { enable_ = enable; }
 
-private:
     bool open(const char *device_name);
     void close();
 
+private:
     QByteArray toStereo(const char *src, int size, const int bps);
 
 private:

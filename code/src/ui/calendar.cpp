@@ -76,7 +76,7 @@ void OnyxCalendar::createLayout()
     calendar_.setStyleSheet(STYLE);
     calendar_.setGridVisible(true);
     calendar_.setNavigationBarVisible(false);
-    calendar_.setMinimumDate(QDate(2009, 8, 7));
+    calendar_.setMinimumDate(QDate(1999, 8, 7));
 
     onCurrentPageChanged(0, 0);
 }

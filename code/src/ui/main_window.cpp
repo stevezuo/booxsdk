@@ -261,7 +261,6 @@ bool MainWindow::event(QEvent * event)
         {
             qDebug("Update request %d, Default", ++count);
             onyx::screen::instance().updateWidgetWithGCInterval(this);
-            mandatory_update_ = false;
         }
         else
         {
@@ -271,6 +270,7 @@ bool MainWindow::event(QEvent * event)
                     onyx::screen::ScreenProxy::GU);
         }
 
+        mandatory_update_ = false;
         event->accept();
         return true;
     }

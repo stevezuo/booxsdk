@@ -318,6 +318,7 @@ void DialUpDialog::createLayout()
         OnyxPushButton *btn = new OnyxPushButton(all_peers_[i].displayName(), 0);
         btn->setAutoExclusive(true);
         btn->setData(i);
+        btn->setCheckable(true);
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), this, SLOT(onApnClicked(bool)));
@@ -328,6 +329,7 @@ void DialUpDialog::createLayout()
     }
 
     input_layout_.addWidget(&disconnect_button_);
+    disconnect_button_.setCheckable(true);
     disconnect_button_.setAutoExclusive(true);
     QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
     content_layout_.addStretch(0);

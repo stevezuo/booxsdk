@@ -270,8 +270,9 @@ void DialUpDialog::createLayout()
     network_label_.setAlignment(Qt::AlignLeft);
     network_label_.setContentsMargins(MARGINS, 0, MARGINS, 0);
 
-    content_layout_.addWidget(&network_label_);
-    content_layout_.addWidget(&state_widget_);
+    state_box_.addWidget(&state_widget_, 600);
+    state_box_.addWidget(&network_label_, 0, static_cast<Qt::AlignmentFlag>(Qt::AlignHCenter|Qt::AlignBottom));
+    content_layout_.addLayout(&state_box_);
     content_layout_.addSpacing(MARGINS);
 
     // top_label_
@@ -319,7 +320,6 @@ void DialUpDialog::createLayout()
         OnyxPushButton *btn = new OnyxPushButton(all_peers_[i].displayName(), 0);
         btn->setAutoExclusive(true);
         btn->setData(i);
-        btn->setCheckable(true);
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), this, SLOT(onApnClicked(bool)));
@@ -330,12 +330,15 @@ void DialUpDialog::createLayout()
     }
 
     input_layout_.addWidget(&disconnect_button_);
-    disconnect_button_.setCheckable(true);
     disconnect_button_.setAutoExclusive(true);
     QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
     content_layout_.addStretch(0);
 
-    // QObject::connect(&number_edit_, SIGNAL(getFocus(NabooLineEdit *)), this, SLOT(onGetFocus(NabooLineEdit *)));
+    if (buttons_.size() > 0)
+    {
+        buttons_.front()->setFocus();
+    }
+
     QObject::connect(&sys_, SIGNAL(pppConnectionChanged(const QString &, int)),
                      this, SLOT(onPppConnectionChanged(const QString &, int)));
     QObject::connect(&sys_, SIGNAL(report3GNetwork(const int, const int, const int)),
@@ -408,10 +411,12 @@ void DialUpDialog::showDNSResult(QHostInfo info)
 
 void DialUpDialog::onApnClicked(bool)
 {
+    QObject * object = sender();
     for(int i = 0; i < buttons_.size(); ++i)
     {
-        if (buttons_.at(i)->isChecked())
+        if (buttons_.at(i) == object)
         {
+            buttons_.at(i)->setFocus();
             onDisconnectClicked(true);
             connect(all_peers_[i].apn(), all_peers_[i].username().toLocal8Bit().constData(), all_peers_[i].password().toLocal8Bit().constData());
             onConnectClicked(true);
@@ -469,6 +474,7 @@ void DialUpDialog::showOffMessage()
 
 void DialUpDialog::onDisconnectClicked(bool)
 {
+    disconnect_button_.setFocus();
     sys::SysStatus::instance().disconnect3g();
 }
 

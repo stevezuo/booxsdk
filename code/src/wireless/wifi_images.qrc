@@ -15,5 +15,15 @@
     <file>images/lock.png</file>
     <file>images/selected.png</file>
     <file>images/customize.png</file>
+
+    <file>images/signal_3g_0.png</file>
+    <file>images/signal_3g_1.png</file>
+    <file>images/signal_3g_2.png</file>
+    <file>images/signal_3g_3.png</file>
+    <file>images/signal_3g_4.png</file>
+    <file>images/signal_3g_5.png</file>
+    <file>images/signal_3g_off.png</file>
+
+
   </qresource>
 </RCC>

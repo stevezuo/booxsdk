@@ -68,40 +68,7 @@ static const APN APNS[] =
 };
 static const int APNS_COUNT = sizeof(APNS)/sizeof(APNS[0]);
 
-DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
-#ifndef Q_WS_QWS
-    : QDialog(parent, 0)
-#else
-    : QDialog(parent, Qt::FramelessWindowHint)
-#endif
-    , big_box_(this)
-    , title_widget_(this)
-    , title_vbox_(&title_widget_)
-    , title_hbox_(0)
-    , content_layout_(0)
-    , network_label_(0)
-    , state_widget_(0)
-    , input_layout_(0)
-    , disconnect_button_(tr("Disconnect"), 0)
-    , top_label_(0)
-    , title_icon_label_(this)
-    , title_text_label_(tr("3G Connection"), this)
-    , close_button_("", this)
-    , sys_(sys)
-    , connecting_(false)
-{
-    loadConf();
-
-    setAutoFillBackground(false);
-    createLayout();
-}
-
-DialUpDialog::~DialUpDialog()
-{
-
-}
-
-QString DialUpDialog::address()
+static QString address()
 {
     QString result;
     QList<QNetworkInterface> all = QNetworkInterface::allInterfaces();
@@ -119,6 +86,40 @@ QString DialUpDialog::address()
         }
     }
     return result;
+}
+
+DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
+#ifndef Q_WS_QWS
+    : QDialog(parent, 0)
+#else
+    : QDialog(parent, Qt::FramelessWindowHint)
+#endif
+    , big_box_(this)
+    , title_widget_(this)
+    , title_vbox_(&title_widget_)
+    , title_hbox_(0)
+    , content_layout_(0)
+    , state_box_(0)
+    , network_label_(0)
+    , state_widget_(0)
+    , input_layout_(0)
+    , disconnect_button_(tr("Disconnect"), this)
+    , top_label_(0)
+    , title_icon_label_(this)
+    , title_text_label_(tr("3G Connection"), this)
+    , close_button_("", this)
+    , sys_(sys)
+    , connecting_(false)
+{
+    loadConf();
+
+    setAutoFillBackground(false);
+    createLayout();
+}
+
+DialUpDialog::~DialUpDialog()
+{
+
 }
 
 void DialUpDialog::loadConf()
@@ -169,7 +170,7 @@ void DialUpDialog::saveConf()
     conf.saveDialupProfiles(all);
 }
 
-int  DialUpDialog::popup()
+int  DialUpDialog::popup(bool show_profile)
 {
     if (!sys_.isPowerSwitchOn())
     {
@@ -389,7 +390,7 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
     }
     else if (status == TG_DISCONNECTED)
     {
-        state_widget_.setText(tr("Disconnect."));
+        state_widget_.setText(tr("Disconnected."));
     }
 }
 
@@ -397,7 +398,7 @@ void DialUpDialog::showDNSResult(QHostInfo info)
 {
     if (info.addresses().size() > 0)
     {
-        state_widget_.setText(tr("Fininshed."));
+        state_widget_.setText(tr("Finished."));
     }
     else
     {
@@ -460,6 +461,9 @@ void DialUpDialog::onReport3GNetwork(const int signal,
 
 void DialUpDialog::showOffMessage()
 {
+    QString t(":/images/signal_3g_off.png");
+    QPixmap pixmap(t);
+    network_label_.setPixmap(pixmap);
     state_widget_.setText(tr("3G Connection is off. Please turn 3G switch on."));
 }
 

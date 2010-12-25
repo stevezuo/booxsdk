@@ -1,23 +1,20 @@
 #include "onyx/sys/sys.h"
 #include "onyx/ui/keyboard_utils.h"
 #include "onyx/ui/keyboard_key.h"
+#include "onyx/ui/keyboard_layout.h"
 #include "onyx/screen/screen_proxy.h"
 
 namespace ui
 {
 
-extern ShiftMap shift_map;
-extern SpecialMaps special_maps;
-
-const QString KEY_BUTTON_STYLE = "      \
+const QString STANDARD_KEY_BUTTON_STYLE = "      \
 QPushButton                             \
 {                                       \
     background: white;                  \
-    font-size: 18px;                    \
+    font-size: 24px;                    \
     border-width: 1px;                  \
     border-color: black;                \
     border-style: solid;                \
-    border-radius: 3;                   \
     color: black;                       \
     padding: 0px;                       \
 }                                       \
@@ -34,7 +31,6 @@ QPushButton:focus                       \
     border-width: 3px;                  \
     border-color: black;                \
     border-style: solid;                \
-    border-radius: 3;                   \
 }                                       \
 QPushButton:checked                     \
 {                                       \
@@ -51,108 +47,141 @@ QPushButton:disabled                    \
     background-color:transparent;       \
 }";
 
-static QSize getKeySize(int code)
-{
-    QChar ch(code);
-    int standard_key_size = standardKeySize();
+const QString FUNCTION_KEY_BUTTON_STYLE = "      \
+QPushButton                             \
+{                                       \
+    background: white;                  \
+    font-size: 12px;                    \
+    border-width: 1px;                  \
+    border-color: black;                \
+    border-style: solid;                \
+    color: black;                       \
+    padding: 0px;                       \
+}                                       \
+QPushButton:pressed                     \
+{                                       \
+    padding-left: 0px;                  \
+    padding-top: 0px;                   \
+    color: white;                       \
+    border-color: white;                \
+    background-color: black;            \
+}                                       \
+QPushButton:focus                       \
+{                                       \
+    border-width: 3px;                  \
+    border-color: black;                \
+    border-style: solid;                \
+}                                       \
+QPushButton:checked                     \
+{                                       \
+    padding-left: 0px;                  \
+    padding-top: 0px;                   \
+    color: white;                       \
+    border-color: white;                \
+    background-color: black;            \
+}                                       \
+QPushButton:disabled                    \
+{                                       \
+    color:transparent;                  \
+    border-color:transparent;           \
+    background-color:transparent;       \
+}";
 
-    if (ch.isNumber())
-    {
-        if (isSwedish())
-        {
-            return QSize(47,47);
-        }
+//static QSize getKeySize(int code)
+//{
+//    QChar ch(code);
+//    int standard_key_size = standardKeySize();
+//
+//    if (ch.isNumber())
+//    {
+//        if (isSwedish())
+//        {
+//            return QSize(47,47);
+//        }
+//
+//        if (isPolish() || isHungarian())
+//        {
+//            return QSize(standard_key_size, standard_key_size);
+//        }
+//        return QSize(52, 52);
+//    }
+//
+//    if (code < BSCode)
+//    {
+//        return QSize(standard_key_size, standard_key_size);
+//    }
+//
+//    if (code > UnknownCode)
+//    {
+//        return QSize(standard_key_size, standard_key_size);
+//    }
+//
+//    if (code == Blank)
+//    {
+//        bool has_touch = SysStatus::instance().hasTouchScreen();
+//        int len = (standard_key_size * (has_touch ? 4 : 6)) + (has_touch ? 12 : 20);
+//        if ((isRussian() && isEnglishLayout()) || isPolish() || isHungarian())
+//        {
+//            len = standard_key_size * (has_touch ? 2 : 4) + (has_touch ? 4 : 12);
+//        }
+//        return QSize(len, standard_key_size);
+//    }
+//
+//    if (code == EnterCode)
+//    {
+//        return QSize(((standard_key_size << 1) + 4) , standard_key_size);
+//    }
+//
+//    if (code == BackSpace)
+//    {
+//        return QSize(((standard_key_size << 1) + 4), standard_key_size);
+//    }
+//
+//    if (code == BackSlash)
+//    {
+//        return QSize(standard_key_size, standard_key_size);
+//    }
+//
+//    if (code == DeleteCode)
+//    {
+//        return QSize(standard_key_size, standard_key_size);
+//    }
+//
+//    if (code == ShiftCode)
+//    {
+//        return QSize(((standard_key_size << 1) + 4), standard_key_size);
+//    }
+//
+//    if (code == HandWriting)
+//    {
+//        return QSize(((standard_key_size << 1) + 4), standard_key_size);
+//    }
+//
+//    if (code == SwitchLanguage)
+//    {
+//        return QSize(((standard_key_size << 1) + 4), standard_key_size);
+//    }
+//
+//    if (code == CapLock)
+//    {
+//       return QSize(((standard_key_size << 1) + 4), standard_key_size);
+//    }
+//
+//    return QSize(standard_key_size, standard_key_size);
+//}
 
-        if (isPolish() || isHungarian())
-        {
-            return QSize(standard_key_size, standard_key_size);
-        }
-        return QSize(52, 52);
-    }
-
-    if (code < BSCode)
-    {
-        return QSize(standard_key_size, standard_key_size);
-    }
-
-    if (code > UnknownCode)
-    {
-        return QSize(standard_key_size, standard_key_size);
-    }
-
-    if (code == Blank)
-    {
-        bool has_touch = SysStatus::instance().hasTouchScreen();
-        int len = (standard_key_size * (has_touch ? 4 : 6)) + (has_touch ? 12 : 20);
-        if ((isRussian() && isEnglishLayout()) || isPolish() || isHungarian())
-        {
-            len = standard_key_size * (has_touch ? 2 : 4) + (has_touch ? 4 : 12);
-        }
-        return QSize(len, standard_key_size);
-    }
-
-    if (code == EnterCode)
-    {
-        return QSize(((standard_key_size << 1) + 4) , standard_key_size);
-    }
-
-    if (code == BackSpace)
-    {
-        return QSize(((standard_key_size << 1) + 4), standard_key_size);
-    }
-
-    if (code == BackSlash)
-    {
-        return QSize(standard_key_size, standard_key_size);
-    }
-
-    if (code == DeleteCode)
-    {
-        return QSize(standard_key_size, standard_key_size);
-    }
-
-    if (code == ShiftCode)
-    {
-        return QSize(((standard_key_size << 1) + 4), standard_key_size);
-    }
-
-    if (code == HandWriting)
-    {
-        return QSize(((standard_key_size << 1) + 4), standard_key_size);
-    }
-
-    if (code == SwitchLanguage)
-    {
-        return QSize(((standard_key_size << 1) + 4), standard_key_size);
-    }
-
-    if (code == CapLock)
-    {
-       return QSize(((standard_key_size << 1) + 4), standard_key_size);
-    }
-
-    return QSize(standard_key_size, standard_key_size);
-}
-
-KeyBoardKey::KeyBoardKey(QWidget *parent)
+KeyBoardKey::KeyBoardKey(KeyboardLayout *layout, QWidget *parent)
     : QPushButton(parent)
-    , code_(BSCode)
-    , shift_code_(BSCode)
     , locked_(false)
     , shifted_(false)
+    , code_(BSCode)
+    , shift_code_(BSCode)
+    , layout_(layout)
 {
-    setStyleSheet(KEY_BUTTON_STYLE);
 }
 
 KeyBoardKey::~KeyBoardKey()
 {
-}
-
-void KeyBoardKey::updateSizeByCode(const int code)
-{
-    setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    QSize size = getKeySize(code);
-    setFixedSize(size);
 }
 
 void KeyBoardKey::setCode(const int code)
@@ -160,10 +189,25 @@ void KeyBoardKey::setCode(const int code)
     code_ = code;
     shift_code_ = code;
 
+    if (code == ShiftCode ||
+        code == CapLock ||
+        code == SwitchLanguage ||
+        code == HandWriting ||
+        code == Blank ||
+        code == EnterCode)
+    {
+        setStyleSheet(FUNCTION_KEY_BUTTON_STYLE);
+    }
+    else
+    {
+        setStyleSheet(STANDARD_KEY_BUTTON_STYLE);
+    }
+
     // TODO. set the size of the button
     if (code > BSCode && code < UnknownCode)
     {
         // set the size and image of the special key
+        SpecialMaps & special_maps = layout_->specialMaps();
         setText(special_maps[code - BSCode - 1].label);
 
         if (code == ShiftCode || code == CapLock)
@@ -185,26 +229,27 @@ void KeyBoardKey::setCode(const int code)
         setIconSize(back_map.size());
     }
 
-    updateSizeByCode(code);
+    setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    setFixedSize(layout_->getKeySize(code));
 }
 
 bool KeyBoardKey::isShiftKey()
 {
     QChar c(code_);
-    if (shift_map.contains(c))
+    if (layout_->shiftMap().contains(c))
     {
         return true;
     }
     return false;
 }
 
-void KeyBoardKey::handleShifted(bool shifted)
+void KeyBoardKey::onShifted(bool shifted)
 {
     shifted_ = shifted;
     updateText();
 }
 
-void KeyBoardKey::handleCapLocked(bool cap_locked)
+void KeyBoardKey::onCapLocked(bool cap_locked)
 {
     locked_ = cap_locked;
     updateText();
@@ -215,6 +260,7 @@ void KeyBoardKey::updateText()
     QChar c(code_);
     if (shifted_ && isShiftKey())
     {
+        ShiftMap & shift_map = layout_->shiftMap();
         shift_code_ = shift_map[code_].unicode();
     }
     else if (c.isLetter() && locked_)
@@ -262,41 +308,17 @@ void KeyBoardKey::mousePressEvent(QMouseEvent *me)
     onyx::screen::instance().enableUpdate(false);
     QPushButton::mousePressEvent(me);
     onyx::screen::instance().enableUpdate(true);
-
     onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW);
 }
 
 void KeyBoardKey::paintEvent(QPaintEvent *pe)
 {
     QPushButton::paintEvent(pe);
-
-    if (this->isEnabled())
-    {
-        QPainter p(this);
-        QRect rc = rect().adjusted(1, 1, 0, 0);
-        QPainterPath path;
-        path.addRoundedRect(rc, 3, 3);
-        QPen pen(Qt::SolidLine);
-        pen.setColor(Qt::black);
-        pen.setWidth(1);
-        p.setPen(pen);
-        p.drawPath(path);
-    }
 }
 
 void KeyBoardKey::resizeEvent(QResizeEvent *re)
 {
-    if (isEnabled())
-    {
-        QPainterPath p;
-        p.addRoundedRect(rect(), 3, 3);
-        QRegion maskedRegion(p.toFillPolygon().toPolygon());
-        setMask(maskedRegion);
-    }
-    else
-    {
-        QPushButton::resizeEvent(re);
-    }
+    QPushButton::resizeEvent(re);
 }
 
 void KeyBoardKey::mouseReleaseEvent(QMouseEvent* me)

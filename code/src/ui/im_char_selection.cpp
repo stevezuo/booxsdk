@@ -65,8 +65,9 @@ static int getKeyWidth(shared_ptr<OnyxPushButton> key)
     return w;
 }
 
-InputMethodCharSelection::InputMethodCharSelection(QWidget* parent)
+InputMethodCharSelection::InputMethodCharSelection(KeyboardLayout* keyboard_layout, QWidget* parent)
     : QWidget(parent, Qt::FramelessWindowHint)
+    , keyboard_layout_(keyboard_layout)
     , ver_layout_(0)
     , button_group_(0)
 {
@@ -153,10 +154,10 @@ void InputMethodCharSelection::init()
     hor_layout1->setSpacing(4);
     hor_layout1->setContentsMargins(0, 0, 0, 0);
 
-    shared_ptr<KeyBoardKey> blank_key(new KeyBoardKey(this));
-    shared_ptr<KeyBoardKey> back_key(new KeyBoardKey(this));
-    shared_ptr<KeyBoardKey> char_key(new KeyBoardKey(this));
-    shared_ptr<KeyBoardKey> enter_key(new KeyBoardKey(this));
+    shared_ptr<KeyBoardKey> blank_key(new KeyBoardKey(keyboard_layout_, this));
+    shared_ptr<KeyBoardKey> back_key(new KeyBoardKey(keyboard_layout_, this));
+    shared_ptr<KeyBoardKey> char_key(new KeyBoardKey(keyboard_layout_, this));
+    shared_ptr<KeyBoardKey> enter_key(new KeyBoardKey(keyboard_layout_, this));
 
     blank_key->setCode(Blank);
     back_key->setCode(BackSpace);

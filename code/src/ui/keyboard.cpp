@@ -198,6 +198,48 @@ static const int auto_select_interval = 2500;
 //    initPolishKeyboard();
 //}
 
+bool isUpKey(const Keys & keys, int row, int column)
+{
+    if ( row == 0 )
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isDownKey(const Keys & keys, int row, int column)
+{
+    if (row == (keys.size() - 1))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isLeftKey(const Keys & keys, int row, int column)
+{
+    if (row > 0 && row < (keys.size() - 1))
+    {
+        if (column < 3)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isRightKey(const Keys & keys, int row, int column)
+{
+    if (row > 0 && row < (keys.size() - 1))
+    {
+        if (column > (keys[row].size() - 4) && column < keys[row].size())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     : QFrame(parent, f)
     , shift_(false)
@@ -269,7 +311,34 @@ void KeyBoard::init(const QLocale & locale)
             uint code = keys[i][k];
             QSize key_size = keyboard_layout_->getKeySize(code);
             shared_ptr<KeyBoardKey> key(new KeyBoardKey(keyboard_layout_.get(), this));
-            key->setCode(code);
+
+            int key_direction = 0;
+            if (isUpKey(keys, i, k))
+            {
+                up_buttons_.push_back(key);
+                key_direction = KEYBOARD_UP;
+            }
+            else if (isDownKey(keys, i, k))
+            {
+                down_buttons_.push_back(key);
+                key_direction = KEYBOARD_DOWN;
+            }
+            else if (isLeftKey(keys, i, k))
+            {
+                left_buttons_.push_back(key);
+                key_direction = KEYBOARD_LEFT;
+            }
+            else if (isRightKey(keys, i, k))
+            {
+                right_buttons_.push_back(key);
+                key_direction = KEYBOARD_RIGHT;
+            }
+            else
+            {
+                center_buttons_.push_back(key);
+                key_direction = KEYBOARD_CENTER;
+            }
+            key->setCode(code, key_direction);
 
             // connect the signals
             connect(this, SIGNAL(shifted(bool)), key.get(), SLOT(onShifted(bool)));
@@ -278,6 +347,8 @@ void KeyBoard::init(const QLocale & locale)
             hor_layout->addWidget(key.get());
             button_group_->addButton(key.get());
             buttons_.push_back(key);
+
+
         }
         ver_layout_->addLayout(hor_layout.get());
     }
@@ -340,6 +411,24 @@ void KeyBoard::resizeEvent(QResizeEvent *re)
     QFrame::resizeEvent(re);
 }
 
+void KeyBoard::showEvent(QShowEvent *se)
+{
+    QTimer::singleShot(1000, this, SLOT(onDisplayArrows()));
+    QFrame::showEvent(se);
+}
+
+void KeyBoard::hideEvent(QHideEvent *he)
+{
+    displayDirectionArrows(false);
+    QFrame::hideEvent(he);
+}
+
+void KeyBoard::onDisplayArrows()
+{
+    displayDirectionArrows(true);
+    center_buttons_[(center_buttons_.size() - 1) >> 1]->setFocus();
+}
+
 bool KeyBoard::event(QEvent *e)
 {
     if (e->type() == QEvent::LocaleChange)
@@ -351,9 +440,6 @@ bool KeyBoard::event(QEvent *e)
 
 void KeyBoard::handleCapLockPressed()
 {
-    // TODO. Remove this test code
-    displayDirectionArrows(true);
-
     lock_ = !lock_;
     emit capLocked(lock_);
     onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC, false);
@@ -649,10 +735,12 @@ void KeyBoard::onButtonClicked(QAbstractButton *button)
 
     updateModifiers();
     postKeyEvent(QEvent::KeyPress, code);
+    displayDirectionArrows(true);
 }
 
 void KeyBoard::displayDirectionArrows(bool display)
 {
+    onyx::screen::instance().enableUpdate(false);
     if (up_arrow_ == 0)
     {
         up_arrow_.reset(new KeyboardDirectionDialog(KEYBOARD_UP, this));
@@ -681,12 +769,51 @@ void KeyBoard::displayDirectionArrows(bool display)
     down_arrow_->ensureVisible(keyboard_layout_.get(), display);
     left_arrow_->ensureVisible(keyboard_layout_.get(), display);
     right_arrow_->ensureVisible(keyboard_layout_.get(), display);
+    onyx::screen::instance().enableUpdate(true);
+    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC4, false);
 }
 
 void KeyBoard::onDirectionSelected(KeyboardDirection direction)
 {
     qDebug("Direction selected!");
     displayDirectionArrows(false);
+
+    int index = 0;
+    switch (direction)
+    {
+    case KEYBOARD_UP:
+        {
+            index = (up_buttons_.size() - 1) >> 1;
+            up_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_DOWN:
+        {
+            index = (down_buttons_.size() - 1) >> 1;
+            down_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_LEFT:
+        {
+            index = (left_buttons_.size() - 1) >> 1;
+            left_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_RIGHT:
+        {
+            index = (right_buttons_.size() - 1) >> 1;
+            right_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_CENTER:
+        {
+            index = (center_buttons_.size() - 1) >> 1;
+            center_buttons_[index]->setFocus();
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 }   // namespace ui

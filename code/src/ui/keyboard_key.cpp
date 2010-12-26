@@ -2,6 +2,7 @@
 #include "onyx/ui/keyboard_utils.h"
 #include "onyx/ui/keyboard_key.h"
 #include "onyx/ui/keyboard_layout.h"
+#include "onyx/ui/keyboard_direction_dialog.h"
 #include "onyx/screen/screen_proxy.h"
 
 namespace ui
@@ -47,10 +48,50 @@ QPushButton:disabled                    \
     background-color:transparent;       \
 }";
 
+const QString CENTER_KEY_BUTTON_STYLE = "      \
+QPushButton                             \
+{                                       \
+    background: #a3a3a3;                \
+    font-size: 24px;                    \
+    border-width: 1px;                  \
+    border-color: black;                \
+    border-style: solid;                \
+    color: black;                       \
+    padding: 0px;                       \
+}                                       \
+QPushButton:pressed                     \
+{                                       \
+    padding-left: 0px;                  \
+    padding-top: 0px;                   \
+    color: white;                       \
+    border-color: white;                \
+    background-color: black;            \
+}                                       \
+QPushButton:focus                       \
+{                                       \
+    border-width: 3px;                  \
+    border-color: black;                \
+    border-style: solid;                \
+}                                       \
+QPushButton:checked                     \
+{                                       \
+    padding-left: 0px;                  \
+    padding-top: 0px;                   \
+    color: white;                       \
+    border-color: white;                \
+    background-color: black;            \
+}                                       \
+QPushButton:disabled                    \
+{                                       \
+    color:transparent;                  \
+    border-color:transparent;           \
+    background-color:transparent;       \
+}";
+
 const QString FUNCTION_KEY_BUTTON_STYLE = "      \
 QPushButton                             \
 {                                       \
-    background: white;                  \
+    background: #eeeeee;                \
     font-size: 12px;                    \
     border-width: 1px;                  \
     border-color: black;                \
@@ -184,7 +225,7 @@ KeyBoardKey::~KeyBoardKey()
 {
 }
 
-void KeyBoardKey::setCode(const int code)
+void KeyBoardKey::setCode(const int code, const int direction)
 {
     code_ = code;
     shift_code_ = code;
@@ -193,10 +234,14 @@ void KeyBoardKey::setCode(const int code)
         code == CapLock ||
         code == SwitchLanguage ||
         code == HandWriting ||
-        code == Blank ||
-        code == EnterCode)
+        code == EnterCode ||
+        code == Blank)
     {
         setStyleSheet(FUNCTION_KEY_BUTTON_STYLE);
+    }
+    else if (direction == KEYBOARD_CENTER)
+    {
+        setStyleSheet(CENTER_KEY_BUTTON_STYLE);
     }
     else
     {

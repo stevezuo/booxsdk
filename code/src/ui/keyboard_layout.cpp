@@ -82,7 +82,7 @@ void KeyboardLayout::initSpecialMaps()
     special_maps_.push_back(SpecialMap(Blank, 0, "Space", 0, 0));
     special_maps_.push_back(SpecialMap(Qt::Key_Enter, 0xffff, "Enter", NULL, 0));
 
-    special_maps_.push_back(SpecialMap(SwitchLanguage, 0xffff, QApplication::tr("Switch Language"), 0, 0));
+    special_maps_.push_back(SpecialMap(SwitchLanguage, 0xffff, QApplication::tr("abc"), 0, 0));
     special_maps_.push_back(SpecialMap(HandWriting, 0xffff, QApplication::tr("Write"), 0, 0));
     special_maps_.push_back(SpecialMap(0, 0, 0, 0, 0));
 }

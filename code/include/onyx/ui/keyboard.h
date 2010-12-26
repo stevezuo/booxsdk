@@ -58,11 +58,14 @@ private Q_SLOTS:
     void onAutoSelect();
     void onHandwritingFunctionClicked(const QModelIndex & index);
     void onDirectionSelected(KeyboardDirection direction);
+    void onDisplayArrows();
 
 protected:
     void init(const QLocale & locale);
     void keyReleaseEvent(QKeyEvent *e);
     void resizeEvent(QResizeEvent *re);
+    void showEvent(QShowEvent *se);
+    void hideEvent(QHideEvent *he);
     bool event(QEvent *e);
 
     void handleCapLockPressed();
@@ -93,6 +96,11 @@ private:
     QVector< shared_ptr<QHBoxLayout> > hor_layouts_;
     scoped_ptr<QButtonGroup> button_group_;
     QVector< shared_ptr<KeyBoardKey> > buttons_;
+    QVector< shared_ptr<KeyBoardKey> > up_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > down_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > left_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > right_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > center_buttons_;
 
     QObject *receiver_;
 

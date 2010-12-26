@@ -5,6 +5,14 @@
 namespace ui
 {
 
+static const QString DIRECTION_DIALOG_STYLE = "\
+QDialog                                 \
+{                                       \
+     background: transparent;           \
+     border-width: 0px;                 \
+     border-color: transparent;         \
+}";
+
 static const QString KEYBOARD_DIRECTION_BUTTON_STYLE =   "\
 QPushButton                             \
 {                                       \
@@ -52,8 +60,9 @@ KeyboardDirectionDialog::KeyboardDirectionDialog(KeyboardDirection direction, QW
     , direction_(direction)
 {
     createLayout();
+    setStyleSheet(DIRECTION_DIALOG_STYLE);
     setModal(false);
-    setBackgroundRole(QPalette::Dark);
+    setBackgroundRole(QPalette::Light);
     setFocusPolicy(Qt::NoFocus);
 }
 
@@ -121,13 +130,13 @@ QPoint KeyboardDirectionDialog::getDisplayPosition(KeyboardLayout *layout)
         break;
     case KEYBOARD_LEFT:
         {
-            x = parent_rect.left() + (standard_size.width() + 4) * 3 - (direction_button_.width() >> 1);
+            x = parent_rect.left() + (standard_size.width() * 3 + 8) - (direction_button_.width() >> 1);
             y = parent_rect.top() + ((parent_rect.height() - direction_button_.height()) >> 1);
         }
         break;
     case KEYBOARD_RIGHT:
         {
-            x = parent_rect.right() - (standard_size.width() + 4) * 3 + (direction_button_.width() >> 1);
+            x = parent_rect.right() - (standard_size.width() * 3 + 8) + (direction_button_.width() >> 1);
             y = parent_rect.top() + ((parent_rect.height() - direction_button_.height()) >> 1);
         }
         break;
@@ -175,6 +184,8 @@ void KeyboardDirectionDialog::createLayout()
     direction_button_.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     direction_button_.setFocusPolicy(Qt::NoFocus);
 
+    setMask(direction_button_map.mask());
+
     layout_.addWidget(&direction_button_);
     connect(&direction_button_, SIGNAL(clicked(bool)), this, SLOT(onDirectionClicked(bool)), Qt::QueuedConnection);
 }
@@ -200,6 +211,9 @@ void KeyboardDirectionDialog::keyReleaseEvent(QKeyEvent *ke)
         break;
     case Qt::Key_Right:
         emit directionSelected(KEYBOARD_RIGHT);
+        break;
+    case Qt::Key_Return:
+        emit directionSelected(KEYBOARD_CENTER);
         break;
     default:
         break;

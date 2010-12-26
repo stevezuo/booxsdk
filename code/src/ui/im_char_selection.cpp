@@ -1,6 +1,7 @@
 #include "onyx/ui/im_char_selection.h"
 #include "onyx/ui/keyboard_utils.h"
 #include "onyx/screen/screen_proxy.h"
+#include "onyx/ui/keyboard_direction_dialog.h"
 
 namespace ui
 {
@@ -159,10 +160,10 @@ void InputMethodCharSelection::init()
     shared_ptr<KeyBoardKey> char_key(new KeyBoardKey(keyboard_layout_, this));
     shared_ptr<KeyBoardKey> enter_key(new KeyBoardKey(keyboard_layout_, this));
 
-    blank_key->setCode(Blank);
-    back_key->setCode(BackSpace);
-    char_key->setCode(HandWriting);
-    enter_key->setCode(EnterCode);
+    blank_key->setCode(Blank, KEYBOARD_UP);
+    back_key->setCode(BackSpace, KEYBOARD_UP);
+    char_key->setCode(HandWriting, KEYBOARD_UP);
+    enter_key->setCode(EnterCode, KEYBOARD_UP);
 
     char_key->setText(QCoreApplication::tr("Keyboard"));
     char_key->setFixedWidth(140);

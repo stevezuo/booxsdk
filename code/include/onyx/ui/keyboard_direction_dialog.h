@@ -12,7 +12,8 @@ enum KeyboardDirection
     KEYBOARD_UP = 0,
     KEYBOARD_DOWN,
     KEYBOARD_LEFT,
-    KEYBOARD_RIGHT
+    KEYBOARD_RIGHT,
+    KEYBOARD_CENTER
 };
 
 class KeyboardLayout;

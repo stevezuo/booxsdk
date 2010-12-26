@@ -14,7 +14,7 @@ public:
     KeyBoardKey(KeyboardLayout *layout, QWidget *parent = 0);
     virtual ~KeyBoardKey();
 
-    void setCode(const int code);
+    void setCode(const int code, const int direction);
     inline int code();
 
     bool isShiftKey();

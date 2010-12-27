@@ -136,7 +136,7 @@ QPoint KeyboardDirectionDialog::getDisplayPosition(KeyboardLayout *layout)
         break;
     case KEYBOARD_RIGHT:
         {
-            x = parent_rect.right() - (standard_size.width() * 3 + 16) + (direction_button_.width() >> 1);
+            x = parent_rect.right() - (standard_size.width() * 4) + (direction_button_.width() >> 1);
             y = parent_rect.top() + ((parent_rect.height() - direction_button_.height()) >> 1);
         }
         break;

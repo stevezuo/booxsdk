@@ -779,7 +779,7 @@ void KeyBoard::displayDirectionArrows(bool display)
     left_arrow_->ensureVisible(keyboard_layout_.get(), display);
     right_arrow_->ensureVisible(keyboard_layout_.get(), display);
     onyx::screen::instance().enableUpdate(true);
-    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC, false);
+    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GU, false);
 }
 
 void KeyBoard::onDirectionSelected(KeyboardDirection direction)

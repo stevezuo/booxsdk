@@ -37,6 +37,7 @@ private:
 
     void keyPressEvent(QKeyEvent *ke);
     void keyReleaseEvent(QKeyEvent *ke);
+    void paintEvent(QPaintEvent *pe);
 
     QPoint getDisplayPosition(KeyboardLayout *layout);
     QRect getKeyboardArea();

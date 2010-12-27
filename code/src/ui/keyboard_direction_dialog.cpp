@@ -18,7 +18,7 @@ QPushButton                             \
 {                                       \
     background: transparent;            \
     font-size: 14px;                    \
-    border-width: 1px;                  \
+    border-width: 0px;                  \
     border-color: transparent;          \
     border-style: solid;                \
     color: black;                       \
@@ -35,12 +35,12 @@ QPushButton:checked                     \
 {                                       \
     padding-left: 0px;                  \
     padding-top: 0px;                   \
-    border-color: black;                \
+    border-color: transparent;          \
     background-color: black;            \
 }                                       \
 QPushButton:focus {                     \
-    border-width: 2px;                  \
-    border-color: black;                \
+    border-width: 0px;                  \
+    border-color: transparent;          \
     border-style: solid;                \
     border-radius: 3;                   \
 }                                       \
@@ -125,7 +125,7 @@ QPoint KeyboardDirectionDialog::getDisplayPosition(KeyboardLayout *layout)
     case KEYBOARD_DOWN:
         {
             x = parent_rect.left() + ((parent_rect.width() - direction_button_.width()) >> 1);
-            y = parent_rect.bottom() - (standard_size.height() - (direction_button_.height() >> 1));
+            y = parent_rect.bottom() - (standard_size.height() + 8);
         }
         break;
     case KEYBOARD_LEFT:
@@ -136,7 +136,7 @@ QPoint KeyboardDirectionDialog::getDisplayPosition(KeyboardLayout *layout)
         break;
     case KEYBOARD_RIGHT:
         {
-            x = parent_rect.right() - (standard_size.width() * 3 + 8) + (direction_button_.width() >> 1);
+            x = parent_rect.right() - (standard_size.width() * 3 + 16) + (direction_button_.width() >> 1);
             y = parent_rect.top() + ((parent_rect.height() - direction_button_.height()) >> 1);
         }
         break;
@@ -193,6 +193,11 @@ void KeyboardDirectionDialog::createLayout()
 void KeyboardDirectionDialog::keyPressEvent(QKeyEvent *ke)
 {
     ke->ignore();
+}
+
+void KeyboardDirectionDialog::paintEvent(QPaintEvent *pe)
+{
+    QDialog::paintEvent(pe);
 }
 
 void KeyboardDirectionDialog::keyReleaseEvent(QKeyEvent *ke)

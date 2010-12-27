@@ -277,6 +277,12 @@ void KeyBoard::init(const QLocale & locale)
 
     // reset the layout
     buttons_.clear();
+    up_buttons_.clear();
+    down_buttons_.clear();
+    left_buttons_.clear();
+    right_buttons_.clear();
+    center_buttons_.clear();
+
     hor_layouts_.clear();
     QLayout * prev_layout = layout();
     if (prev_layout != 0)
@@ -426,7 +432,6 @@ void KeyBoard::hideEvent(QHideEvent *he)
 void KeyBoard::onDisplayArrows()
 {
     displayDirectionArrows(true);
-    center_buttons_[(center_buttons_.size() - 1) >> 1]->setFocus();
 }
 
 bool KeyBoard::event(QEvent *e)
@@ -715,6 +720,7 @@ void KeyBoard::onButtonClicked(QAbstractButton *button)
     KeyBoardKey *key = dynamic_cast<KeyBoardKey*>(button);
 
     uint code = key->code();
+    bool display_direction_arrows = true;
     switch (code)
     {
     case CapLock:
@@ -725,9 +731,11 @@ void KeyBoard::onButtonClicked(QAbstractButton *button)
         break;
     case SwitchLanguage:
         handleSwitchLanguagePressed();
+        display_direction_arrows = false;
         break;
     case HandWriting:
         handleHandWriting();
+        display_direction_arrows = false;
         break;
     default:
         break;
@@ -735,11 +743,12 @@ void KeyBoard::onButtonClicked(QAbstractButton *button)
 
     updateModifiers();
     postKeyEvent(QEvent::KeyPress, code);
-    displayDirectionArrows(true);
+    displayDirectionArrows(display_direction_arrows);
 }
 
 void KeyBoard::displayDirectionArrows(bool display)
 {
+    onyx::screen::instance().ensureUpdateFinished();
     onyx::screen::instance().enableUpdate(false);
     if (up_arrow_ == 0)
     {
@@ -770,7 +779,7 @@ void KeyBoard::displayDirectionArrows(bool display)
     left_arrow_->ensureVisible(keyboard_layout_.get(), display);
     right_arrow_->ensureVisible(keyboard_layout_.get(), display);
     onyx::screen::instance().enableUpdate(true);
-    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC4, false);
+    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GC, false);
 }
 
 void KeyBoard::onDirectionSelected(KeyboardDirection direction)

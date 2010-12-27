@@ -26,6 +26,10 @@
     <file>images/right.png</file>
     <file>images/up.png</file>
     <file>images/down.png</file>
+    <file>images/keyboard_up.png</file>
+    <file>images/keyboard_down.png</file>
+    <file>images/keyboard_left.png</file>
+    <file>images/keyboard_right.png</file>
 
     <file>images/bookmark.png</file>
     <file>images/add_bookmark.png</file>
@@ -166,6 +170,7 @@
     <file>images/wifi.png</file>
     <file>images/power.png</file>
     <file>images/clock.png</file>
+    <file>images/clock_tool.png</file>
     <file>images/volume.png</file>
 
     <file>images/left_arrow.png</file>

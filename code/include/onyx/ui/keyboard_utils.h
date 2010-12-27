@@ -7,24 +7,26 @@
 namespace ui
 {
 
-enum { BSCode = 0x80,
-       BackSpace,
-       TabCode,
-       CapLock,
-       ShiftCode,
-       SpaceCode,
-       BackSlash,
-       LeftCode,
-       RightCode,
-       InsertCode,
-       HomeCode,
-       EndCode,
-       DeleteCode,
-       Blank,
-       EnterCode,
-       SwitchLanguage,
-       HandWriting,
-       UnknownCode
+enum
+{
+    BSCode = 0x80,
+    BackSpace,
+    TabCode,
+    CapLock,
+    ShiftCode,
+    SpaceCode,
+    BackSlash,
+    LeftCode,
+    RightCode,
+    InsertCode,
+    HomeCode,
+    EndCode,
+    DeleteCode,
+    Blank,
+    EnterCode,
+    SwitchLanguage,
+    HandWriting,
+    UnknownCode
 };
 
 struct SpecialMap {
@@ -51,6 +53,8 @@ typedef ShiftMap::iterator ShiftIter;
 
 typedef QVector<SpecialMap> SpecialMaps;
 typedef SpecialMaps::iterator SpecialMapIter;
+
+typedef QVector< QVector<uint> > Keys;
 
 int standardKeySize();
 bool isRussian();

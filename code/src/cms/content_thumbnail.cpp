@@ -84,14 +84,16 @@ bool ContentThumbnail::hasThumbnail(const QString & file_name,
         query.prepare("SELECT large_image FROM thumbs where name = ? and date >= ?");
     }
     query.addBindValue(file_name);
-    query.addBindValue(info.lastModified().toString(Qt::ISODate));
+    QString t = info.lastModified().toString(Qt::ISODate);
+    query.addBindValue(t);
     if (!query.exec())
     {
         qDebug() << query.lastError().text();
         return false;
     }
 
-    return (query.size() > 0);
+    // Should not use size here.
+    return (query.next());
 }
 
 bool ContentThumbnail::loadThumbnail(const QString & file_name,
@@ -121,8 +123,7 @@ bool ContentThumbnail::loadThumbnail(const QString & file_name,
         return false;
     }
 
-    int count = query.record().count();
-    if (count > 0 && query.next())
+    if (query.next())
     {
         return thumbnail.loadFromData(query.value(0).toByteArray());
     }
@@ -154,7 +155,7 @@ bool ContentThumbnail::storeThumbnail(const QString & file_name,
 
     query.addBindValue(file_name);
     QString t = info.lastModified().toString(Qt::ISODate);
-    query.addBindValue(info.lastModified().toString(Qt::ISODate));
+    query.addBindValue(t);
 
     QByteArray ba;
     QBuffer buffer(&ba);

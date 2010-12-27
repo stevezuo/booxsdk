@@ -6,21 +6,22 @@
 namespace ui
 {
 
+class KeyboardLayout;
 class KeyBoardKey : public QPushButton
 {
     Q_OBJECT
 public:
-    KeyBoardKey(QWidget *parent = 0);
+    KeyBoardKey(KeyboardLayout *layout, QWidget *parent = 0);
     virtual ~KeyBoardKey();
 
-    void setCode(const int code);
+    void setCode(const int code, const int direction);
     inline int code();
 
     bool isShiftKey();
 
 public Q_SLOTS:
-    void handleShifted(bool);
-    void handleCapLocked(bool);
+    void onShifted(bool);
+    void onCapLocked(bool);
 
 protected:
     bool event(QEvent*);
@@ -32,15 +33,15 @@ protected:
     void mouseReleaseEvent(QMouseEvent*);
 
 private:
-    void updateSizeByCode(const int code);
     void updateText();
     void handleLayoutBySpecialChar(bool shifted);
 
 private:
-    int code_;
-    int shift_code_;
-    bool locked_;
-    bool shifted_;
+    bool  locked_;
+    bool  shifted_;
+    int   code_;
+    int   shift_code_;
+    KeyboardLayout *layout_;
 };
 
 inline int KeyBoardKey::code()

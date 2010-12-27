@@ -6,6 +6,9 @@
 #include "tree_view.h"
 #include "im_char_selection.h"
 #include "single_shot_timer.h"
+#include "keyboard_layout_provider.h"
+#include "keyboard_layout.h"
+#include "keyboard_direction_dialog.h"
 
 namespace sketch
 {
@@ -44,20 +47,25 @@ Q_SIGNALS:
     void capLocked(bool);
 
 public Q_SLOTS:
-    void handleButtonClicked(QAbstractButton *button);
+    void onButtonClicked(QAbstractButton *button);
 
 private Q_SLOTS:
-    void handleStrokeStarted();
-    void handlePointAdded(SketchPoint point);
-    void handleStrokeAdded(const Points & points);
-    void handleFinishCharacterTimeOut();
-    void handleTextSelected(const QString & text, int index);
-    void handleAutoSelect();
-    void handleHandwritingFunctionClicked(const QModelIndex & index);
+    void onStrokeStarted();
+    void onPointAdded(SketchPoint point);
+    void onStrokeAdded(const Points & points);
+    void onFinishCharacterTimeOut();
+    void onTextSelected(const QString & text, int index);
+    void onAutoSelect();
+    void onHandwritingFunctionClicked(const QModelIndex & index);
+    void onDirectionSelected(KeyboardDirection direction);
+    void onDisplayArrows();
 
 protected:
-    void init();
+    void init(const QLocale & locale);
     void keyReleaseEvent(QKeyEvent *e);
+    void resizeEvent(QResizeEvent *re);
+    void showEvent(QShowEvent *se);
+    void hideEvent(QHideEvent *he);
     bool event(QEvent *e);
 
     void handleCapLockPressed();
@@ -72,18 +80,30 @@ protected:
     void displayAssociatedChars(const QString & current_text);
     bool adjustAssociatedChar(const QString & dst_text, int index);
 
+    void displayDirectionArrows(bool display);
+
 private:
     bool shift_;
     bool lock_;
     bool is_handwriting_;
+
+    KeyboardLayoutProvider keyboard_layout_provider_;
+    scoped_ptr<KeyboardLayout> keyboard_layout_;
+
     Qt::KeyboardModifiers modifiers_;
 
     QVBoxLayout * ver_layout_;
     QVector< shared_ptr<QHBoxLayout> > hor_layouts_;
     scoped_ptr<QButtonGroup> button_group_;
     QVector< shared_ptr<KeyBoardKey> > buttons_;
+    QVector< shared_ptr<KeyBoardKey> > up_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > down_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > left_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > right_buttons_;
+    QVector< shared_ptr<KeyBoardKey> > center_buttons_;
 
     QObject *receiver_;
+
     scoped_ptr<sketch::SketchProxy> sketch_proxy_;
     scoped_ptr<handwriting::HandwritingWidget> handwriting_widget_;
     scoped_ptr<ui::OnyxTreeView> handwriting_functions_view_;
@@ -93,7 +113,15 @@ private:
     OnyxSingleShotTimer finish_character_timer_;
     OnyxSingleShotTimer auto_select_timer_;
     QStringList candidates_;
-    QString     current_text_;      // current text is used for adjusting the 
+    QString     current_text_;
+
+    scoped_ptr<KeyboardDirectionDialog> up_arrow_;
+    scoped_ptr<KeyboardDirectionDialog> down_arrow_;
+    scoped_ptr<KeyboardDirectionDialog> left_arrow_;
+    scoped_ptr<KeyboardDirectionDialog> right_arrow_;
+
+private:
+    friend class KeyboardDirectionDialog;
 };
 
 ///
@@ -109,6 +137,6 @@ QObject * KeyBoard::receiver()
     return receiver_;
 }
 
-}   // namespace ui
+};   // namespace ui
 
 #endif      // ONYX_KEYBOARD_H_

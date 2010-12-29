@@ -429,6 +429,15 @@ void KeyBoard::hideEvent(QHideEvent *he)
     QFrame::hideEvent(he);
 }
 
+void KeyBoard::moveEvent(QMoveEvent *me)
+{
+    if (up_arrow_->isVisible())
+    {
+        displayDirectionArrows(true);
+    }
+    QFrame::moveEvent(me);
+}
+
 void KeyBoard::onDisplayArrows()
 {
     displayDirectionArrows(true);

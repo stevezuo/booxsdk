@@ -66,6 +66,7 @@ protected:
     void resizeEvent(QResizeEvent *re);
     void showEvent(QShowEvent *se);
     void hideEvent(QHideEvent *he);
+    void moveEvent(QMoveEvent *me);
     bool event(QEvent *e);
 
     void handleCapLockPressed();

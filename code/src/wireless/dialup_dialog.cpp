@@ -182,7 +182,7 @@ int  DialUpDialog::popup(bool show_profile)
     // connect to default network.
     for(int i = 0; i < APNS_COUNT; ++i)
     {
-        if(qgetenv("CONNECT_TO_DEFAULT_APN") == QString("1"))
+        if(qgetenv("CONNECT_TO_DEFAULT_APN").toInt() == 1)
         {
             if (profile_.apn() == APNS[i].apn && sys_.isPowerSwitchOn())
             {

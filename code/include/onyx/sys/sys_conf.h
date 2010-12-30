@@ -43,6 +43,7 @@ public:
     bool rssService(Service &);
     bool sudokuService(Service &);
     bool officeViewerService(Service & service);
+    bool hasOfficeViewer();
     bool onyxReaderService(Service & service);
     bool nabooReaderService(Service &  service);
     bool registerService(const Service &, const QString &);

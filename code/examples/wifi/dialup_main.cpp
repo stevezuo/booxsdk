@@ -11,8 +11,9 @@ int main(int argc, char * argv[])
     QApplication app(argc, argv);
 
     Q_INIT_RESOURCE(onyx_ui_images);
+    Q_INIT_RESOURCE(wifi_images);
     DialUpDialog dialog(0, SysStatus::instance());
-    dialog.popup();
+    dialog.popup(false);
     app.setQuitOnLastWindowClosed(true);
     return app.exec();
 }

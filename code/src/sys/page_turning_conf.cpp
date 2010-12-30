@@ -7,7 +7,7 @@
 namespace sys
 {
 int PageTurningConfig::direction_ = 1;
-int PageTurningConfig::THRESHOLD = 30;
+int PageTurningConfig::THRESHOLD = 10;
 
 /// Page turning configuration. By default, from right to left or
 /// from bottom to top is interpreted as next.

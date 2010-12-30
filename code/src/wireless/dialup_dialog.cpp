@@ -184,9 +184,10 @@ int  DialUpDialog::popup(bool show_profile)
     {
         if(qgetenv("CONNECT_TO_DEFAULT_APN").toInt() == 1)
         {
-            if (profile_.apn() == APNS[i].apn && sys_.isPowerSwitchOn())
+            if (sys_.isPowerSwitchOn())
             {
-                connect(APNS[i].apn, APNS[i].username, APNS[i].password);
+                connect("", "", "");
+                break;
             }
         } 
     }

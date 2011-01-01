@@ -546,9 +546,9 @@ void KeyBoard::handleHandWriting()
     if (sketch_proxy_ == 0)
     {
         sketch_proxy_.reset(new sketch::SketchProxy());
-        connect(sketch_proxy_.get(), SIGNAL(strokeStarted()), this, SLOT(handleStrokeStarted()));
-        connect(sketch_proxy_.get(), SIGNAL(pointAdded(SketchPoint)), this, SLOT(handlePointAdded(SketchPoint)));
-        connect(sketch_proxy_.get(), SIGNAL(strokeAdded(const Points &)), this, SLOT(handleStrokeAdded(const Points &)));
+        connect(sketch_proxy_.get(), SIGNAL(strokeStarted()), this, SLOT(onStrokeStarted()));
+        connect(sketch_proxy_.get(), SIGNAL(pointAdded(SketchPoint)), this, SLOT(onPointAdded(SketchPoint)));
+        connect(sketch_proxy_.get(), SIGNAL(strokeAdded(const Points &)), this, SLOT(onStrokeAdded(const Points &)));
     }
 
     onyx::screen::instance().enableUpdate(false);
@@ -576,6 +576,11 @@ void KeyBoard::handleHandWriting()
     // update the widget
     onyx::screen::instance().enableUpdate(true);
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
+
+    if (!is_handwriting_)
+    {
+        QTimer::singleShot(1000, this, SLOT(onDisplayArrows()));
+    }
 }
 
 void KeyBoard::onStrokeStarted()

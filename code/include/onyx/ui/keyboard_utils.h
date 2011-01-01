@@ -29,6 +29,16 @@ enum
     UnknownCode
 };
 
+enum KeyboardDirection
+{
+    KEYBOARD_UP = 0,
+    KEYBOARD_DOWN,
+    KEYBOARD_LEFT,
+    KEYBOARD_RIGHT,
+    KEYBOARD_CENTER,
+    KEYBOARD_NORMAL
+};
+
 struct SpecialMap {
     int qcode;
     ushort unicode;

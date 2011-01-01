@@ -14,14 +14,19 @@ public:
     KeyBoardKey(KeyboardLayout *layout, QWidget *parent = 0);
     virtual ~KeyBoardKey();
 
-    void setCode(const int code, const int direction);
+    void setCode(const int code, const int location, const KeyboardDirection direction);
     inline int code();
+    inline void setDirection(KeyboardDirection direction) { direction_ = direction; }
 
     bool isShiftKey();
+
+Q_SIGNALS:
+    void directionKeyPressed(KeyboardDirection direction);
 
 public Q_SLOTS:
     void onShifted(bool);
     void onCapLocked(bool);
+    void onDisplayArrow(bool display);
 
 protected:
     bool event(QEvent*);
@@ -37,11 +42,13 @@ private:
     void handleLayoutBySpecialChar(bool shifted);
 
 private:
-    bool  locked_;
-    bool  shifted_;
-    int   code_;
-    int   shift_code_;
-    KeyboardLayout *layout_;
+    bool              locked_;
+    bool              shifted_;
+    bool              display_arrow_;
+    int               code_;
+    int               shift_code_;
+    KeyboardDirection direction_;
+    KeyboardLayout    *layout_;
 };
 
 inline int KeyBoardKey::code()

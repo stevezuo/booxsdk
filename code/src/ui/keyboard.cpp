@@ -240,6 +240,30 @@ bool isRightKey(const Keys & keys, int row, int column)
     return false;
 }
 
+bool isUpArrowKey(const Keys & keys, int row, int column)
+{
+    int center_width  = keys[1].size() - 6;
+    return ((row == 1) && (column == 3 + ((center_width - 1) >> 1)));
+}
+
+bool isDownArrowKey(const Keys & keys, int row, int column)
+{
+    int center_width  = keys[1].size() - 6;
+    return ((row == keys.size() - 2) && (column == 3 + ((center_width - 1) >> 1)));
+}
+
+bool isLeftArrowKey(const Keys & keys, int row, int column)
+{
+    int center_height = keys.size() - 2;
+    return ((column == 3) && (row == 1 + ((center_height - 1) >> 1)));
+}
+
+bool isRightArrowKey(const Keys & keys, int row, int column)
+{
+    int center_height = keys.size() - 2;
+    return ((column == keys[1].size() - 4) && (row == 1 + ((center_height - 1) >> 1)));
+}
+
 KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     : QFrame(parent, f)
     , shift_(false)
@@ -252,10 +276,6 @@ KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     , sketch_proxy_(0)
     , finish_character_timer_(finish_charater_interval, this, SLOT(onFinishCharacterTimeOut()))
     , auto_select_timer_(auto_select_interval, this, SLOT(onAutoSelect()))
-    , up_arrow_(0)
-    , down_arrow_(0)
-    , left_arrow_(0)
-    , right_arrow_(0)
 {
     init(QLocale::system());
 }
@@ -318,46 +338,71 @@ void KeyBoard::init(const QLocale & locale)
             QSize key_size = keyboard_layout_->getKeySize(code);
             shared_ptr<KeyBoardKey> key(new KeyBoardKey(keyboard_layout_.get(), this));
 
-            int key_direction = 0;
+            int key_location = 0;
+            KeyboardDirection key_direction = KEYBOARD_NORMAL;
             if (isUpKey(keys, i, k))
             {
                 up_buttons_.push_back(key);
-                key_direction = KEYBOARD_UP;
+                key_location = KEYBOARD_UP;
             }
             else if (isDownKey(keys, i, k))
             {
                 down_buttons_.push_back(key);
-                key_direction = KEYBOARD_DOWN;
+                key_location = KEYBOARD_DOWN;
             }
             else if (isLeftKey(keys, i, k))
             {
                 left_buttons_.push_back(key);
-                key_direction = KEYBOARD_LEFT;
+                key_location = KEYBOARD_LEFT;
             }
             else if (isRightKey(keys, i, k))
             {
                 right_buttons_.push_back(key);
-                key_direction = KEYBOARD_RIGHT;
+                key_location = KEYBOARD_RIGHT;
             }
             else
             {
                 center_buttons_.push_back(key);
-                key_direction = KEYBOARD_CENTER;
+                key_location = KEYBOARD_CENTER;
+                if (isUpArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_UP;
+                }
+                else if (isDownArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_DOWN;
+                }
+                else if (isLeftArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_LEFT;
+                }
+                else if (isRightArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_RIGHT;
+                }
             }
-            key->setCode(code, key_direction);
+            key->setCode(code, key_location, key_direction);
 
             // connect the signals
             connect(this, SIGNAL(shifted(bool)), key.get(), SLOT(onShifted(bool)));
             connect(this, SIGNAL(capLocked(bool)), key.get(), SLOT(onCapLocked(bool)));
+            if (key_direction >= KEYBOARD_UP && key_direction < KEYBOARD_CENTER)
+            {
+                connect(this, SIGNAL(displayArrow(bool)), key.get(), SLOT(onDisplayArrow(bool)));
+            }
 
             hor_layout->addWidget(key.get());
             button_group_->addButton(key.get());
             buttons_.push_back(key);
-
-
         }
         ver_layout_->addLayout(hor_layout.get());
     }
+
+    // connect signal of center key
+    shared_ptr<KeyBoardKey> center_button = center_buttons_[(center_buttons_.size() - 1) >> 1];
+    connect(center_button.get(), SIGNAL(directionKeyPressed(KeyboardDirection)), this, SLOT(onDirectionSelected(KeyboardDirection)));
+    connect(this, SIGNAL(displayArrow(bool)), center_button.get(), SLOT(onDisplayArrow(bool)));
+    center_button->setDirection(KEYBOARD_CENTER);
 
     im_char_selection_.reset(new InputMethodCharSelection(keyboard_layout_.get(), this));
     ver_layout_->addWidget(im_char_selection_.get());
@@ -427,15 +472,6 @@ void KeyBoard::hideEvent(QHideEvent *he)
 {
     displayDirectionArrows(false);
     QFrame::hideEvent(he);
-}
-
-void KeyBoard::moveEvent(QMoveEvent *me)
-{
-    if (up_arrow_->isVisible())
-    {
-        displayDirectionArrows(true);
-    }
-    QFrame::moveEvent(me);
 }
 
 void KeyBoard::onDisplayArrows()
@@ -759,34 +795,14 @@ void KeyBoard::displayDirectionArrows(bool display)
 {
     onyx::screen::instance().ensureUpdateFinished();
     onyx::screen::instance().enableUpdate(false);
-    if (up_arrow_ == 0)
+
+    if (display)
     {
-        up_arrow_.reset(new KeyboardDirectionDialog(KEYBOARD_UP, this));
-        connect(up_arrow_.get(), SIGNAL(directionSelected(KeyboardDirection)),
-                this, SLOT(onDirectionSelected(KeyboardDirection)));
+        shared_ptr<KeyBoardKey> center_button = center_buttons_[(center_buttons_.size() - 1) >> 1];
+        center_button->setFocus();
     }
-    if (down_arrow_ == 0)
-    {
-        down_arrow_.reset(new KeyboardDirectionDialog(KEYBOARD_DOWN, this));
-        connect(down_arrow_.get(), SIGNAL(directionSelected(KeyboardDirection)),
-                this, SLOT(onDirectionSelected(KeyboardDirection)));
-    }
-    if (left_arrow_ == 0)
-    {
-        left_arrow_.reset(new KeyboardDirectionDialog(KEYBOARD_LEFT, this));
-        connect(left_arrow_.get(), SIGNAL(directionSelected(KeyboardDirection)),
-                this, SLOT(onDirectionSelected(KeyboardDirection)));
-    }
-    if (right_arrow_ == 0)
-    {
-        right_arrow_.reset(new KeyboardDirectionDialog(KEYBOARD_RIGHT, this));
-        connect(right_arrow_.get(), SIGNAL(directionSelected(KeyboardDirection)),
-                this, SLOT(onDirectionSelected(KeyboardDirection)));
-    }
-    up_arrow_->ensureVisible(keyboard_layout_.get(), display);
-    down_arrow_->ensureVisible(keyboard_layout_.get(), display);
-    left_arrow_->ensureVisible(keyboard_layout_.get(), display);
-    right_arrow_->ensureVisible(keyboard_layout_.get(), display);
+    emit displayArrow(display);
+
     onyx::screen::instance().enableUpdate(true);
     onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GU, false);
 }

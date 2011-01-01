@@ -45,6 +45,7 @@ public:
 Q_SIGNALS:
     void shifted(bool);
     void capLocked(bool);
+    void displayArrow(bool);
 
 public Q_SLOTS:
     void onButtonClicked(QAbstractButton *button);
@@ -66,7 +67,6 @@ protected:
     void resizeEvent(QResizeEvent *re);
     void showEvent(QShowEvent *se);
     void hideEvent(QHideEvent *he);
-    void moveEvent(QMoveEvent *me);
     bool event(QEvent *e);
 
     void handleCapLockPressed();
@@ -115,11 +115,6 @@ private:
     OnyxSingleShotTimer auto_select_timer_;
     QStringList candidates_;
     QString     current_text_;
-
-    scoped_ptr<KeyboardDirectionDialog> up_arrow_;
-    scoped_ptr<KeyboardDirectionDialog> down_arrow_;
-    scoped_ptr<KeyboardDirectionDialog> left_arrow_;
-    scoped_ptr<KeyboardDirectionDialog> right_arrow_;
 
 private:
     friend class KeyboardDirectionDialog;

@@ -160,10 +160,10 @@ void InputMethodCharSelection::init()
     shared_ptr<KeyBoardKey> char_key(new KeyBoardKey(keyboard_layout_, this));
     shared_ptr<KeyBoardKey> enter_key(new KeyBoardKey(keyboard_layout_, this));
 
-    blank_key->setCode(Blank, KEYBOARD_UP);
-    back_key->setCode(BackSpace, KEYBOARD_UP);
-    char_key->setCode(HandWriting, KEYBOARD_UP);
-    enter_key->setCode(EnterCode, KEYBOARD_UP);
+    blank_key->setCode(Blank, KEYBOARD_UP, KEYBOARD_NORMAL);
+    back_key->setCode(BackSpace, KEYBOARD_UP, KEYBOARD_NORMAL);
+    char_key->setCode(HandWriting, KEYBOARD_UP, KEYBOARD_NORMAL);
+    enter_key->setCode(EnterCode, KEYBOARD_UP, KEYBOARD_NORMAL);
 
     char_key->setText(QCoreApplication::tr("Keyboard"));
     char_key->setFixedWidth(140);

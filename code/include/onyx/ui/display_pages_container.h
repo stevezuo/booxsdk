@@ -21,9 +21,14 @@ public:
     ~DisplayPages() {}
 
     void push_back(shared_ptr<ValueType> p);
+    void push_front(shared_ptr<ValueType> p);
     void clear();
     size_t size();
     shared_ptr<ValueType> get_page(int key);
+    shared_ptr<ValueType> last();
+    shared_ptr<ValueType> front();
+
+    DisplayPages<ValueType> & operator=(const DisplayPages<ValueType> & other);
 
 private:
     typedef QVector<shared_ptr<ValueType> > Pages;
@@ -37,6 +42,13 @@ void DisplayPages<ValueType>::push_back(shared_ptr<ValueType> p)
 {
     p->lock();
     pages_.push_back(p);
+}
+
+template <class ValueType>
+void DisplayPages<ValueType>::push_front(shared_ptr<ValueType> p)
+{
+    p->lock();
+    pages_.push_front(p);
 }
 
 template <class ValueType>
@@ -59,6 +71,25 @@ template <class ValueType>
 shared_ptr<ValueType> DisplayPages<ValueType>::get_page(int key)
 {
     return pages_[key];
+}
+
+template <class ValueType>
+DisplayPages<ValueType> & DisplayPages<ValueType>::operator=(const DisplayPages<ValueType> & other)
+{
+    this->pages_ = other.pages_;
+    return *this;
+}
+
+template <class ValueType>
+shared_ptr<ValueType> DisplayPages<ValueType>::last()
+{
+    return pages_.last();
+}
+
+template <class ValueType>
+shared_ptr<ValueType> DisplayPages<ValueType>::front()
+{
+    return pages_.front();
 }
 
 };

@@ -65,12 +65,6 @@ void ReadingToolsActions::generateActions(const vector<ReadingToolsType> & value
                 act->setIcon(QIcon(QPixmap(":/images/show_all_bookmarks.png")));
             }
             break;
-        case THUMBNAIL_VIEW_TOOL:
-            {
-                act->setText(QCoreApplication::tr("Thumbnail View"));
-                act->setIcon(QIcon(QPixmap(":/images/thumbnail.png")));
-            }
-            break;
         case NOTES_BACKGROUND_SELECTION:
             {
                 act->setText(QCoreApplication::tr("Select Background"));

@@ -137,6 +137,12 @@ void ViewActions::generatePageLayoutActions(const PageLayouts & layouts,
                 act->setIcon(QIcon(QPixmap(":/images/single_page.png")));
             }
             break;
+        case THUMBNAIL_LAYOUT:
+            {
+                act->setText(QCoreApplication::tr("Thumbnail View"));
+                act->setIcon(QIcon(QPixmap(":/images/thumbnail.png")));
+            }
+            break;
         default:
             break;
         }

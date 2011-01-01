@@ -8,11 +8,12 @@
 namespace ui
 {
 
+class KeyboardLayout;
 class InputMethodCharSelection : public QWidget
 {
     Q_OBJECT
 public:
-    InputMethodCharSelection(QWidget* parent = 0);
+    InputMethodCharSelection(KeyboardLayout* keyboard_layout, QWidget* parent = 0);
     ~InputMethodCharSelection();
 
     void displayCharacters(const QStringList & texts);
@@ -29,6 +30,7 @@ private Q_SLOTS:
     void onButtonClicked(QAbstractButton *button);
 
 private:
+    KeyboardLayout * keyboard_layout_;
     QVBoxLayout * ver_layout_;
     QVector< shared_ptr<QHBoxLayout> > hor_layouts_;
     scoped_ptr<QButtonGroup> button_group_;

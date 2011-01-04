@@ -31,11 +31,6 @@ bool is166E()
     return platform() == MARVELL;
 }
 
-bool isIMX31L()
-{
-    return (platform().compare("IMX31L", Qt::CaseInsensitive) == 0);
-}
-
 QString soundModule()
 {
     static QString mod = qgetenv("SOUND_MODULE");
@@ -45,7 +40,7 @@ QString soundModule()
         {
             mod = "snd-soc-imx-3stack-wm8711";
         }
-        else if (is166e())
+        else if (is166E())
         {
             mod = "snd-soc-booxe";
         }

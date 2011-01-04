@@ -4,9 +4,10 @@ SET(HDRS
   ${ONYXSDK_DIR}/include/onyx/wireless/dialup_dialog.h
   ${ONYXSDK_DIR}/include/onyx/wireless/ap_conf_dialog.h
   ${ONYXSDK_DIR}/include/onyx/wireless/wifi_dialog.h
-  ${ONYXSDK_DIR}/include/onyx/wireless/ap_item.h)
+  ${ONYXSDK_DIR}/include/onyx/wireless/ap_item.h
+  ${ONYXSDK_DIR}/include/onyx/wireless/connecting_dialog.h)
 
-SET(SRCS dialup_dialog.cpp wifi_dialog.cpp  ap_conf_dialog.cpp  ap_item.cpp)
+SET(SRCS dialup_dialog.cpp wifi_dialog.cpp  ap_conf_dialog.cpp  ap_item.cpp connecting_dialog.cpp)
 SET(MOC_HDRS ${HDRS})
 
 # Resources.

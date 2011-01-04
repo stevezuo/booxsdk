@@ -27,10 +27,6 @@ public:
     virtual int key() const = 0;
     virtual const QString& path() const = 0;
     virtual const QString& name() const = 0;
-
-    virtual void clearPage() = 0;
-    virtual int length() = 0;
-    virtual void setOriginSize(const QSize & size) = 0;
     virtual ZoomFactor zoom() = 0;
 
     void unlock() { locked_ = false; }

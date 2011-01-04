@@ -74,11 +74,7 @@ void ThumbnailPage::setThumb(const QRect &rect,
 
 ThumbnailLayout::ThumbnailLayout()
 : pages_()
-, rows_(2)
-, columns_(2)
-, space_(10)
-, txt_dir_(TEXT_BOTTOM)
-, txt_ratio_(0.1f)
+, context_()
 , widget_()
 {
 }
@@ -90,63 +86,13 @@ ThumbnailLayout::~ThumbnailLayout()
 void ThumbnailLayout::setWidgetSize(const QSize &s)
 {
     widget_ = s;
-
     updatePages();
 }
 
-void ThumbnailLayout::setRow(const int r)
+void ThumbnailLayout::updateContext(const ThumbnailLayoutContext & other)
 {
-    rows_ = r;
-
+    context_ = other;
     updatePages();
-}
-
-int  ThumbnailLayout::numRow()
-{
-    return rows_;
-}
-
-void ThumbnailLayout::setColumn(const int c)
-{
-    columns_ = c;
-
-    updatePages();
-}
-
-int  ThumbnailLayout::numColumn()
-{
-    return columns_;
-}
-
-void ThumbnailLayout::setSpace(const int s)
-{
-    space_ = s;
-
-    updatePages();
-}
-
-int  ThumbnailLayout::space()
-{
-    return space_;
-}
-
-void ThumbnailLayout::setTextRatio(const float r)
-{
-    txt_ratio_ = r;
-
-    updatePages();
-}
-
-void ThumbnailLayout::setTextDirection(const TextDirection d)
-{
-    txt_dir_ = d;
-
-    updatePages();
-}
-
-TextDirection ThumbnailLayout::textDirection()
-{
-    return txt_dir_;
 }
 
 ThumbnailPages& ThumbnailLayout::pages()
@@ -180,8 +126,8 @@ void ThumbnailLayout::updatePages()
     assert(widget_.isValid());
 
     // calculate the size of each thumbnail
-    int thumb_width = (widget_.width() - (columns_ + 1) * space_) / columns_;
-    int thumb_height = (widget_.height() - (rows_ + 1) * space_) / rows_;
+    int thumb_width = (widget_.width() - (context_.columns + 1) * context_.space) / context_.columns;
+    int thumb_height = (widget_.height() - (context_.rows + 1) * context_.space) / context_.rows;
     if (thumb_width <= 0 || thumb_height <= 0)
     {
         return;
@@ -190,15 +136,15 @@ void ThumbnailLayout::updatePages()
     pages_.clear();
     // calculate the size and position of each thumbnail
     int x = 0, y = 0;
-    for (int i = 0; i < rows_; ++i)
+    for (int i = 0; i < context_.rows; ++i)
     {
-        y = i * thumb_height + (i + 1) * space_;
-        for (int j = 0; j < columns_; ++j)
+        y = i * thumb_height + (i + 1) * context_.space;
+        for (int j = 0; j < context_.columns; ++j)
         {
-            x = j * thumb_width + (j + 1) * space_;
+            x = j * thumb_width + (j + 1) * context_.space;
             ThumbnailPage page;
             QRect rect(x, y, thumb_width, thumb_height);
-            page.setThumb(rect, txt_dir_, txt_ratio_);
+            page.setThumb(rect, context_.txt_dir, context_.txt_ratio);
 
             pages_.push_back(page);
         }

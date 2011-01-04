@@ -8,6 +8,7 @@
 #include <QtNetwork/QtNetwork>
 #include "onyx/sys/sys_status.h"
 #include "onyx/sys/sys_conf.h"
+#include "onyx/sys/platform.h"
 
 namespace sys
 {

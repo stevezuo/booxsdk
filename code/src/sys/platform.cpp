@@ -4,6 +4,8 @@
 
 namespace sys
 {
+static const QString IM31L = "imx31L";
+static const QString MARVELL = "166e";
 
 QString platform()
 {
@@ -13,12 +15,21 @@ QString platform()
         p = qgetenv("PLATFORM");
         if (p.isEmpty())
         {
-            p = "freescale";
+            p = IM31L;
         }
     }
     return p;
 }
 
+bool isIMX31L()
+{
+    return platform() == IM31L;
+}
+
+bool is166E()
+{
+    return platform() == MARVELL;
+}
 
 int defaultRotation()
 {

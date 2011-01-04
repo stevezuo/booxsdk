@@ -21,7 +21,7 @@ static void loadKernelModule()
     QString mod = qgetenv("SOUND_MODULE");
     if (mod.isEmpty())
     {
-      mod = "snd-soc-imx-3stack-wm8711";
+        mod = "snd-soc-imx-3stack-wm8711";
     }
     module << mod;
     loader.start("modprobe", module);

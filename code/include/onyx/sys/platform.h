@@ -12,6 +12,10 @@ namespace sys
 
 QString platform();
 
+bool isIMX31L();
+
+bool is166E();
+
 int defaultRotation();
 
 }

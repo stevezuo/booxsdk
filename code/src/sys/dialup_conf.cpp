@@ -5,7 +5,8 @@
 namespace sys
 {
 
-static const QString NAME_TAG = "name";
+static const QString NAME_TAG = "display";
+static const QString APN_TAG = "apn";
 static const QString NUMBER_TAG = "number";
 static const QString USERNAME_TAG = "username";
 static const QString PASSWORD_TAG = "password";
@@ -43,14 +44,24 @@ void DialupProperties::fromByteArray(QByteArray & data)
     stream >> *this;
 }
 
-QString DialupProperties::name()
+QString DialupProperties::displayName()
 {
     return value(NAME_TAG).toString();
 }
 
-void DialupProperties::setName(const QString &name)
+void DialupProperties::setDisplayName(const QString &name)
 {
     insert(NAME_TAG, name);
+}
+
+QString DialupProperties::apn()
+{
+    return value(APN_TAG).toString();
+}
+
+void DialupProperties::setApn(const QString &apn)
+{
+    insert(APN_TAG, apn);
 }
 
 QString DialupProperties::number()
@@ -166,6 +177,40 @@ bool DialupConfig::clear(QSqlDatabase& database)
     QSqlQuery query(database);
     query.prepare( "delete from Dialup_conf");
     return query.exec();
+}
+
+QString DialupConfig::defaultPincode()
+{
+    // check pincode file at first.
+#ifndef _WINDOWS
+    QFile file("/usr/share/3g/pincode");
+#else
+    QFile file("c://onyx/sdk/3g/pincode");
+#endif
+    QString pin;
+    if (file.open(QIODevice::ReadOnly))
+    {
+        return QString::fromLocal8Bit(file.readAll().constData()).trimmed();
+    }
+
+    pin = qgetenv("PINCODE").constData();
+    pin = pin.trimmed();
+    return pin;
+}
+
+void DialupConfig::setDefaultPincode(const QString &pincode)
+{
+    // save pincode to file.
+#ifndef _WINDOWS
+    QFile file("/usr/share/3g/pincode");
+#else
+    QFile file("c://onyx/sdk/3g/pincode");
+#endif
+
+    if (file.open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text))
+    {
+        file.write(pincode.toLocal8Bit());
+    }
 }
 
 }

@@ -11,7 +11,8 @@
 #include "onyx/sys/pm_conf.h"
 #include "onyx/sys/volume_conf.h"
 #include "onyx/sys/sys_utils.h"
-
+#include "onyx/sys/font_conf.h"
+#include "onyx/sys/misc_conf.h"
 #include "device_conf.h"
 
 namespace sys
@@ -30,6 +31,8 @@ SystemConfig::SystemConfig()
     DialupConfig::makeSureTableExist(*database_);
     DeviceConfig::makeSureTableExist(*database_);
     PageTurningConfig::makeSureTableExist(*database_);
+    FontConfig::makeSureTableExist(*database_);
+    MiscConfig::makeSureTableExist(*database_);
 }
 
 SystemConfig::~SystemConfig()
@@ -103,6 +106,26 @@ bool SystemConfig::sudokuService(Service &service)
     return ServiceConfig::sudokuService(*database_, service);
 }
 
+bool SystemConfig::officeViewerService(Service & service)
+{
+    return ServiceConfig::officeViewerService(*database_, service);
+}
+
+bool SystemConfig::hasOfficeViewer()
+{
+    return ServiceConfig::hasOfficeViewer();
+}
+
+bool SystemConfig::onyxReaderService(Service & service)
+{
+    return ServiceConfig::onyxReaderService(*database_, service);
+}
+
+bool SystemConfig::nabooReaderService(Service & service)
+{
+    return ServiceConfig::nabooReaderService(*database_, service);
+}
+
 bool SystemConfig::registerService(const Service &service,
                                    const QString &path)
 {
@@ -146,6 +169,16 @@ QLocale SystemConfig::locale()
 bool SystemConfig::setLocale(const QLocale & locale)
 {
     return LocaleConfig::setLocale(*database_, locale);
+}
+
+void SystemConfig::setDefaultFontFamily(const QString & name)
+{
+    return FontConfig::setDefaultFontFamily(*database_, name);
+}
+
+QString SystemConfig::defaultFontFamily()
+{
+    return FontConfig::defaultFontFamily(*database_);
 }
 
 bool SystemConfig::dictionaryRoots(QStringList & dirs)
@@ -484,6 +517,16 @@ bool SystemConfig::saveDialupProfiles(DialupProfiles & all)
     return DialupConfig::save(*database_, all);
 }
 
+QString SystemConfig::defaultPincode()
+{
+    return DialupConfig::defaultPincode();
+}
+
+void SystemConfig::setDefaultPincode(const QString &pincode)
+{
+    return DialupConfig::setDefaultPincode(pincode);
+}
+
 /// This function returns 1 for next page. It returns -1 for previous page.
 /// If the distance is too small, it returns 0.
 /// Caller can the direction by using setDirection.
@@ -615,6 +658,34 @@ QString SystemConfig::flashInfo()
 bool SystemConfig::showBrowsingHistory()
 {
     return qgetenv("SHOW_BROWSING_HISTORY").toInt()?true:false;
+}
+
+QString SystemConfig::defaultAccessPoint()
+{
+    return qgetenv("DEFAULT_ACCESS_POINT");
+}
+
+bool SystemConfig::setMiscValue(const QString &key, const QString &value)
+{
+    return MiscConfig::setValue(*database_, key, value);
+}
+
+QString SystemConfig::miscValue(const QString &key)
+{
+    return MiscConfig::getValue(*database_, key);
+}
+
+int SystemConfig::screenUpdateGCInterval()
+{
+    const int DEFAULT_GC_INTERVAL = 1;
+    QString value = MiscConfig::getValue(*database_, "screen_update_setting");
+    bool ok;
+    int interval = value.toInt(&ok, 10);
+    if (!ok)
+    {
+        interval = DEFAULT_GC_INTERVAL;
+    }
+    return interval;
 }
 
 }

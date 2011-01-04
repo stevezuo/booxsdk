@@ -9,6 +9,7 @@
 #endif
 
 #include "onyx/sound/sound.h"
+#include "onyx/sys/platform.h"
 #include <QProcess>
 
 /// Before using sound driver, make sure the sound module has been loaded.
@@ -18,18 +19,14 @@ static void loadKernelModule()
 #ifndef _WINDOWS
     QProcess loader;
     QStringList module;
-    QString mod = qgetenv("SOUND_MODULE");
-    if (mod.isEmpty())
-    {
-        mod = "snd-soc-imx-3stack-wm8711";
-    }
-    module << mod;
+    module << sys::soundModule();
     loader.start("modprobe", module);
-    const int TIME = 2000;
-    if (loader.waitForStarted(TIME))
+    const int TIME = 5000;
+    if (!loader.waitForStarted(TIME))
     {
-        loader.waitForFinished(TIME);
+        qWarning("Could not start modprobe.");
     }
+    loader.waitForFinished(TIME);
 
     // Have to ensure the module has been loaded.
     loader.start("lsmod");
@@ -38,13 +35,16 @@ static void loadKernelModule()
 }
 
 
-Sound::Sound(const char *dev)
+Sound::Sound(bool o, const char *dev)
 : device_(-1)
 , enable_(true)
 , bps_(8)
 , channels_(0)
 {
-    open(dev);
+    if (o)
+    {
+        open(dev);
+    }
 }
 
 Sound::~Sound()
@@ -55,6 +55,7 @@ Sound::~Sound()
 bool Sound::open(const char *device_name)
 {
 #ifndef _WINDOWS
+    qDebug("open sound device.");
     device_ = ::open(device_name, O_WRONLY);
     if (device_ == -1)
     {

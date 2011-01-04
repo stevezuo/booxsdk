@@ -131,6 +131,14 @@ public:
     void drawLines(QPoint * points, const int size, unsigned char color, int width);
     void fillScreen(unsigned char color);
 
+    void setGCInterval(const int interval);
+    void resetGUCount();
+    void updateWidgetWithGCInterval(const QWidget *widget,
+                                   const QRect * rect = 0,
+                                   Waveform w = INVALID,
+                                   bool whole = true,
+                                   ScreenCommand::WaitMode wait = ScreenCommand::WAIT_BEFORE_UPDATE);
+
 private:
     ScreenProxy();
     ScreenProxy(ScreenProxy & ref){}
@@ -143,6 +151,12 @@ private:
     Waveform previous_waveform_;     ///< Stored waveform.
     QRect rect_;            ///< The update region.
     int user_data_;         ///< User data.
+    int gc_interval_;     ///< The interval for screen update with GC waveform
+    int gu_count_;              ///< Count the screen update with GU waveform
+
+private:
+    void increaseGUCount();
+
 };
 
 /// Is screen update enabled.

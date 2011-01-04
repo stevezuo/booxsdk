@@ -61,6 +61,23 @@ static Service sudoku_service("com.onyx.service.sudoku",
                             OPEN_METHOD,
                             "sudoku");
 
+static  Service naboo_viewer_service("com.onyx.service.naboo_viewer",
+                            "/com/onyx/object/naboo_viewer",
+                            "com.onyx.interface.naboo_viewer",
+                            OPEN_METHOD,
+                            "naboo_reader");
+
+static   Service onyx_reader("com.onyx.service.onyx_reader",
+                             "/com/onyx/object/onyx_reader",
+                             "com.onyx.interface.onyx_reader",
+                            OPEN_METHOD,
+                            "onyx_reader");
+
+static   Service office_viewer("com.onyx.service.office_viewer",
+                            "/com/onyx/object/office_viewer",
+                            "com.onyx.interface.office_viewer",
+                            OPEN_METHOD,
+                            "office_viewer");
 Service::Service()
 {
 }
@@ -155,6 +172,7 @@ bool ServiceConfig::makeSureTableExist(QSqlDatabase& database)
 
 void ServiceConfig::loadDefaultServices()
 {
+    int enable_fb_epub = qgetenv("ENABLE_FB_EPUB").toInt();
     if (DEFAULT_SERVICES.size() <= 0)
     {
         // html based service.
@@ -167,13 +185,11 @@ void ServiceConfig::loadDefaultServices()
         DEFAULT_SERVICES.push_back(html_service);
 
         // naboo viewer service.
-        Service naboo_viewer_service("com.onyx.service.naboo_viewer",
-                                     "/com/onyx/object/naboo_viewer",
-                                     "com.onyx.interface.naboo_viewer",
-                                     OPEN_METHOD,
-                                     "naboo_reader");
         naboo_viewer_service.mutable_extensions().push_back("pdf");
-        naboo_viewer_service.mutable_extensions().push_back("epub");
+        if (!enable_fb_epub)
+        {
+            naboo_viewer_service.mutable_extensions().push_back("epub");
+        }
         DEFAULT_SERVICES.push_back(naboo_viewer_service);
 
         // image service.
@@ -208,12 +224,7 @@ void ServiceConfig::loadDefaultServices()
         DEFAULT_SERVICES.push_back(wb_service);
 
         // onyx_reader based service
-        bool has_office_viewer = QFile::exists("/opt/onyx/arm/bin/office_viewer");
-        Service onyx_reader("com.onyx.service.onyx_reader",
-                             "/com/onyx/object/onyx_reader",
-                             "com.onyx.interface.onyx_reader",
-                            OPEN_METHOD,
-                            "onyx_reader");
+        bool has_office_viewer = hasOfficeViewer();
         if (!has_office_viewer)
         {
             onyx_reader.mutable_extensions().push_back("doc");
@@ -232,17 +243,17 @@ void ServiceConfig::loadDefaultServices()
         onyx_reader.mutable_extensions().push_back("gz");
         onyx_reader.mutable_extensions().push_back("abf");
 
+        if (enable_fb_epub)
+        {
+            onyx_reader.mutable_extensions().push_back("epub");
+        }
+
         // Seems it can not open tar file.
         DEFAULT_SERVICES.push_back(onyx_reader);
 
         // Office viewer.
         if (has_office_viewer)
         {
-            Service office_viewer("com.onyx.service.office_viewer",
-                                  "/com/onyx/object/office_viewer",
-                                  "com.onyx.interface.office_viewer",
-                                  OPEN_METHOD,
-                                  "office_viewer");
             office_viewer.mutable_extensions().push_back("doc");
             office_viewer.mutable_extensions().push_back("docx");
             office_viewer.mutable_extensions().push_back("xls");
@@ -279,6 +290,9 @@ void ServiceConfig::loadAllServices(QSqlDatabase &database, Services &services)
     QString ext, svr, obj, ifname, method, app;
     services.clear();
 
+    loadDefaultServices();
+    services = DEFAULT_SERVICES;
+
     QSqlQuery query(database);
     query.prepare("SELECT extension, service, object, interface, method, app FROM services");
     query.exec();
@@ -297,6 +311,15 @@ void ServiceConfig::loadAllServices(QSqlDatabase &database, Services &services)
         service.mutable_extensions().push_back(ext);
 
         ServicesIter iter;
+        // first kill default service for ext
+        for(iter = services.begin(); iter != services.end(); ++iter)
+        {
+            if (iter->extensions().contains(ext))
+            {
+                iter->mutable_extensions().removeAll(ext);
+            }
+        }
+
         for(iter = services.begin(); iter != services.end(); ++iter)
         {
             if (*iter == service)
@@ -310,12 +333,6 @@ void ServiceConfig::loadAllServices(QSqlDatabase &database, Services &services)
         {
             services.push_back(service);
         }
-    }
-
-    if (services.size() <= 0)
-    {
-        loadDefaultServices();
-        services = DEFAULT_SERVICES;
     }
 }
 
@@ -405,6 +422,28 @@ bool ServiceConfig::sudokuService(QSqlDatabase&, Service &service)
     return true;
 }
 
+bool ServiceConfig::nabooReaderService(QSqlDatabase &, Service & service)
+{
+    service = naboo_viewer_service;
+    return true;
+}
+
+bool ServiceConfig::onyxReaderService(QSqlDatabase &, Service & service)
+{
+    service = onyx_reader;
+    return true;
+}
+
+bool ServiceConfig::officeViewerService(QSqlDatabase &, Service & service)
+{
+    service = office_viewer;
+    return true;
+}
+
+bool ServiceConfig::hasOfficeViewer()
+{
+    return QFile::exists("/opt/onyx/arm/bin/office_viewer");
+}
 
 bool ServiceConfig::checkService(QSqlDatabase &database, const Service &service)
 {

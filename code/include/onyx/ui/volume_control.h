@@ -1,70 +1,26 @@
 #ifndef ONYX_VOLUME_CONTROL_H_
 #define ONYX_VOLUME_CONTROL_H_
 
+#include <QMap>
+#include <QImage>
 #include "onyx/base/base.h"
 #include "ui_global.h"
 
 namespace ui
 {
 
-class VolumeControl : public QWidget
-{
-    Q_OBJECT
-
-public:
-    VolumeControl(QWidget *parent);
-    virtual ~VolumeControl(void);
-
-public Q_SLOTS:
-    void onVolumeChanged(int volume, bool is_mute);
-
-Q_SIGNALS:
-    void clicked(const int percent, const int value);
-    void changing(const int value, const int total);
-
-private Q_SLOTS:
-    void onTimeout();
-    void onClicked(const int percent, const int value);
-    void onChanged(const int value, const int total);
-
-private:
-    virtual void paintEvent(QPaintEvent *);
-    virtual void mousePressEvent(QMouseEvent *);
-    virtual void mouseMoveEvent(QMouseEvent *);
-    virtual void resizeEvent(QResizeEvent * event);
-    virtual void mouseReleaseEvent(QMouseEvent *);
-
-    void createLayout();
-    void updatefgPath(int value);
-    void updatePath(QPainterPath & path, const QRect & rect);
-
-private:
-    int current_;
-    int min_;
-    int max_;
-    int pressing_value_;
-    QTimer timer_;
-
-    QPainterPath bk_path_;
-    QPainterPath fg_path_;
-};
-
 class VolumeControlDialog : public QDialog
 {
     Q_OBJECT
-    VolumeControlDialog();
-    VolumeControlDialog(QWidget *parent);
-public:
-    ~VolumeControlDialog();
-    static VolumeControlDialog * instance()
-    {
-        static VolumeControlDialog dialog(0);
-        return &dialog;
-    }
 
-    inline void setAlwaysActive(bool always_active) { always_active_ = always_active; }
-    inline bool alwaysActive() { return always_active_; }
-    void ensureVisible();
+public:
+    VolumeControlDialog(QWidget *parent);
+    ~VolumeControlDialog();
+
+public Q_SLOTS:
+    int ensureVisible();
+    virtual void done(int r);
+    void onScreenUpdateRequest();
 
 protected:
     bool event(QEvent *e);
@@ -80,11 +36,29 @@ protected:
 private:
     void createLayout();
 
+public Q_SLOTS:
+    void setVolume(int volume, bool is_mute);
+    void resetTimer();
+
+Q_SIGNALS:
+    void finished(const int value, const int total);
+
+private Q_SLOTS:
+    void stopTimer();
+    void onTimeout();
+
 public:
     QHBoxLayout        layout_;
-    VolumeControl      control_;
-    bool               update_parent_;
-    bool               always_active_;
+    QImage image_;
+
+    int current_;
+    int min_;
+    int max_;
+    int pressing_value_;
+    QTimer timer_;
+    QMap<int, int>     map_;
+
+    QLabel label_;
 };
 
 };  // namespace ui

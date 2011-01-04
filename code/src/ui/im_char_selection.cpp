@@ -1,6 +1,7 @@
 #include "onyx/ui/im_char_selection.h"
 #include "onyx/ui/keyboard_utils.h"
 #include "onyx/screen/screen_proxy.h"
+#include "onyx/ui/keyboard_direction_dialog.h"
 
 namespace ui
 {
@@ -65,8 +66,9 @@ static int getKeyWidth(shared_ptr<OnyxPushButton> key)
     return w;
 }
 
-InputMethodCharSelection::InputMethodCharSelection(QWidget* parent)
+InputMethodCharSelection::InputMethodCharSelection(KeyboardLayout* keyboard_layout, QWidget* parent)
     : QWidget(parent, Qt::FramelessWindowHint)
+    , keyboard_layout_(keyboard_layout)
     , ver_layout_(0)
     , button_group_(0)
 {
@@ -153,15 +155,15 @@ void InputMethodCharSelection::init()
     hor_layout1->setSpacing(4);
     hor_layout1->setContentsMargins(0, 0, 0, 0);
 
-    shared_ptr<KeyBoardKey> blank_key(new KeyBoardKey(this));
-    shared_ptr<KeyBoardKey> back_key(new KeyBoardKey(this));
-    shared_ptr<KeyBoardKey> char_key(new KeyBoardKey(this));
-    shared_ptr<KeyBoardKey> enter_key(new KeyBoardKey(this));
+    shared_ptr<KeyBoardKey> blank_key(new KeyBoardKey(keyboard_layout_, this));
+    shared_ptr<KeyBoardKey> back_key(new KeyBoardKey(keyboard_layout_, this));
+    shared_ptr<KeyBoardKey> char_key(new KeyBoardKey(keyboard_layout_, this));
+    shared_ptr<KeyBoardKey> enter_key(new KeyBoardKey(keyboard_layout_, this));
 
-    blank_key->setCode(Blank);
-    back_key->setCode(BackSpace);
-    char_key->setCode(HandWriting);
-    enter_key->setCode(EnterCode);
+    blank_key->setCode(Blank, KEYBOARD_UP, KEYBOARD_NORMAL);
+    back_key->setCode(BackSpace, KEYBOARD_UP, KEYBOARD_NORMAL);
+    char_key->setCode(HandWriting, KEYBOARD_UP, KEYBOARD_NORMAL);
+    enter_key->setCode(EnterCode, KEYBOARD_UP, KEYBOARD_NORMAL);
 
     char_key->setText(QCoreApplication::tr("Keyboard"));
     char_key->setFixedWidth(140);

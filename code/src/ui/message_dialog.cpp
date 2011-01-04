@@ -168,6 +168,7 @@ void MessageDialog::keyReleaseEvent(QKeyEvent *key)
     case Qt::Key_PageDown:
     case Qt::Key_PageUp:
         navigate(key->key());
+        onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::DW, false);
         break;
     case Qt::Key_Escape:
         reject();

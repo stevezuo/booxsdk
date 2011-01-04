@@ -2,6 +2,7 @@
 #include "onyx/screen/screen_proxy.h"
 #include "onyx/data/sketch_proxy.h"
 #include "onyx/ui/keyboard.h"
+#include "onyx/ui/keyboard_language_dialog.h"
 #include "onyx/data/handwriting_manager.h"
 #include "onyx/data/handwriting_widget.h"
 #include "onyx/data/handwriting_functions_model.h"
@@ -30,426 +31,237 @@ QLocale::Language currentLanguage()
 
 static const int finish_charater_interval = 1000;
 static const int auto_select_interval = 2500;
-static bool is_english = true;
-bool isRussian()
-{
-    return (currentLanguage() == QLocale::Russian ||
-            currentCountry()  == QLocale::RussianFederation);
-}
 
-bool isSwedish()
-{
-    return (currentLanguage() == QLocale::Swedish ||
-            currentCountry()  == QLocale::Sweden);
-}
-bool isEnglishLayout()
-{
-    return is_english;
-}
 
-int standardKeySize()
+//int standardKeySize()
+//{
+//    if (isRussian() && !isEnglishLayout())
+//    {
+//        return 43;
+//    }
+//    else if (isSwedish())
+//    {
+//        return 47;
+//    }
+//    else if (isPolish())
+//    {
+//        return 43;
+//    }
+//    else if (isHungarian())
+//    {
+//        return 43;
+//    }
+//    return 52;
+//}
+
+//void initPolishCode(QVector<QChar> & code_vector)
+//{
+//    initEnglishCode(code_vector);
+//    code_vector.push_back(QChar(0x00D3));   //O acute  // 26
+//    code_vector.push_back(QChar(0x00F3));   //o acute  // 27
+//    code_vector.push_back(QChar(0x0104));  //A ogonek   // 28
+//    code_vector.push_back(QChar(0x0105));  //a ogonek   // 29
+//    code_vector.push_back(QChar(0x0106));  //C acute   // 30
+//    code_vector.push_back(QChar(0x0107));  //c acute  // 31
+//    code_vector.push_back(QChar(0x0118));  //E ogonek  // 32
+//    code_vector.push_back(QChar(0x0119));  //e ogonek   // 33
+//    code_vector.push_back(QChar(0x0143));  //N acute   // 34
+//    code_vector.push_back(QChar(0x0144));  //n acute   // 35
+//    code_vector.push_back(QChar(0x015A));  //S acute   // 36
+//    code_vector.push_back(QChar(0x015B));  //s acute   // 37
+//    code_vector.push_back(QChar(0x0179));  //Z acute  // 38
+//    code_vector.push_back(QChar(0x017A));  //z acute   // 39
+//    code_vector.push_back(QChar(0x017B));  //Z dot above   // 40
+//    code_vector.push_back(QChar(0x017C));  //z dot above   // 41
+//    code_vector.push_back(QChar(0x0141));  //L stroke  // 42
+//    code_vector.push_back(QChar(0x0142));  //l stroke  // 43
+//}
+//void initHungarianCode(QVector<QChar> & code_vector)
+//{
+//    initEnglishCode(code_vector);
+//    code_vector.push_back(QChar(0x00C1));   //A acute  // 26
+//    code_vector.push_back(QChar(0x00E1));   //a acute  // 27
+//    code_vector.push_back(QChar(0x00C9));  //E acute   // 28
+//    code_vector.push_back(QChar(0x00E9));  //e acute   // 29
+//    code_vector.push_back(QChar(0x00CD));  //I acute   // 30
+//    code_vector.push_back(QChar(0x00ED));  //i acute  // 31
+//    code_vector.push_back(QChar(0x00D3));   //O acute  // 32
+//    code_vector.push_back(QChar(0x00F3));   //o acute  // 33
+//    code_vector.push_back(QChar(0x00D6));  //O double dot above   // 34
+//    code_vector.push_back(QChar(0x00F6));  //o double dot above   // 35
+//    code_vector.push_back(QChar(0x0150));  //O double acute   // 36
+//    code_vector.push_back(QChar(0x0151));  //o double acute   // 37
+//    code_vector.push_back(QChar(0x00DA));  //U acute  // 38
+//    code_vector.push_back(QChar(0x00FA));  //u acute   // 39
+//    code_vector.push_back(QChar(0x00DC));  //U double dot above   // 40
+//    code_vector.push_back(QChar(0x00FC));  //u double dot above   // 41
+//    code_vector.push_back(QChar(0x0170));  //U double acute  // 42
+//    code_vector.push_back(QChar(0x0171));  //u double acute  // 43
+//}
+
+//void initPolishKeyboard()
+//{
+//    int index = 0;
+//    if (!keyboard_standard[0].isEmpty())
+//    {
+//        keyboard_standard[0].clear();
+//    }
+//    keyboard_standard[0].resize(12);
+//    setKey(0, index++, '1');
+//    setKey(0, index++, '2');
+//    setKey(0, index++, '3');
+//    setKey(0, index++, '4');
+//    setKey(0, index++, '5');
+//    setKey(0, index++, '6');
+//    setKey(0, index++, '7');
+//    setKey(0, index++, '8');
+//    setKey(0, index++, '9');
+//    setKey(0, index++, '0');
+//    setKey(0, index++, code_vector[27]);
+//    setKey(0, index++, code_vector[29]);
+//
+//    if (!keyboard_standard[1].isEmpty())
+//    {
+//        keyboard_standard[1].clear();
+//    }
+//    keyboard_standard[1].resize(12);
+//    index = 0;
+//    setKey(1, index++, code_vector[16]);
+//    setKey(1, index++, code_vector[22]);
+//    setKey(1, index++, code_vector[4]);
+//    setKey(1, index++, code_vector[17]);
+//    setKey(1, index++, code_vector[19]);
+//    setKey(1, index++, code_vector[24]);
+//    setKey(1, index++, code_vector[20]);
+//    setKey(1, index++, code_vector[8]);
+//    setKey(1, index++, code_vector[14]);
+//    setKey(1, index++, code_vector[15]);
+//    setKey(1, index++, code_vector[31]);
+//    setKey(1, index++, code_vector[33]);
+//
+//    if (!keyboard_standard[2].isEmpty())
+//    {
+//        keyboard_standard[2].clear();
+//    }
+//    keyboard_standard[2].resize(12);
+//    index = 0;
+//    setKey(2, index++, code_vector[0]);
+//    setKey(2, index++, code_vector[18]);
+//    setKey(2, index++, code_vector[3]);
+//    setKey(2, index++, code_vector[5]);
+//    setKey(2, index++, code_vector[6]);
+//    setKey(2, index++, code_vector[7]);
+//    setKey(2, index++, code_vector[9]);
+//    setKey(2, index++, code_vector[10]);
+//    setKey(2, index++, code_vector[11]);
+//    setKey(2, index++, code_vector[12]);
+//    setKey(2, index++, code_vector[35]);
+//    setKey(2, index++, code_vector[37]);
+//
+//    if (!keyboard_standard[3].isEmpty())
+//    {
+//        keyboard_standard[3].clear();
+//    }
+//    keyboard_standard[3].resize(9);
+//    index = 0;
+//    setKeyUnicode(3, index++, CapLock);
+//    setKey(3, index++, code_vector[25]);
+//    setKey(3, index++, code_vector[23]);
+//    setKey(3, index++, code_vector[2]);
+//    setKey(3, index++, code_vector[21]);
+//    setKey(3, index++, code_vector[1]);
+//    setKey(3, index++, code_vector[13]);
+//    setKeyUnicode(3, index++, BackSpace);
+//    setKey(3, index++, code_vector[43]);
+//
+//    if (!keyboard_standard[4].isEmpty())
+//    {
+//        keyboard_standard[4].clear();
+//    }
+//    bool has_touch = SysStatus::instance().hasTouchScreen();
+//    keyboard_standard[4].resize(has_touch ? 6 : 5);
+//    index = 0;
+//    setKeyUnicode(4, index++, ShiftCode);
+//    setKeyUnicode(4, index++, Blank);
+//    setKeyUnicode(4, index++, EnterCode);
+//    if (has_touch)
+//    {
+//        setKeyUnicode(4, index++, HandWriting);
+//    }
+//    setKey(4, index++, code_vector[39]);
+//    setKey(4, index++, code_vector[41]);
+//}
+//
+//void initHungarianKeyboard()
+//{
+//    //hungarian keyboard has the same key arrangement as polish keyboard
+//    initPolishKeyboard();
+//}
+
+bool isUpKey(const Keys & keys, int row, int column)
 {
-    if (isRussian() && !isEnglishLayout())
+    if ( row == 0 )
     {
-        return 43;
+        return true;
     }
-    else if (isSwedish())
+    return false;
+}
+
+bool isDownKey(const Keys & keys, int row, int column)
+{
+    if (row == (keys.size() - 1))
     {
-        return 47;
-    }       
-    return 52;
-}
-
-QVector<QChar> code_vector;
-void initRussianCode(QVector<QChar> & code_vector)
-{
-    code_vector.push_back(QChar(0x0430));     // 0
-    code_vector.push_back(QChar(0x0431));     // 1
-    code_vector.push_back(QChar(0x0432));     // 2
-    code_vector.push_back(QChar(0x0433));     // 3
-    code_vector.push_back(QChar(0x0434));     // 4
-    code_vector.push_back(QChar(0x0435));     // 5
-    code_vector.push_back(QChar(0x0436));     // 6
-    code_vector.push_back(QChar(0x0437));     // 7
-    code_vector.push_back(QChar(0x0438));     // 8
-    code_vector.push_back(QChar(0x0439));     // 9
-    code_vector.push_back(QChar(0x043A));     // 10
-    code_vector.push_back(QChar(0x043B));     // 11
-    code_vector.push_back(QChar(0x043C));     // 12
-    code_vector.push_back(QChar(0x043D));     // 13
-    code_vector.push_back(QChar(0x043E));     // 14
-    code_vector.push_back(QChar(0x043F));     // 15
-    code_vector.push_back(QChar(0x0440));     // 16
-    code_vector.push_back(QChar(0x0441));     // 17
-    code_vector.push_back(QChar(0x0442));     // 18
-    code_vector.push_back(QChar(0x0443));     // 19
-    code_vector.push_back(QChar(0x0444));     // 20
-    code_vector.push_back(QChar(0x0445));     // 21
-    code_vector.push_back(QChar(0x0446));     // 22
-    code_vector.push_back(QChar(0x0447));     // 23
-    code_vector.push_back(QChar(0x0448));     // 24
-    code_vector.push_back(QChar(0x0449));     // 25
-    code_vector.push_back(QChar(0x044A));     // 26
-    code_vector.push_back(QChar(0x044B));     // 27
-    code_vector.push_back(QChar(0x044C));     // 28
-    code_vector.push_back(QChar(0x044D));     // 29
-    code_vector.push_back(QChar(0x044E));     // 30
-    code_vector.push_back(QChar(0x044F));     // 31
-}
-
-void initEnglishCode(QVector<QChar> & code_vector)
-{
-    code_vector.push_back(QChar('a'));     // 0
-    code_vector.push_back(QChar('b'));     // 1
-    code_vector.push_back(QChar('c'));     // 2
-    code_vector.push_back(QChar('d'));     // 3
-    code_vector.push_back(QChar('e'));     // 4
-    code_vector.push_back(QChar('f'));     // 5
-    code_vector.push_back(QChar('g'));     // 6
-    code_vector.push_back(QChar('h'));     // 7
-    code_vector.push_back(QChar('i'));     // 8
-    code_vector.push_back(QChar('j'));     // 9
-    code_vector.push_back(QChar('k'));     // 10
-    code_vector.push_back(QChar('l'));     // 11
-    code_vector.push_back(QChar('m'));     // 12
-    code_vector.push_back(QChar('n'));     // 13
-    code_vector.push_back(QChar('o'));     // 14
-    code_vector.push_back(QChar('p'));     // 15
-    code_vector.push_back(QChar('q'));     // 16
-    code_vector.push_back(QChar('r'));     // 17
-    code_vector.push_back(QChar('s'));     // 18
-    code_vector.push_back(QChar('t'));     // 19
-    code_vector.push_back(QChar('u'));     // 20
-    code_vector.push_back(QChar('v'));     // 21
-    code_vector.push_back(QChar('w'));     // 22
-    code_vector.push_back(QChar('x'));     // 23
-    code_vector.push_back(QChar('y'));     // 24
-    code_vector.push_back(QChar('z'));     // 25
-}
-
-void initCodeVector()
-{
-    code_vector.clear();
-    if (isRussian() && !isEnglishLayout())
-    {
-        initRussianCode(code_vector);
+        return true;
     }
-    else
-    {
-        initEnglishCode(code_vector);
-    }
+    return false;
 }
 
-ShiftMap shift_map;
-void initShiftMap()
+bool isLeftKey(const Keys & keys, int row, int column)
 {
-    assert(!code_vector.isEmpty());
-    if (!shift_map.isEmpty())
+    if (row > 0 && row < (keys.size() - 1))
     {
-        shift_map.clear();
-    }
-
-    shift_map['1'] = '!';
-    shift_map['2'] = '@';
-    shift_map['3'] = '#';
-    shift_map['4'] = '$';
-    shift_map['5'] = '%';
-    shift_map['6'] = '^';
-    shift_map['7'] = QChar(0x0026);
-    shift_map['8'] = '*';
-    shift_map['9'] = '(';
-    shift_map['0'] = ')';
-    shift_map[code_vector[16]] = '~';
-    shift_map[code_vector[22]] = '`';
-    shift_map[code_vector[4]] = '-';
-    shift_map[code_vector[17]] = '_';
-    shift_map[code_vector[19]] = '+';
-    shift_map[code_vector[24]] = '=';
-    shift_map[code_vector[20]] = '{';
-    shift_map[code_vector[8]] = '}';
-    shift_map[code_vector[14]] = '[';
-    shift_map[code_vector[15]] = ']';
-    shift_map[code_vector[0]] = ':';
-    shift_map[code_vector[18]] = ';';
-    shift_map[code_vector[3]] = '"';
-    shift_map[code_vector[5]] = '\'';
-    shift_map[code_vector[6]] = '<';
-    shift_map[code_vector[7]] = '>';
-    shift_map[code_vector[9]] = ',';
-    shift_map[code_vector[10]] = '|';
-    shift_map[code_vector[11]] = '?';
-    shift_map[code_vector[25]] = '\\';
-    shift_map[code_vector[23]] = '.';
-    shift_map[code_vector[2]] = '/';
-    shift_map[code_vector[21]] = QChar(0x00A3);//£
-    shift_map[code_vector[1]]  = QChar(0x00A5);//�?    shift_map[code_vector[13]] = QChar(0x00A7);//§
-    shift_map[code_vector[12]] = QChar(0x00A9);//©
-
-    if (code_vector.size() > 26)
-    {
-        int offset = code_vector.size() - 26;
-        for (int i = 1; i <= offset; ++i)
+        if (column < 3)
         {
-            shift_map[code_vector[25 + i]] = QChar(0x00A9 + (i << 1));
+            return true;
         }
     }
+    return false;
 }
 
-SpecialMaps special_maps;
-void initSpecialMaps()
+bool isRightKey(const Keys & keys, int row, int column)
 {
-    if (!special_maps.isEmpty())
+    if (row > 0 && row < (keys.size() - 1))
     {
-        special_maps.clear();
-    }
-    special_maps.push_back(SpecialMap(Qt::Key_Backspace, 8, "", "backspace", 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Tab, 9, "Tab", NULL, 0));
-    special_maps.push_back(SpecialMap(Qt::Key_CapsLock, 0xffff, "Caps", NULL, 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Shift, 0xffff, "Shift", NULL, 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Space, ' ', "Space", NULL, 0));
-    special_maps.push_back(SpecialMap(BackSlash, 43,     "\\",    NULL, 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Left, 0xffff, "<",     "leftarrow", 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Right, 0xffff, ">",     "rightarrow", 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Insert, 0xffff, "I",     "insert", 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Home, 0xffff, "H",     "home", 0));
-    special_maps.push_back(SpecialMap(Qt::Key_End, 0xffff, "E",     "end", 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Delete, 0xffff, "X",     "delete", 0));
-    special_maps.push_back(SpecialMap(Blank, 0, "Space", 0, 0));
-    special_maps.push_back(SpecialMap(Qt::Key_Enter, 0xffff, "Enter", NULL, 0));
-
-    QString switch_lan_title;
-    if (isRussian() && !isEnglishLayout())
-    {
-        switch_lan_title = "abc";
-    }
-    else
-    {
-        switch_lan_title.append(QChar(0x0430));
-        switch_lan_title.append(QChar(0x0431));
-        switch_lan_title.append(QChar(0x0432));
-    }
-    special_maps.push_back(SpecialMap(SwitchLanguage, 0xffff, switch_lan_title, 0, 0));
-    special_maps.push_back(SpecialMap(HandWriting, 0xffff, QApplication::tr("Write"), 0, 0));
-    special_maps.push_back(SpecialMap(0, 0, 0, 0, 0));
-}
-
-static QVector<uint> keyboard_standard[5];
-void setKey(int row, int idx, QChar c)
-{
-    keyboard_standard[row][idx] = c.unicode();
-}
-
-void setKeyUnicode(int row, int idx, uint c)
-{
-    keyboard_standard[row][idx] = c;
-}
-
-void initEnglishKeyboard()
-{
-    int index = 0;
-    if (!keyboard_standard[0].isEmpty())
-    {
-        keyboard_standard[0].clear();
-    }
-    keyboard_standard[0].resize(isSwedish()?11:10);
-    setKey(0, index++, '1');
-    setKey(0, index++, '2');
-    setKey(0, index++, '3');
-    setKey(0, index++, '4');
-    setKey(0, index++, '5');
-    setKey(0, index++, '6');
-    setKey(0, index++, '7');
-    setKey(0, index++, '8');
-    setKey(0, index++, '9');
-    setKey(0, index++, '0');
-    if (isSwedish())
-    setKey(0, index++, QChar(0x00E5));
-
-    if (!keyboard_standard[1].isEmpty())
-    {
-        keyboard_standard[1].clear();
-    }
-    keyboard_standard[1].resize(isSwedish()?11:10);
-    index = 0;
-    setKey(1, index++, code_vector[16]);
-    setKey(1, index++, code_vector[22]);
-    setKey(1, index++, code_vector[4]);
-    setKey(1, index++, code_vector[17]);
-    setKey(1, index++, code_vector[19]);
-    setKey(1, index++, code_vector[24]);
-    setKey(1, index++, code_vector[20]);
-    setKey(1, index++, code_vector[8]);
-    setKey(1, index++, code_vector[14]);
-    setKey(1, index++, code_vector[15]);
-    if (isSwedish())
-    setKey(1, index++, QChar(0x00E4));
-
-    if (!keyboard_standard[2].isEmpty())
-    {
-        keyboard_standard[2].clear();
-    }
-    keyboard_standard[2].resize(isSwedish()?11:10);
-    index = 0;
-    setKey(2, index++, code_vector[0]);
-    setKey(2, index++, code_vector[18]);
-    setKey(2, index++, code_vector[3]);
-    setKey(2, index++, code_vector[5]);
-    setKey(2, index++, code_vector[6]);
-    setKey(2, index++, code_vector[7]);
-    setKey(2, index++, code_vector[9]);
-    setKey(2, index++, code_vector[10]);
-    setKey(2, index++, code_vector[11]);
-    setKey(2, index++, code_vector[12]);
-    if (isSwedish())
-    setKey(2, index++, QChar(0x00F6));
-
-    if (!keyboard_standard[3].isEmpty())
-    {
-        keyboard_standard[3].clear();
-    }
-    keyboard_standard[3].resize(8);
-    index = 0;
-    setKeyUnicode(3, index++, CapLock);
-    setKey(3, index++, code_vector[25]);
-    setKey(3, index++, code_vector[23]);
-    setKey(3, index++, code_vector[2]);
-    setKey(3, index++, code_vector[21]);
-    setKey(3, index++, code_vector[1]);
-    setKey(3, index++, code_vector[13]);
-    setKeyUnicode(3, index++, BackSpace);
-
-    if (!keyboard_standard[4].isEmpty())
-    {
-        keyboard_standard[4].clear();
-    }
-    bool is_special_locale = (currentLanguage() == QLocale::Russian ||
-                              currentCountry()  == QLocale::RussianFederation);
-    bool has_touch = SysStatus::instance().hasTouchScreen();
-    keyboard_standard[4].resize(is_special_locale ? (has_touch ? 5 : 4) : (has_touch ? 4 : 3));
-
-    index = 0;
-    setKeyUnicode(4, index++, ShiftCode);
-    setKeyUnicode(4, index++, Blank);
-    setKeyUnicode(4, index++, EnterCode);
-    if (has_touch)
-    {
-        setKeyUnicode(4, index++, HandWriting);
-    }
-    if (is_special_locale)
-    {
-        setKeyUnicode(4, index++, SwitchLanguage);
-    }
-}
-
-void initRussianKeyboard()
-{
-    int index = 0;
-    if (!keyboard_standard[0].isEmpty())
-    {
-        keyboard_standard[0].clear();
-    }
-    keyboard_standard[0].resize(10);
-    setKey(0, index++, '1');
-    setKey(0, index++, '2');
-    setKey(0, index++, '3');
-    setKey(0, index++, '4');
-    setKey(0, index++, '5');
-    setKey(0, index++, '6');
-    setKey(0, index++, '7');
-    setKey(0, index++, '8');
-    setKey(0, index++, '9');
-    setKey(0, index++, '0');
-
-    if (!keyboard_standard[1].isEmpty())
-    {
-        keyboard_standard[1].clear();
-    }
-    keyboard_standard[1].resize(12);
-    index = 0;
-    setKey(1, index++, code_vector[9]);
-    setKey(1, index++, code_vector[22]);
-    setKey(1, index++, code_vector[19]);
-    setKey(1, index++, code_vector[10]);
-    setKey(1, index++, code_vector[5]);
-    setKey(1, index++, code_vector[13]);
-    setKey(1, index++, code_vector[3]);
-    setKey(1, index++, code_vector[24]);
-    setKey(1, index++, code_vector[25]);
-    setKey(1, index++, code_vector[7]);
-    setKey(1, index++, code_vector[21]);
-    setKey(1, index++, code_vector[26]);
-
-    if (!keyboard_standard[2].isEmpty())
-    {
-        keyboard_standard[2].clear();
-    }
-    keyboard_standard[2].resize(12);
-    index = 0;
-    setKey(2, index++, code_vector[20]);
-    setKey(2, index++, code_vector[27]);
-    setKey(2, index++, code_vector[2]);
-    setKey(2, index++, code_vector[0]);
-    setKey(2, index++, code_vector[15]);
-    setKey(2, index++, code_vector[16]);
-    setKey(2, index++, code_vector[14]);
-    setKey(2, index++, code_vector[11]);
-    setKey(2, index++, code_vector[4]);
-    setKey(2, index++, code_vector[6]);
-    setKey(2, index++, code_vector[29]);
-    setKey(2, index++, code_vector[30]);
-
-    if (!keyboard_standard[3].isEmpty())
-    {
-        keyboard_standard[3].clear();
-    }
-    keyboard_standard[3].resize(10);
-    index = 0;
-    setKeyUnicode(3, index++, CapLock);
-    setKey(3, index++, code_vector[31]);
-    setKey(3, index++, code_vector[23]);
-    setKey(3, index++, code_vector[17]);
-    setKey(3, index++, code_vector[12]);
-    setKey(3, index++, code_vector[8]);
-    setKey(3, index++, code_vector[18]);
-    setKey(3, index++, code_vector[28]);
-    setKey(3, index++, code_vector[1]);
-    setKeyUnicode(3, index++, BackSpace);
-
-    if (!keyboard_standard[4].isEmpty())
-    {
-        keyboard_standard[4].clear();
-    }
-    bool is_special_locale = (currentLanguage() == QLocale::Russian ||
-                              currentCountry()  == QLocale::RussianFederation);
-    bool has_touch = SysStatus::instance().hasTouchScreen();
-    keyboard_standard[4].resize(is_special_locale ? (has_touch ? 5 : 4) : (has_touch ? 4 : 3));
-
-    index = 0;
-    setKeyUnicode(4, index++, ShiftCode);
-    setKeyUnicode(4, index++, Blank);
-    setKeyUnicode(4, index++, EnterCode);
-    if (has_touch)
-    {
-        setKeyUnicode(4, index++, HandWriting);
-    }
-    if (is_special_locale)
-    {
-        setKeyUnicode(4, index++, SwitchLanguage);
-    }
-}
-
-int getQKeyCode(uint code)
-{
-    int ret = code;
-    if (code > BSCode && code < UnknownCode)
-    {
-        int code_index = code - BSCode - 1;
-        if (code_index >= 0 && code_index < special_maps.size())
+        if (column > (keys[row].size() - 4) && column < keys[row].size())
         {
-            ret = special_maps[code_index].qcode;
+            return true;
         }
     }
-    return ret;
+    return false;
+}
+
+bool isUpArrowKey(const Keys & keys, int row, int column)
+{
+    int center_width  = keys[1].size() - 6;
+    return ((row == 1) && (column == 3 + ((center_width - 1) >> 1)));
+}
+
+bool isDownArrowKey(const Keys & keys, int row, int column)
+{
+    int center_width  = keys[1].size() - 6;
+    return ((row == keys.size() - 2) && (column == 3 + ((center_width - 1) >> 1)));
+}
+
+bool isLeftArrowKey(const Keys & keys, int row, int column)
+{
+    int center_height = keys.size() - 2;
+    return ((column == 3) && (row == 1 + ((center_height - 1) >> 1)));
+}
+
+bool isRightArrowKey(const Keys & keys, int row, int column)
+{
+    int center_height = keys.size() - 2;
+    return ((column == keys[1].size() - 4) && (row == 1 + ((center_height - 1) >> 1)));
 }
 
 KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
@@ -457,15 +269,15 @@ KeyBoard::KeyBoard(QWidget* parent, Qt::WFlags f)
     , shift_(false)
     , lock_(false)
     , is_handwriting_(false)
+    , keyboard_layout_(0)
     , ver_layout_(0)
     , button_group_(0)
     , receiver_(0)
     , sketch_proxy_(0)
-    , finish_character_timer_(finish_charater_interval, this, SLOT(handleFinishCharacterTimeOut()))
-    , auto_select_timer_(auto_select_interval, this, SLOT(handleAutoSelect()))
+    , finish_character_timer_(finish_charater_interval, this, SLOT(onFinishCharacterTimeOut()))
+    , auto_select_timer_(auto_select_interval, this, SLOT(onAutoSelect()))
 {
-    is_english = !isRussian();
-    init();
+    init(QLocale::system());
 }
 
 KeyBoard::~KeyBoard()
@@ -476,25 +288,21 @@ void KeyBoard::resetState()
 {
 }
 
-void KeyBoard::init()
+void KeyBoard::init(const QLocale & locale)
 {
     shift_ = false;
     lock_  = false;
-    initCodeVector();
-    initShiftMap();
-    initSpecialMaps();
-
-    if (isRussian() && !isEnglishLayout())
-    {
-        initRussianKeyboard();
-    }
-    else
-    {
-        initEnglishKeyboard();
-    }
+    keyboard_layout_.reset(keyboard_layout_provider_.getLayout(locale));
+    Keys & keys = keyboard_layout_->keys();
 
     // reset the layout
     buttons_.clear();
+    up_buttons_.clear();
+    down_buttons_.clear();
+    left_buttons_.clear();
+    right_buttons_.clear();
+    center_buttons_.clear();
+
     hor_layouts_.clear();
     QLayout * prev_layout = layout();
     if (prev_layout != 0)
@@ -517,27 +325,71 @@ void KeyBoard::init()
     button_group_->setExclusive(false);
 
     // add the horizontal layouts into vertical layout.
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < keys.size(); ++i)
     {
         shared_ptr<QHBoxLayout> hor_layout(new QHBoxLayout());
         hor_layouts_.push_back(hor_layout);
         hor_layout->setAlignment(Qt::AlignCenter);
         hor_layout->setSpacing(4);
         hor_layout->setContentsMargins(0, 0, 0, 0);
-        for (int k = 0; k < keyboard_standard[i].size(); ++k)
+        for (int k = 0; k < keys[i].size(); ++k)
         {
-            shared_ptr<KeyBoardKey> key(new KeyBoardKey(this));
-            key->setCode(keyboard_standard[i][k]);
+            uint code = keys[i][k];
+            QSize key_size = keyboard_layout_->getKeySize(code);
+            shared_ptr<KeyBoardKey> key(new KeyBoardKey(keyboard_layout_.get(), this));
+
+            int key_location = 0;
+            KeyboardDirection key_direction = KEYBOARD_NORMAL;
+            if (isUpKey(keys, i, k))
+            {
+                up_buttons_.push_back(key);
+                key_location = KEYBOARD_UP;
+            }
+            else if (isDownKey(keys, i, k))
+            {
+                down_buttons_.push_back(key);
+                key_location = KEYBOARD_DOWN;
+            }
+            else if (isLeftKey(keys, i, k))
+            {
+                left_buttons_.push_back(key);
+                key_location = KEYBOARD_LEFT;
+            }
+            else if (isRightKey(keys, i, k))
+            {
+                right_buttons_.push_back(key);
+                key_location = KEYBOARD_RIGHT;
+            }
+            else
+            {
+                center_buttons_.push_back(key);
+                key_location = KEYBOARD_CENTER;
+                if (isUpArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_UP;
+                }
+                else if (isDownArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_DOWN;
+                }
+                else if (isLeftArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_LEFT;
+                }
+                else if (isRightArrowKey(keys, i, k))
+                {
+                    key_direction = KEYBOARD_RIGHT;
+                }
+            }
+            key->setCode(code, key_location, key_direction);
 
             // connect the signals
-            connect(this,
-                    SIGNAL(shifted(bool)),
-                    key.get(),
-                    SLOT(handleShifted(bool)));
-            connect(this,
-                    SIGNAL(capLocked(bool)),
-                    key.get(),
-                    SLOT(handleCapLocked(bool)));
+            connect(this, SIGNAL(shifted(bool)), key.get(), SLOT(onShifted(bool)));
+            connect(this, SIGNAL(capLocked(bool)), key.get(), SLOT(onCapLocked(bool)));
+            if (key_direction >= KEYBOARD_UP && key_direction < KEYBOARD_CENTER)
+            {
+                connect(this, SIGNAL(displayArrow(bool)), key.get(), SLOT(onDisplayArrow(bool)));
+            }
 
             hor_layout->addWidget(key.get());
             button_group_->addButton(key.get());
@@ -546,19 +398,19 @@ void KeyBoard::init()
         ver_layout_->addLayout(hor_layout.get());
     }
 
-    im_char_selection_.reset(new InputMethodCharSelection(this));
+    // connect signal of center key
+    shared_ptr<KeyBoardKey> center_button = center_buttons_[(center_buttons_.size() - 1) >> 1];
+    connect(center_button.get(), SIGNAL(directionKeyPressed(KeyboardDirection)), this, SLOT(onDirectionSelected(KeyboardDirection)));
+    connect(this, SIGNAL(displayArrow(bool)), center_button.get(), SLOT(onDisplayArrow(bool)));
+    center_button->setDirection(KEYBOARD_CENTER);
+
+    im_char_selection_.reset(new InputMethodCharSelection(keyboard_layout_.get(), this));
     ver_layout_->addWidget(im_char_selection_.get());
     im_char_selection_->setVisible(false);
-    connect(im_char_selection_.get(),
-            SIGNAL(textSelected(const QString&, int)),
-            this,
-            SLOT(handleTextSelected(const QString&, int)),
-            Qt::QueuedConnection);
-    connect(im_char_selection_.get(),
-            SIGNAL(buttonClicked(QAbstractButton *)),
-            this,
-            SLOT(handleButtonClicked(QAbstractButton *)),
-            Qt::QueuedConnection);
+    connect(im_char_selection_.get(), SIGNAL(textSelected(const QString&, int)),
+            this, SLOT(onTextSelected(const QString&, int)), Qt::QueuedConnection);
+    connect(im_char_selection_.get(), SIGNAL(buttonClicked(QAbstractButton *)),
+            this, SLOT(onButtonClicked(QAbstractButton *)), Qt::QueuedConnection);
 
     shared_ptr<QHBoxLayout> handwriting_layout(new QHBoxLayout());
     hor_layouts_.push_back(handwriting_layout);
@@ -595,18 +447,36 @@ void KeyBoard::init()
     }
 
     connect(handwriting_functions_view_.get(), SIGNAL(activated(const QModelIndex &)),
-            this, SLOT(handleHandwritingFunctionClicked(const QModelIndex &)));
-
-    connect(button_group_.get(),
-            SIGNAL(buttonClicked(QAbstractButton*)),
-            this,
-            SLOT(handleButtonClicked(QAbstractButton*)),
-            Qt::QueuedConnection);
+            this, SLOT(onHandwritingFunctionClicked(const QModelIndex &)));
+    connect(button_group_.get(), SIGNAL(buttonClicked(QAbstractButton*)),
+            this, SLOT(onButtonClicked(QAbstractButton*)), Qt::QueuedConnection);
 }
 
 void KeyBoard::keyReleaseEvent(QKeyEvent *e)
 {
     e->ignore();
+}
+
+void KeyBoard::resizeEvent(QResizeEvent *re)
+{
+    QFrame::resizeEvent(re);
+}
+
+void KeyBoard::showEvent(QShowEvent *se)
+{
+    QTimer::singleShot(1000, this, SLOT(onDisplayArrows()));
+    QFrame::showEvent(se);
+}
+
+void KeyBoard::hideEvent(QHideEvent *he)
+{
+    displayDirectionArrows(false);
+    QFrame::hideEvent(he);
+}
+
+void KeyBoard::onDisplayArrows()
+{
+    displayDirectionArrows(true);
 }
 
 bool KeyBoard::event(QEvent *e)
@@ -634,14 +504,18 @@ void KeyBoard::handleShiftPressed()
 
 void KeyBoard::handleSwitchLanguagePressed()
 {
-    is_english = !is_english;
+    KeyboardLanguageDialog dialog(this, keyboard_layout_provider_.currentLocale());
+    if (dialog.exec() == QDialog::Rejected)
+    {
+        return;
+    }
     hide();
-    init();
+    init(dialog.currentLocale());
     show();
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
 }
 
-void KeyBoard::handleHandwritingFunctionClicked(const QModelIndex & index)
+void KeyBoard::onHandwritingFunctionClicked(const QModelIndex & index)
 {
     int item = index.data(Qt::UserRole + 1).toInt();
     HandwritingFunctionsModel::instance().onItemClicked(index, handwriting_functions_model_);
@@ -672,9 +546,9 @@ void KeyBoard::handleHandWriting()
     if (sketch_proxy_ == 0)
     {
         sketch_proxy_.reset(new sketch::SketchProxy());
-        connect(sketch_proxy_.get(), SIGNAL(strokeStarted()), this, SLOT(handleStrokeStarted()));
-        connect(sketch_proxy_.get(), SIGNAL(pointAdded(SketchPoint)), this, SLOT(handlePointAdded(SketchPoint)));
-        connect(sketch_proxy_.get(), SIGNAL(strokeAdded(const Points &)), this, SLOT(handleStrokeAdded(const Points &)));
+        connect(sketch_proxy_.get(), SIGNAL(strokeStarted()), this, SLOT(onStrokeStarted()));
+        connect(sketch_proxy_.get(), SIGNAL(pointAdded(SketchPoint)), this, SLOT(onPointAdded(SketchPoint)));
+        connect(sketch_proxy_.get(), SIGNAL(strokeAdded(const Points &)), this, SLOT(onStrokeAdded(const Points &)));
     }
 
     onyx::screen::instance().enableUpdate(false);
@@ -702,21 +576,26 @@ void KeyBoard::handleHandWriting()
     // update the widget
     onyx::screen::instance().enableUpdate(true);
     onyx::screen::instance().flush(0, onyx::screen::ScreenProxy::GC);
+
+    if (!is_handwriting_)
+    {
+        QTimer::singleShot(1000, this, SLOT(onDisplayArrows()));
+    }
 }
 
-void KeyBoard::handleStrokeStarted()
+void KeyBoard::onStrokeStarted()
 {
     auto_select_timer_.stop();
     finish_character_timer_.stop();
 }
 
-void KeyBoard::handlePointAdded(SketchPoint point)
+void KeyBoard::onPointAdded(SketchPoint point)
 {
     // collect point
     HandwritingManager::instance().collectPoint(point.x(), point.y());
 }
 
-void KeyBoard::handleStrokeAdded(const Points & points)
+void KeyBoard::onStrokeAdded(const Points & points)
 {
     // finish stroke
     HandwritingManager::instance().finishStroke();
@@ -725,7 +604,7 @@ void KeyBoard::handleStrokeAdded(const Points & points)
     finish_character_timer_.start();
 }
 
-void KeyBoard::handleFinishCharacterTimeOut()
+void KeyBoard::onFinishCharacterTimeOut()
 {
     HandwritingManager & handwriting_mgr = HandwritingManager::instance();
 
@@ -761,7 +640,7 @@ void KeyBoard::handleFinishCharacterTimeOut()
     auto_select_timer_.start();
 }
 
-void KeyBoard::handleTextSelected(const QString & text, int index)
+void KeyBoard::onTextSelected(const QString & text, int index)
 {
     // stop the auto selection timer if necessary
     auto_select_timer_.stop();
@@ -816,12 +695,12 @@ bool KeyBoard::adjustAssociatedChar(const QString & dst_text, int index)
     return handwriting_mgr.adjustAssociatedChar(dst_text, index);
 }
 
-void KeyBoard::handleAutoSelect()
+void KeyBoard::onAutoSelect()
 {
     if (!candidates_.isEmpty())
     {
         QString best = candidates_.at(0);
-        handleTextSelected(best, 0);
+        onTextSelected(best, 0);
     }
 }
 
@@ -878,7 +757,7 @@ void KeyBoard::postKeyEvent(QEvent::Type type, uint code)
         return;
     }
 
-    int key_code = getQKeyCode(code);
+    int key_code = keyboard_layout_->getQKeyCode(code);
     QString text = getRealChar(code);
 
     // Post the key event to receiver
@@ -886,11 +765,12 @@ void KeyBoard::postKeyEvent(QEvent::Type type, uint code)
     QApplication::postEvent(receiver_, key_event);
 }
 
-void KeyBoard::handleButtonClicked(QAbstractButton *button)
+void KeyBoard::onButtonClicked(QAbstractButton *button)
 {
     KeyBoardKey *key = dynamic_cast<KeyBoardKey*>(button);
 
     uint code = key->code();
+    bool display_direction_arrows = true;
     switch (code)
     {
     case CapLock:
@@ -901,9 +781,11 @@ void KeyBoard::handleButtonClicked(QAbstractButton *button)
         break;
     case SwitchLanguage:
         handleSwitchLanguagePressed();
+        display_direction_arrows = false;
         break;
     case HandWriting:
         handleHandWriting();
+        display_direction_arrows = false;
         break;
     default:
         break;
@@ -911,6 +793,66 @@ void KeyBoard::handleButtonClicked(QAbstractButton *button)
 
     updateModifiers();
     postKeyEvent(QEvent::KeyPress, code);
+    displayDirectionArrows(display_direction_arrows);
+}
+
+void KeyBoard::displayDirectionArrows(bool display)
+{
+    onyx::screen::instance().ensureUpdateFinished();
+    onyx::screen::instance().enableUpdate(false);
+
+    if (display)
+    {
+        shared_ptr<KeyBoardKey> center_button = center_buttons_[(center_buttons_.size() - 1) >> 1];
+        center_button->setFocus();
+    }
+    emit displayArrow(display);
+
+    onyx::screen::instance().enableUpdate(true);
+    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GU, false);
+}
+
+void KeyBoard::onDirectionSelected(KeyboardDirection direction)
+{
+    qDebug("Direction selected!");
+    displayDirectionArrows(false);
+
+    int index = 0;
+    switch (direction)
+    {
+    case KEYBOARD_UP:
+        {
+            index = (up_buttons_.size() - 1) >> 1;
+            up_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_DOWN:
+        {
+            index = (down_buttons_.size() - 1) >> 1;
+            down_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_LEFT:
+        {
+            index = (left_buttons_.size() - 1) >> 1;
+            left_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_RIGHT:
+        {
+            index = (right_buttons_.size() - 1) >> 1;
+            right_buttons_[index]->setFocus();
+        }
+        break;
+    case KEYBOARD_CENTER:
+        {
+            index = (center_buttons_.size() - 1) >> 1;
+            center_buttons_[index]->setFocus();
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 }   // namespace ui

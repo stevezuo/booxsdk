@@ -25,9 +25,13 @@ public:
     void toByteArray(QByteArray & data);
     void fromByteArray(QByteArray & data);
 
-    // Profile name.
-    QString name();
-    void setName(const QString &name);
+    // Display name.
+    QString displayName();
+    void setDisplayName(const QString &name);
+
+    // apn AKA peer.
+    QString apn();
+    void setApn(const QString &apn);
 
     QString number();
     void setNumber(const QString &number);
@@ -60,6 +64,9 @@ private:
     static bool load(QSqlDatabase& db, DialupProfiles & all);
     static bool save(QSqlDatabase& db, DialupProfiles & all);
     static bool clear(QSqlDatabase& db);
+
+    static QString defaultPincode();
+    static void setDefaultPincode(const QString &);
 };
 
 

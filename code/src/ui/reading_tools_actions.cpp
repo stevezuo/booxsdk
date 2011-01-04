@@ -65,12 +65,6 @@ void ReadingToolsActions::generateActions(const vector<ReadingToolsType> & value
                 act->setIcon(QIcon(QPixmap(":/images/show_all_bookmarks.png")));
             }
             break;
-        case THUMBNAIL_VIEW_TOOL:
-            {
-                act->setText(QCoreApplication::tr("Thumbnail View"));
-                act->setIcon(QIcon(QPixmap(":/images/thumbnail.png")));
-            }
-            break;
         case NOTES_BACKGROUND_SELECTION:
             {
                 act->setText(QCoreApplication::tr("Select Background"));
@@ -236,7 +230,7 @@ void ReadingToolsActions::generateActions(const vector<ReadingToolsType> & value
         case CLOCK_TOOL:
             {
                 act->setText(QCoreApplication::tr("Clock"));
-                act->setIcon(QIcon(QPixmap(":/images/speed.png")));
+                act->setIcon(QIcon(QPixmap(":/images/clock_tool.png")));
             }
             break;
         default:

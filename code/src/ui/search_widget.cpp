@@ -435,7 +435,7 @@ void SearchWidget::keyPressEvent(QKeyEvent * ke)
         QApplication::postEvent(&text_edit_, key_event);
     }
 
-    while (QApplication::hasPendingEvents())
+    if (QApplication::hasPendingEvents())
     {
         QApplication::processEvents();
     }

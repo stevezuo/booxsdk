@@ -13,6 +13,7 @@ using namespace sys;
 namespace ui
 {
 
+
 class DialUpDialog : public QDialog
 {
     Q_OBJECT
@@ -22,7 +23,7 @@ public:
     ~DialUpDialog();
 
 public:
-    int  popup();
+    int  popup(bool show_profile = true);
     void connect(const QString & file, const QString & username, const QString &password);
 
 protected:
@@ -52,16 +53,14 @@ private:
     void createLayout();
     void clear();
 
+    void myShow(bool max = true);
     bool isConnecting() { return connecting_; }
     void setConnecting(bool c) { connecting_ = c; }
-
-    QString address();
 
     void loadConf();
     void saveConf();
 
 private:
-
     QVBoxLayout  big_box_;
     QWidget title_widget_;
 
@@ -69,6 +68,7 @@ private:
     QHBoxLayout  title_hbox_;
     QVBoxLayout content_layout_;
 
+    QHBoxLayout state_box_;
     OnyxLabel network_label_;
     OnyxLabel state_widget_;
 
@@ -88,6 +88,7 @@ private:
     QTimer timer_;
     bool connecting_;
 
+    DialupProfiles all_peers_;
     DialupProfile profile_;
 };
 

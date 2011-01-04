@@ -11,6 +11,7 @@
 #include "font_conf.h"
 #include "wifi_conf.h"
 #include "dialup_conf.h"
+#include "misc_conf.h"
 
 using namespace base;
 
@@ -41,12 +42,20 @@ public:
     bool dictionaryService(Service &);
     bool rssService(Service &);
     bool sudokuService(Service &);
+    bool officeViewerService(Service & service);
+    bool hasOfficeViewer();
+    bool onyxReaderService(Service & service);
+    bool nabooReaderService(Service &  service);
     bool registerService(const Service &, const QString &);
     bool unRegisterService(const Service &);
 
     // Locale
     QLocale locale();
     bool setLocale(const QLocale & locale);
+
+    // Font Family
+    QString defaultFontFamily();
+    void setDefaultFontFamily(const QString & name);
 
     // Dictionary directory.
     bool dictionaryRoots(QStringList & dirs);
@@ -91,6 +100,14 @@ public:
     bool loadDialupProfiles(DialupProfiles & all);
     bool saveDialupProfiles(DialupProfiles & all);
 
+    static QString defaultPincode();
+    static void setDefaultPincode(const QString &);
+
+    // Use MiscConfig
+    bool setMiscValue(const QString &key, const QString &value);
+    QString miscValue(const QString &key);
+    int screenUpdateGCInterval();
+
     // Page turning direction.
     static int direction(const QPoint & old_position, const QPoint & new_position);
     static void setDirection(int);
@@ -129,6 +146,8 @@ public:
 
     // show browsing history or not
     static bool showBrowsingHistory();
+
+    static QString defaultAccessPoint();
 
 private:
     scoped_ptr<QSqlDatabase> database_;

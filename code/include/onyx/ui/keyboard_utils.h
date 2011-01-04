@@ -7,24 +7,36 @@
 namespace ui
 {
 
-enum { BSCode = 0x80,
-       BackSpace,
-       TabCode,
-       CapLock,
-       ShiftCode,
-       SpaceCode,
-       BackSlash,
-       LeftCode,
-       RightCode,
-       InsertCode,
-       HomeCode,
-       EndCode,
-       DeleteCode,
-       Blank,
-       EnterCode,
-       SwitchLanguage,
-       HandWriting,
-       UnknownCode
+enum
+{
+    BSCode = 0x80,
+    BackSpace,
+    TabCode,
+    CapLock,
+    ShiftCode,
+    SpaceCode,
+    BackSlash,
+    LeftCode,
+    RightCode,
+    InsertCode,
+    HomeCode,
+    EndCode,
+    DeleteCode,
+    Blank,
+    EnterCode,
+    SwitchLanguage,
+    HandWriting,
+    UnknownCode
+};
+
+enum KeyboardDirection
+{
+    KEYBOARD_UP = 0,
+    KEYBOARD_DOWN,
+    KEYBOARD_LEFT,
+    KEYBOARD_RIGHT,
+    KEYBOARD_CENTER,
+    KEYBOARD_NORMAL
 };
 
 struct SpecialMap {
@@ -52,9 +64,13 @@ typedef ShiftMap::iterator ShiftIter;
 typedef QVector<SpecialMap> SpecialMaps;
 typedef SpecialMaps::iterator SpecialMapIter;
 
+typedef QVector< QVector<uint> > Keys;
+
 int standardKeySize();
 bool isRussian();
 bool isSwedish();
+bool isPolish();
+bool isHungarian();
 bool isEnglishLayout();
 
 }   // namespace ui

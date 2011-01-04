@@ -44,12 +44,14 @@ QPushButton:disabled                    \
 
 struct APN
 {
-    QString apn;
+    QString display_name;
     QString username;
     QString password;
-    QString peer;
+    QString apn;
 };
 
+/// TODO, we need to add a filter to file system, so that we can
+/// display only part of them.
 static const APN APNS[] =
 {
     {"Mts", "mts", "mts", "mts"},
@@ -66,6 +68,26 @@ static const APN APNS[] =
 };
 static const int APNS_COUNT = sizeof(APNS)/sizeof(APNS[0]);
 
+static QString address()
+{
+    QString result;
+    QList<QNetworkInterface> all = QNetworkInterface::allInterfaces();
+    foreach(QNetworkInterface ni, all)
+    {
+        qDebug("interface name %s", qPrintable(ni.name()));
+        QList<QNetworkAddressEntry> addrs = ni.addressEntries();
+        foreach(QNetworkAddressEntry entry, addrs)
+        {
+            if (ni.name().compare("ppp0", Qt::CaseInsensitive) == 0)
+            {
+                result = entry.ip().toString();
+            }
+            qDebug("ip address %s", qPrintable(entry.ip().toString()));
+        }
+    }
+    return result;
+}
+
 DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
 #ifndef Q_WS_QWS
     : QDialog(parent, 0)
@@ -77,6 +99,7 @@ DialUpDialog::DialUpDialog(QWidget *parent, SysStatus & sys)
     , title_vbox_(&title_widget_)
     , title_hbox_(0)
     , content_layout_(0)
+    , state_box_(0)
     , network_label_(0)
     , state_widget_(0)
     , input_layout_(0)
@@ -99,57 +122,44 @@ DialUpDialog::~DialUpDialog()
 
 }
 
-QString DialUpDialog::address()
-{
-    QString result;
-    QList<QNetworkInterface> all = QNetworkInterface::allInterfaces();
-    foreach(QNetworkInterface ni, all)
-    {
-        qDebug("interface name %s", qPrintable(ni.name()));
-        QList<QNetworkAddressEntry> addrs = ni.addressEntries();
-        foreach(QNetworkAddressEntry entry, addrs)
-        {
-            if (ni.name().compare("ppp0", Qt::CaseInsensitive) == 0)
-            {
-                result = entry.ip().toString();
-            }
-            qDebug("ip address %s", qPrintable(entry.ip().toString()));
-        }
-    }
-    return result;
-}
-
 void DialUpDialog::loadConf()
 {
     sys::SystemConfig conf;
-    DialupProfiles all;
-    conf.loadDialupProfiles(all);
-    if (all.size() > 0)
+    conf.loadDialupProfiles(all_peers_);
+    if (all_peers_.size() > 0)
     {
-        profile_ = all.front();
+        profile_ = all_peers_.front();
     }
     else
     {
         for(int i = 0; i < APNS_COUNT; ++i)
         {
-            if (DialupProfile::defaultPeer().compare(APNS[i].peer, Qt::CaseInsensitive) == 0)
-            {
-                profile_.setName(APNS[i].peer);
-                profile_.setUsername(APNS[i].username);
-                profile_.setPassword(APNS[i].password);
-                break;
-            }
-        }
-
-        if (profile_.name().isEmpty())
-        {
-            // By default use the first one.
-            profile_.setName(APNS[0].peer);
-            profile_.setUsername(APNS[0].username);
-            profile_.setPassword(APNS[0].password);
+            DialupProfile tmp;
+            tmp.setDisplayName(APNS[i].display_name);
+            tmp.setUsername(APNS[i].username);
+            tmp.setPassword(APNS[i].password);
+            tmp.setApn(APNS[i].apn);
+            all_peers_.push_back(tmp);
         }
     }
 
+    // Choose default peer.
+    for(int i = 0; i < all_peers_.size(); ++i)
+    {
+        DialupProfile tmp(all_peers_[i]);
+        if (DialupProfile::defaultPeer().compare(tmp.apn(), Qt::CaseInsensitive) == 0)
+        {
+            profile_ = tmp;
+            break;
+        }
+    }
+
+    if (profile_.apn().isEmpty())
+    {
+        // By default use the first one.
+        DialupProfile tmp(all_peers_[0]);
+        profile_ = tmp;
+    }
 }
 
 void DialUpDialog::saveConf()
@@ -160,7 +170,7 @@ void DialUpDialog::saveConf()
     conf.saveDialupProfiles(all);
 }
 
-int  DialUpDialog::popup()
+int  DialUpDialog::popup(bool show_profile)
 {
     if (!sys_.isPowerSwitchOn())
     {
@@ -171,32 +181,27 @@ int  DialUpDialog::popup()
 
     // connect to default network.
     for(int i = 0; i < APNS_COUNT; ++i)
-    {
-        if (profile_.name() == APNS[i].peer && sys_.isPowerSwitchOn())
+    {   
+        if(qgetenv("CONNECT_TO_DEFAULT_APN").toInt() > 0)
         {
-            // connect(APNS[i].peer, APNS[i].username, APNS[i].password);
-        }
+            if (sys_.isPowerSwitchOn())
+            {
+                connect("", "", "");
+                break;
+            }
+        } 
     }
     return exec();
 }
 
 void DialUpDialog::keyPressEvent(QKeyEvent *ke)
 {
-    ke->accept();
     if (ke->key() == Qt::Key_Escape)
     {
+        ke->accept();
         accept();
     }
-
-    // Disable the parent widget to update screen.
-
-    // Can not use flush here, could be caused by the keyboard event.
-    /*
-    onyx::screen::instance().enableUpdate(false);
-    QApplication::processEvents();
-    onyx::screen::instance().enableUpdate(true);
-    onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW);
-    */
+    QDialog::keyPressEvent(ke);
 }
 
 void DialUpDialog::keyReleaseEvent(QKeyEvent *ke)
@@ -267,8 +272,9 @@ void DialUpDialog::createLayout()
     network_label_.setAlignment(Qt::AlignLeft);
     network_label_.setContentsMargins(MARGINS, 0, MARGINS, 0);
 
-    content_layout_.addWidget(&network_label_);
-    content_layout_.addWidget(&state_widget_);
+    state_box_.addWidget(&state_widget_, 600);
+    state_box_.addWidget(&network_label_, 0, static_cast<Qt::AlignmentFlag>(Qt::AlignHCenter|Qt::AlignBottom));
+    content_layout_.addLayout(&state_box_);
     content_layout_.addSpacing(MARGINS);
 
     // top_label_
@@ -310,16 +316,16 @@ void DialUpDialog::createLayout()
     // input_layout_.addWidget(&number_label_, 0, 0);
     // input_layout_.addWidget(&number_edit_, 0, 1);
 
-    for(int i = 0; i < APNS_COUNT; ++i)
+    // Disable checkable, otherwise, we cannot use keyboard to navigate buttons.
+    for(int i = 0; i < all_peers_.size(); ++i)
     {
-        OnyxPushButton *btn = new OnyxPushButton(APNS[i].apn, 0);
+        OnyxPushButton *btn = new OnyxPushButton(all_peers_[i].displayName(), 0);
         btn->setAutoExclusive(true);
-        btn->setCheckable(true);
         btn->setData(i);
         buttons_.push_back(btn);
         input_layout_.addWidget(btn, i, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), this, SLOT(onApnClicked(bool)));
-        if (APNS[i].peer.compare(profile_.name(), Qt::CaseInsensitive) == 0)
+        if (all_peers_[i].apn().compare(profile_.apn(), Qt::CaseInsensitive) == 0)
         {
             btn->setChecked(true);
         }
@@ -327,11 +333,14 @@ void DialUpDialog::createLayout()
 
     input_layout_.addWidget(&disconnect_button_);
     disconnect_button_.setAutoExclusive(true);
-    disconnect_button_.setCheckable(true);
     QObject::connect(&disconnect_button_, SIGNAL(clicked(bool)), this, SLOT(onDisconnectClicked(bool)));
     content_layout_.addStretch(0);
 
-    // QObject::connect(&number_edit_, SIGNAL(getFocus(NabooLineEdit *)), this, SLOT(onGetFocus(NabooLineEdit *)));
+    if (buttons_.size() > 0)
+    {
+        buttons_.front()->setFocus();
+    }
+
     QObject::connect(&sys_, SIGNAL(pppConnectionChanged(const QString &, int)),
                      this, SLOT(onPppConnectionChanged(const QString &, int)));
     QObject::connect(&sys_, SIGNAL(report3GNetwork(const int, const int, const int)),
@@ -346,7 +355,7 @@ void DialUpDialog::connect(const QString & peer,
                            const QString & username,
                            const QString & password)
 {
-    profile_.setName(peer);
+    profile_.setApn(peer);
     profile_.setUsername(username);
     profile_.setPassword(password);
     if (!sys_.connect3g(peer, username, password))
@@ -382,12 +391,11 @@ void DialUpDialog::onPppConnectionChanged(const QString &message, int status)
         QString result("Connected. Address: %1");
         result = result.arg(qPrintable(address()));
         state_widget_.setText(result);
-        saveConf();
         QTimer::singleShot(1500, this, SLOT(accept()));
     }
     else if (status == TG_DISCONNECTED)
     {
-        state_widget_.setText(tr("Disconnect."));
+        state_widget_.setText(tr("Disconnected."));
     }
 }
 
@@ -395,7 +403,7 @@ void DialUpDialog::showDNSResult(QHostInfo info)
 {
     if (info.addresses().size() > 0)
     {
-        state_widget_.setText(tr("Fininshed."));
+        state_widget_.setText(tr("Finished."));
     }
     else
     {
@@ -405,12 +413,14 @@ void DialUpDialog::showDNSResult(QHostInfo info)
 
 void DialUpDialog::onApnClicked(bool)
 {
+    QObject * object = sender();
     for(int i = 0; i < buttons_.size(); ++i)
     {
-        if (buttons_.at(i)->isChecked())
+        if (buttons_.at(i) == object)
         {
+            buttons_.at(i)->setFocus();
             onDisconnectClicked(true);
-            connect(APNS[i].peer, APNS[i].username.toLocal8Bit().constData(), APNS[i].password.toLocal8Bit().constData());
+            connect(all_peers_[i].apn(), all_peers_[i].username().toLocal8Bit().constData(), all_peers_[i].password().toLocal8Bit().constData());
             onConnectClicked(true);
             return;
         }
@@ -458,17 +468,20 @@ void DialUpDialog::onReport3GNetwork(const int signal,
 
 void DialUpDialog::showOffMessage()
 {
+    QString t(":/images/signal_3g_off.png");
+    QPixmap pixmap(t);
+    network_label_.setPixmap(pixmap);
     state_widget_.setText(tr("3G Connection is off. Please turn 3G switch on."));
 }
 
 void DialUpDialog::onDisconnectClicked(bool)
 {
+    disconnect_button_.setFocus();
     sys::SysStatus::instance().disconnect3g();
 }
 
 void DialUpDialog::onGetFocus(OnyxLineEdit *object)
 {
-
 }
 
 void DialUpDialog::onCloseClicked()

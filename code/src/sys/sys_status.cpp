@@ -325,7 +325,14 @@ void SysStatus::installSlots()
     {
         qDebug("\nCan not connect the volumeDownPressed signal\n");
     }
-    
+   
+    if (!connection_.connect(service, object, iface,
+                             "hardwareTimerTimeout",
+                             this,
+                             SLOT(onHardwareTimerTimeout())))
+    {
+        qDebug("\nCan not connect the hardwareTimerTimeout signal\n");
+    }
 }
 
 namespace {
@@ -1474,6 +1481,22 @@ void SysStatus::dbgUpdateBattery(int left, int status)
     }
 }
 
+void SysStatus::startSingleShotHardwareTimer(const int seconds)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        service,            // destination
+        object,             // path
+        iface,              // interface
+        "startSingleShotHardwareTimer"      // method.
+    );
+    message << seconds;
+    QDBusMessage reply = connection_.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+    {
+        qWarning("%s", qPrintable(reply.errorMessage()));
+    }
+}
+
 void SysStatus::dump()
 {
     int left;
@@ -1622,6 +1645,11 @@ void SysStatus::onReportWorkflowError(const QString & workflow, const QString & 
 void SysStatus::onReport3GNetwork(const int signal, const int total, const int network)
 {
     emit report3GNetwork(signal, total, network);
+}
+
+void SysStatus::onHardwareTimerTimeout()
+{
+    emit hardwareTimerTimeout();
 }
 
 }   // namespace sys

@@ -127,6 +127,8 @@ class SysStatus : public QObject
     bool isTTSEnabled();
     bool isDictionaryEnabled();
 
+    void startSingleShotHardwareTimer(const int seconds);
+
     // The following signals must be the same with system manager.
     // Need a better way to sync them.
   signals:
@@ -172,6 +174,8 @@ class SysStatus : public QObject
 
     void report3GNetwork(const int signal, const int total, const int network);
 
+    void hardwareTimerTimeout();
+
   private slots:
     void onBatteryChanged(int, int);
     void onMountTreeChanged(bool mounted, const QString &mount_point);
@@ -204,6 +208,8 @@ class SysStatus : public QObject
     void onLoanReturnFinished(const QString & string);
     void onReportWorkflowError(const QString & workflow, const QString & error_code);
     void onReport3GNetwork(const int signal, const int total, const int network);
+
+    void onHardwareTimerTimeout();
 
   private:
     SysStatus();

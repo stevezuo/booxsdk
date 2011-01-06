@@ -5,7 +5,7 @@
 namespace ui
 {
 
-const int Shadows::PIXELS = 10;
+const int Shadows::PIXELS = 8;
 
 OnyxShadowWidget::OnyxShadowWidget(QWidget *parent, Qt::Orientation o)
     : QDialog(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
@@ -13,7 +13,7 @@ OnyxShadowWidget::OnyxShadowWidget(QWidget *parent, Qt::Orientation o)
 {
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Dark);
-    setWindowOpacity(0.6);
+    setWindowOpacity(0.5);
 }
 
 OnyxShadowWidget::~OnyxShadowWidget()
@@ -35,6 +35,13 @@ void OnyxShadowWidget::resizeEvent(QResizeEvent *e)
     QRegion maskedRegion(path.toFillPolygon().toPolygon());
     setMask(maskedRegion);
     */
+}
+
+void OnyxShadowWidget::paintEvent(QPaintEvent * event)
+{
+    QBrush brush(Qt::black, Qt::Dense3Pattern);
+    QPainter painter(this);
+    painter.fillRect(rect(), brush);
 }
 
 QPainterPath OnyxShadowWidget::getHorizontalPath()
@@ -88,8 +95,8 @@ Shadows::Shadows(QWidget *parent)
 : hor_shadow_(parent, Qt::Horizontal)
 , ver_shadow_(parent, Qt::Vertical)
 {
-    hor_shadow_.setFixedHeight(PIXELS << 1);
-    ver_shadow_.setFixedWidth(PIXELS << 1);
+    hor_shadow_.setFixedHeight(PIXELS);
+    ver_shadow_.setFixedWidth(PIXELS);
 }
 
 Shadows::~Shadows()
@@ -114,8 +121,8 @@ void Shadows::show(bool show)
 
 void Shadows::onWidgetMoved(QWidget *sibling)
 {
-    hor_shadow_.move(sibling->frameGeometry().left() + PIXELS - 1, sibling->frameGeometry().bottom()- PIXELS);
-    ver_shadow_.move(sibling->frameGeometry().right() - PIXELS, sibling->frameGeometry().top() + PIXELS - 1);
+    hor_shadow_.move(sibling->frameGeometry().left() + PIXELS, sibling->frameGeometry().bottom());
+    ver_shadow_.move(sibling->frameGeometry().right() + 1, sibling->frameGeometry().top() + PIXELS);
 }
 
 void Shadows::onWidgetResized(QWidget *sibling)

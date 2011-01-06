@@ -21,7 +21,7 @@ namespace ui
 /// - Menu area.
 /// - Message area.
 /// - System area.
-class StatusBar : public QWidget
+class StatusBar : public QStatusBar
 {
     Q_OBJECT
 public:
@@ -104,7 +104,6 @@ private:
 
 private:
     StatusBarItemTypes items_;
-    QHBoxLayout        layout_;
     StatusBarItems     widgets_;
     bool               enable_jump_to_page_;
     scoped_ptr<USBConnectionDialog> usb_connection_dialog_;

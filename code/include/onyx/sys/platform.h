@@ -12,11 +12,12 @@ namespace sys
 
 QString platform();
 
-bool is166e();
-
 bool isIMX31L();
 
+bool is166E();
+
 QString soundModule();
+
 int defaultRotation();
 
 }

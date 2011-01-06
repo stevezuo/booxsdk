@@ -23,9 +23,8 @@ namespace ui
 {
 
 StatusBar::StatusBar(QWidget *parent, StatusBarItemTypes items)
-    : QWidget(parent)
+    : QStatusBar(parent)
     , items_(0)
-    , layout_(this)
     , enable_jump_to_page_(true)
 {
     createLayout();
@@ -598,8 +597,10 @@ VolumeControlDialog *StatusBar::volumeDialog(bool create)
 void StatusBar::createLayout()
 {
     setFixedHeight(35);
-    layout_.setSpacing(4);
-    layout_.setContentsMargins(1, 2, 1, 0);
+    layout()->setSpacing(4);
+    layout()->setContentsMargins(1, 2, 1, 0);
+    setSizeGripEnabled(false);
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 }
 
 StatusBarItem *StatusBar::item(const StatusBarItemType type, bool create)
@@ -682,7 +683,14 @@ StatusBarItem *StatusBar::item(const StatusBarItemType type, bool create)
     widgets_.push_back(ptr);
 
     // Place this one into the layout.
-    layout_.addWidget(ptr.get());
+    if (type == PROGRESS)
+    {
+        addWidget(ptr.get(), 1);
+    }
+    else
+    {
+        addWidget(ptr.get());
+    }
     return ptr.get();
 }
 

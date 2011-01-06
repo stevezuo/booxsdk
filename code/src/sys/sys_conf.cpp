@@ -111,6 +111,11 @@ bool SystemConfig::officeViewerService(Service & service)
     return ServiceConfig::officeViewerService(*database_, service);
 }
 
+bool SystemConfig::hasOfficeViewer()
+{
+    return ServiceConfig::hasOfficeViewer();
+}
+
 bool SystemConfig::onyxReaderService(Service & service)
 {
     return ServiceConfig::onyxReaderService(*database_, service);

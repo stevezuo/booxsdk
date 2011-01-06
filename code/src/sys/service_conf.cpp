@@ -224,7 +224,7 @@ void ServiceConfig::loadDefaultServices()
         DEFAULT_SERVICES.push_back(wb_service);
 
         // onyx_reader based service
-        bool has_office_viewer = QFile::exists("/opt/onyx/arm/bin/office_viewer");
+        bool has_office_viewer = hasOfficeViewer();
         if (!has_office_viewer)
         {
             onyx_reader.mutable_extensions().push_back("doc");
@@ -438,6 +438,11 @@ bool ServiceConfig::officeViewerService(QSqlDatabase &, Service & service)
 {
     service = office_viewer;
     return true;
+}
+
+bool ServiceConfig::hasOfficeViewer()
+{
+    return QFile::exists("/opt/onyx/arm/bin/office_viewer");
 }
 
 bool ServiceConfig::checkService(QSqlDatabase &database, const Service &service)

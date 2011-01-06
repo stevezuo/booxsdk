@@ -211,12 +211,41 @@ QPushButton:disabled                    \
 //    return QSize(standard_key_size, standard_key_size);
 //}
 
+static QPoint getArrowDisplayPosition(const QRect & key_rect, const QSize & image_size, KeyboardDirection direction)
+{
+    QPoint pos = key_rect.topLeft();
+    switch (direction)
+    {
+    case KEYBOARD_UP:
+        pos.setX(key_rect.left() + ((key_rect.width() - image_size.width()) >> 1));
+        pos.setY(key_rect.top());
+        break;
+    case KEYBOARD_DOWN:
+        pos.setX(key_rect.left() + ((key_rect.width() - image_size.width()) >> 1));
+        pos.setY(key_rect.height() - image_size.height());
+        break;
+    case KEYBOARD_LEFT:
+        pos.setX(key_rect.left());
+        pos.setY(key_rect.top() + ((key_rect.height() - image_size.height()) >> 1));
+        break;
+    case KEYBOARD_RIGHT:
+        pos.setX(key_rect.right() - image_size.width());
+        pos.setY(key_rect.top() + ((key_rect.height() - image_size.height()) >> 1));
+        break;
+    default:
+        break;
+    }
+    return pos;
+}
+
 KeyBoardKey::KeyBoardKey(KeyboardLayout *layout, QWidget *parent)
     : QPushButton(parent)
     , locked_(false)
     , shifted_(false)
+    , display_arrow_(false)
     , code_(BSCode)
     , shift_code_(BSCode)
+    , direction_(KEYBOARD_NORMAL)
     , layout_(layout)
 {
 }
@@ -225,10 +254,11 @@ KeyBoardKey::~KeyBoardKey()
 {
 }
 
-void KeyBoardKey::setCode(const int code, const int direction)
+void KeyBoardKey::setCode(const int code, const int location, const KeyboardDirection direction)
 {
     code_ = code;
     shift_code_ = code;
+    direction_ = direction;
 
     if (code == ShiftCode ||
         code == CapLock ||
@@ -239,7 +269,7 @@ void KeyBoardKey::setCode(const int code, const int direction)
     {
         setStyleSheet(FUNCTION_KEY_BUTTON_STYLE);
     }
-    else if (direction == KEYBOARD_CENTER)
+    else if (location == KEYBOARD_CENTER)
     {
         setStyleSheet(CENTER_KEY_BUTTON_STYLE);
     }
@@ -335,12 +365,53 @@ void KeyBoardKey::keyPressEvent(QKeyEvent * event)
 
 void KeyBoardKey::keyReleaseEvent(QKeyEvent * event)
 {
-    switch (event->key())
+    int key = event->key();
+    switch (key)
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        event->accept();
-        click();
+        if (direction_ == KEYBOARD_CENTER && display_arrow_)
+        {
+            emit directionKeyPressed(KEYBOARD_CENTER);
+            event->accept();
+        }
+        else
+        {
+            event->accept();
+            click();
+        }
+        break;
+    case Qt::Key_Up:
+        if (direction_ == KEYBOARD_CENTER && display_arrow_)
+        {
+            emit directionKeyPressed(KEYBOARD_UP);
+            event->accept();
+            return;
+        }
+        break;
+    case Qt::Key_Down:
+        if (direction_ == KEYBOARD_CENTER && display_arrow_)
+        {
+            emit directionKeyPressed(KEYBOARD_DOWN);
+            event->accept();
+            return;
+        }
+        break;
+    case Qt::Key_Left:
+        if (direction_ == KEYBOARD_CENTER && display_arrow_)
+        {
+            emit directionKeyPressed(KEYBOARD_LEFT);
+            event->accept();
+            return;
+        }
+        break;
+    case Qt::Key_Right:
+        if (direction_ == KEYBOARD_CENTER && display_arrow_)
+        {
+            emit directionKeyPressed(KEYBOARD_RIGHT);
+            event->accept();
+            return;
+        }
         break;
     default:
         break;
@@ -356,9 +427,52 @@ void KeyBoardKey::mousePressEvent(QMouseEvent *me)
     onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::DW);
 }
 
+void KeyBoardKey::onDisplayArrow(bool display)
+{
+    if (display_arrow_ != display)
+    {
+        display_arrow_ = display;
+        update();
+    }
+}
+
 void KeyBoardKey::paintEvent(QPaintEvent *pe)
 {
     QPushButton::paintEvent(pe);
+    if (display_arrow_)
+    {
+        static QImage up_image(":/images/keyboard_up.png");
+        static QImage down_image(":/images/keyboard_down.png");
+        static QImage left_image(":/images/keyboard_left.png");
+        static QImage right_image(":/images/keyboard_right.png");
+        if (direction_ == KEYBOARD_UP || direction_ == KEYBOARD_DOWN || direction_ == KEYBOARD_LEFT || direction_ == KEYBOARD_RIGHT)
+        {
+            QPainter painter(this);
+            QImage image;
+            switch (direction_)
+            {
+            case KEYBOARD_UP:
+                image = up_image;
+                break;
+            case KEYBOARD_DOWN:
+                image = down_image;
+                break;
+            case KEYBOARD_LEFT:
+                image = left_image;
+                break;
+            case KEYBOARD_RIGHT:
+                image = right_image;
+                break;
+            default:
+                break;
+            }
+            if (!image.isNull())
+            {
+                QPoint pt = getArrowDisplayPosition(rect(), image.size(), direction_);
+                painter.drawImage(pt, image);
+            }
+        }
+    }
 }
 
 void KeyBoardKey::resizeEvent(QResizeEvent *re)

@@ -31,7 +31,6 @@ KeyboardLanguageDialog::KeyboardLanguageDialog(QWidget *parent, const QLocale & 
     , current_locale_(current_locale)
 {
     setModal(true);
-    setFixedSize(500, 600);
     createLayout();
 }
 

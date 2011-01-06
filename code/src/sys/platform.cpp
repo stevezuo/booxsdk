@@ -4,6 +4,8 @@
 
 namespace sys
 {
+static const QString IM31L = "imx31L";
+static const QString MARVELL = "166e";
 
 QString platform()
 {
@@ -13,20 +15,20 @@ QString platform()
         p = qgetenv("PLATFORM");
         if (p.isEmpty())
         {
-            p = "IMX31L";
+            p = IM31L;
         }
     }
     return p;
 }
 
-bool is166e()
-{
-    return (platform().compare("166e", Qt::CaseInsensitive) == 0);
-}
-
 bool isIMX31L()
 {
-    return (platform().compare("IMX31L", Qt::CaseInsensitive) == 0);
+    return platform() == IM31L;
+}
+
+bool is166E()
+{
+    return platform() == MARVELL;
 }
 
 QString soundModule()
@@ -38,7 +40,7 @@ QString soundModule()
         {
             mod = "snd-soc-imx-3stack-wm8711";
         }
-        else if (is166e())
+        else if (is166E())
         {
             mod = "snd-soc-booxe";
         }

@@ -130,7 +130,7 @@ void OnyxDialog::showCloseButton(bool show)
 QRect OnyxDialog::outbounding(QWidget *parent)
 {
     QRect rc(rect());
-    rc.adjust(0, 0, Shadows::PIXELS << 1, Shadows::PIXELS << 1);
+    rc.adjust(0, 0, Shadows::PIXELS, Shadows::PIXELS);
     rc.moveTo(mapToGlobal(rc.topLeft()));
     return rc;
 }

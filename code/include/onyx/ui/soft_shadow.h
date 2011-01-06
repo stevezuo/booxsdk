@@ -15,6 +15,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *e);
+    void paintEvent(QPaintEvent * event);
 
 private:
     QPainterPath getHorizontalPath();

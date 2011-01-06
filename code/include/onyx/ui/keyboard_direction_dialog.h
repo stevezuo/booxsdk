@@ -3,18 +3,10 @@
 
 #include "onyx/base/base.h"
 #include "buttons.h"
+#include "keyboard_utils.h"
 
 namespace ui
 {
-
-enum KeyboardDirection
-{
-    KEYBOARD_UP = 0,
-    KEYBOARD_DOWN,
-    KEYBOARD_LEFT,
-    KEYBOARD_RIGHT,
-    KEYBOARD_CENTER
-};
 
 class KeyboardLayout;
 class KeyboardDirectionDialog : public QDialog
@@ -37,6 +29,7 @@ private:
 
     void keyPressEvent(QKeyEvent *ke);
     void keyReleaseEvent(QKeyEvent *ke);
+    void paintEvent(QPaintEvent *pe);
 
     QPoint getDisplayPosition(KeyboardLayout *layout);
     QRect getKeyboardArea();

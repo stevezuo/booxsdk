@@ -22,7 +22,7 @@ static const QString TETHERED_DEVICE = "tethered";
 static const QString DEVICE_NAME = "OnyxBoox";
 static const QString ROOT_FOLDER = "/";
 static const QString DRM_CONTENT_DIR = "media/flash/DRM Contents";
-static const QString ADOBE_RESOURCE_DIR = "media/flash/resources/";  // TODO. Update the resource path
+static const QString ADOBE_RESOURCE_DIR = "media/flash/fonts/MinionPro-Regular.otf";  // TODO. Update the resource path
 static const QString DEVICE_FILE     = "media/flash/.adobe-digital-editions/device.xml";
 static const QString ACTIVATION_FILE = "media/flash/.adobe-digital-editions/activation.xml";
 

@@ -120,4 +120,127 @@ void ClockDialog::updateText()
     }
 }
 
+///Full screen clock
+FullScreenClock::FullScreenClock(QWidget *parent)
+: QDialog(parent)
+{  
+    setFocusPolicy(Qt::StrongFocus);
+    setFocus();
+    setModal(true);
+    connect(&sys::SysStatus::instance(), SIGNAL(hardwareTimerTimeout()), this, SLOT(updateFSClock()));
+    sys::SysStatus::instance().startSingleShotHardwareTimer(60 - QTime::currentTime().second());
+}
+
+FullScreenClock::~FullScreenClock(void)
+{
+    sys::SysStatus::instance().setDefaultEPITTimerInterval();
+}
+
+void FullScreenClock::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    drawTime(&painter);
+    drawDate(&painter);
+}
+
+void FullScreenClock::drawTime(QPainter* painter)
+{
+    int total_width = this->rect().width();
+    int total_height = this->rect().height();
+    QFont time_font;
+    time_font.setBold(true);
+    time_font.setPixelSize(qMin(total_width, total_height)/4);
+    painter->setFont(time_font);
+    painter->drawText(0, 0, total_width, total_height*4/5, Qt::AlignCenter, QTime::currentTime().toString("hh:mm"));
+}
+
+void FullScreenClock::updateFSClock()
+{
+    /*if (timer_->interval() != 60000 )
+    {
+        timer_->setInterval(60000);
+    }*/
+    sys::SysStatus::instance().startSingleShotHardwareTimer(60);
+    repaint();
+}
+
+void FullScreenClock::drawDate(QPainter* painter)
+{
+    int total_width = this->rect().width();
+    int total_height = this->rect().height();
+    QFont time_font;
+    time_font.setBold(true);
+    time_font.setPixelSize(qMin(total_width, total_height)/20);
+    painter->setFont(time_font);
+    painter->drawText(0, total_height*4/5, total_width, total_height/5, Qt::AlignCenter, QDate::currentDate().toString(Qt::TextDate));
+}
+
+int FullScreenClock::exec()
+{
+    onyx::screen::instance().enableUpdate(false);
+    showFullScreen();
+    QApplication::processEvents();
+    onyx::screen::instance().enableUpdate(true);
+    onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GC, true, onyx::screen::ScreenCommand::WAIT_ALL);
+
+    return QDialog::exec();
+}
+
+void FullScreenClock::keyPressEvent(QKeyEvent *ke)
+{
+    ke->accept();
+}
+
+
+void FullScreenClock::keyReleaseEvent(QKeyEvent *ke)
+{
+    // Check the current selected type.
+    ke->accept();
+    switch (ke->key())
+    {
+        case Qt::Key_Left:
+        case Qt::Key_PageUp:
+        case Qt::Key_Right:
+        case Qt::Key_PageDown:
+        case Qt::Key_Down:
+        case Qt::Key_Up:
+            break;
+        case Qt::Key_Return:
+            onReturn();
+            break;
+        case Qt::Key_Escape:
+            onCloseClicked();
+            break;
+    }
+}
+
+bool FullScreenClock::event(QEvent *e)
+{
+    int ret = QDialog::event(e);
+    if (e->type() == QEvent::UpdateRequest)
+    {
+        onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GC, true, onyx::screen::ScreenCommand::WAIT_ALL);
+        e->accept();
+        return true;
+    }
+    return ret;
+}
+
+
+
+void FullScreenClock::onReturn()
+{
+    onOkClicked(true);
+}
+
+void FullScreenClock::onOkClicked(bool)
+{
+    accept();
+}
+
+void FullScreenClock::onCloseClicked()
+{
+    reject();
+}
+
 }

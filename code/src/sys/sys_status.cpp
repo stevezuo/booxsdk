@@ -1497,6 +1497,21 @@ void SysStatus::startSingleShotHardwareTimer(const int seconds)
     }
 }
 
+void SysStatus::setDefaultEPITTimerInterval()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        service,            // destination
+        object,             // path
+        iface,              // interface
+        "setDefaultEPITTimerInterval"      // method.
+    );
+    QDBusMessage reply = connection_.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+    {
+        qWarning("%s", qPrintable(reply.errorMessage()));
+    }
+}
+
 void SysStatus::dump()
 {
     int left;

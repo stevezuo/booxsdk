@@ -126,8 +126,10 @@ class SysStatus : public QObject
     bool hasTouchScreen();
     bool isTTSEnabled();
     bool isDictionaryEnabled();
+    //bool isMusicPlayerRunning();
 
     void startSingleShotHardwareTimer(const int seconds);
+    void setDefaultEPITTimerInterval();
 
     // The following signals must be the same with system manager.
     // Need a better way to sync them.

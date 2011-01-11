@@ -78,6 +78,13 @@ static   Service office_viewer("com.onyx.service.office_viewer",
                             "com.onyx.interface.office_viewer",
                             OPEN_METHOD,
                             "office_viewer");
+
+static   Service comic_reader("com.onyx.service.comic_reader",
+                            "/com/onyx/object/comic_reader",
+                            "com.onyx.interface.comic_reader",
+                            OPEN_METHOD,
+                            "comic_reader");
+
 Service::Service()
 {
 }
@@ -281,6 +288,13 @@ void ServiceConfig::loadDefaultServices()
         djvu_wrapper.mutable_extensions().push_back("djv");
         djvu_wrapper.mutable_extensions().push_back("djvu");
         DEFAULT_SERVICES.push_back(djvu_wrapper);
+
+        comic_reader.mutable_extensions().push_back("rar");
+        comic_reader.mutable_extensions().push_back("cbr");
+        comic_reader.mutable_extensions().push_back("7z");
+        comic_reader.mutable_extensions().push_back("cb7");
+        comic_reader.mutable_extensions().push_back("cbz");
+        DEFAULT_SERVICES.push_back(comic_reader);
     }
 }
 
@@ -431,6 +445,12 @@ bool ServiceConfig::nabooReaderService(QSqlDatabase &, Service & service)
 bool ServiceConfig::onyxReaderService(QSqlDatabase &, Service & service)
 {
     service = onyx_reader;
+    return true;
+}
+
+bool ServiceConfig::comicReaderService(QSqlDatabase &, Service & service)
+{
+    service = comic_reader;
     return true;
 }
 

@@ -133,7 +133,7 @@ FullScreenClock::FullScreenClock(QWidget *parent)
 
 FullScreenClock::~FullScreenClock(void)
 {
-    sys::SysStatus::instance().setDefaultEPITTimerInterval();
+    sys::SysStatus::instance().setDefaultHardwareTimerInterval();
 }
 
 void FullScreenClock::paintEvent(QPaintEvent *)

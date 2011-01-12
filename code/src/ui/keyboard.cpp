@@ -809,7 +809,7 @@ void KeyBoard::displayDirectionArrows(bool display)
     emit displayArrow(display);
 
     onyx::screen::instance().enableUpdate(true);
-    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::GU, false);
+    onyx::screen::instance().flush(this, onyx::screen::ScreenProxy::DW);
 }
 
 void KeyBoard::onDirectionSelected(KeyboardDirection direction)

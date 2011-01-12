@@ -21,7 +21,8 @@ enum StatusBarItemType
     INPUT_URL       = 0x100,
     INPUT_TEXT      = 0x200,
     THREEG_CONNECTION  = 0x400,
-    VOLUME          = 0x800
+    VOLUME          = 0x800,
+    MUSIC_PLAYER    = 0X1000
 };
 
 enum StatusBarItemState

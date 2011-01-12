@@ -31,15 +31,12 @@ StatusBarItemMusicPlayer::~StatusBarItemMusicPlayer(void)
 
 void StatusBarItemMusicPlayer::createLayout()
 {
-qDebug()<<"musicplayer createLayout";
     connect(&sys::SysStatus::instance(), SIGNAL(musicPlayerStateChanged(int)), this, SLOT(setImage(int)));
 }
 
 void StatusBarItemMusicPlayer::paintEvent(QPaintEvent *pe)
 {
     QPainter painter(this);
-qDebug()<<"musicplayer paint";
-    
     QPoint point;
     point.rx() = ((rect().width() - img_.width()) >> 1);
     point.ry() = ((rect().height() - img_.height()) >> 1);
@@ -57,7 +54,7 @@ void StatusBarItemMusicPlayer::mouseReleaseEvent(QMouseEvent *me)
     emit clicked();
 }
 
-/// Retrieve image item according to battery value and status.
+/// Retrieve image item according to the signal sended by music player.
 void StatusBarItemMusicPlayer::setImage(int state)
 {
     if (state == HIDE_PLAYER)

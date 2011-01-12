@@ -123,6 +123,7 @@ void ClockDialog::updateText()
 ///Full screen clock
 FullScreenClock::FullScreenClock(QWidget *parent)
 : QDialog(parent)
+, need_GC_(false)
 {  
     setFocusPolicy(Qt::StrongFocus);
     setFocus();
@@ -152,14 +153,14 @@ void FullScreenClock::drawTime(QPainter* painter)
     time_font.setPixelSize(qMin(total_width, total_height)/4);
     painter->setFont(time_font);
     painter->drawText(0, 0, total_width, total_height*4/5, Qt::AlignCenter, QTime::currentTime().toString("hh:mm"));
+    if(QTime::currentTime().minute() % 10 == 0)
+    {
+        need_GC_ = true;
+    }
 }
 
 void FullScreenClock::updateFSClock()
 {
-    /*if (timer_->interval() != 60000 )
-    {
-        timer_->setInterval(60000);
-    }*/
     sys::SysStatus::instance().startSingleShotHardwareTimer(60);
     repaint();
 }
@@ -182,7 +183,6 @@ int FullScreenClock::exec()
     QApplication::processEvents();
     onyx::screen::instance().enableUpdate(true);
     onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GC, true, onyx::screen::ScreenCommand::WAIT_ALL);
-
     return QDialog::exec();
 }
 
@@ -219,7 +219,15 @@ bool FullScreenClock::event(QEvent *e)
     int ret = QDialog::event(e);
     if (e->type() == QEvent::UpdateRequest)
     {
-        onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GC, true, onyx::screen::ScreenCommand::WAIT_ALL);
+        if (need_GC_)
+        {
+            onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GC, true, onyx::screen::ScreenCommand::WAIT_ALL);
+            need_GC_ = false;
+        }
+        else
+        {
+            onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GU, true, onyx::screen::ScreenCommand::WAIT_ALL);
+        }
         e->accept();
         return true;
     }

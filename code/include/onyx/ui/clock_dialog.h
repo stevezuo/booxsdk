@@ -61,6 +61,8 @@ private Q_SLOTS:
     void onOkClicked(bool);
     void onCloseClicked();
 
+private:
+    bool need_GC_;
 };
 
 };  // namespace ui

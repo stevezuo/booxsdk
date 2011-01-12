@@ -444,6 +444,32 @@ bool SysStatus::isFlashMounted()
     return file.readAll().contains(LIBRARY_ROOT);
 }
 
+bool SysStatus::isMusicPlayerRunning()
+{
+    return isProcessRunning("music_player");
+}
+
+bool SysStatus::isProcessRunning(const QString & proc_name)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        service,            // destination
+        object,             // path
+        iface,              // interface
+        "isProcessRunning"      // method.
+    );
+    message << proc_name;
+    QDBusMessage reply = connection_.call(message);
+
+    if (reply.type() == QDBusMessage::ReplyMessage)
+    {
+        return checkAndReturnBool(reply.arguments());
+    }
+    else if (reply.type() == QDBusMessage::ErrorMessage)
+    {
+        qWarning("%s", qPrintable(reply.errorMessage()));
+    }
+    return false;
+}
 
 bool SysStatus::umountUSB()
 {
@@ -1511,6 +1537,21 @@ void SysStatus::startSingleShotHardwareTimer(const int seconds)
         "startSingleShotHardwareTimer"      // method.
     );
     message << seconds;
+    QDBusMessage reply = connection_.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+    {
+        qWarning("%s", qPrintable(reply.errorMessage()));
+    }
+}
+
+void SysStatus::setDefaultHardwareTimerInterval()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        service,            // destination
+        object,             // path
+        iface,              // interface
+        "setDefaultHardwareTimerInterval"      // method.
+    );
     QDBusMessage reply = connection_.call(message);
     if (reply.type() == QDBusMessage::ErrorMessage)
     {

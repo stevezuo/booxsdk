@@ -55,6 +55,7 @@ void VolumeControlDialog::createLayout()
 
 void VolumeControlDialog::done(int r)
 {
+    sys::SysStatus::instance().enableIdle(true);
     stopTimer();
     QDialog::done(r);
 }
@@ -75,6 +76,7 @@ int VolumeControlDialog::ensureVisible()
     onyx::screen::instance().updateWidget(this, onyx::screen::ScreenProxy::GC, false, onyx::screen::ScreenCommand::WAIT_ALL);
 
     resetTimer();
+    sys::SysStatus::instance().enableIdle(false);
     return exec();
 }
 

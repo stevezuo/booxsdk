@@ -51,7 +51,7 @@ QPushButton:disabled                    \
 const QString CENTER_KEY_BUTTON_STYLE = "      \
 QPushButton                             \
 {                                       \
-    background: #a3a3a3;                \
+    background: white;                  \
     font-size: 24px;                    \
     border-width: 1px;                  \
     border-color: black;                \
@@ -91,7 +91,7 @@ QPushButton:disabled                    \
 const QString FUNCTION_KEY_BUTTON_STYLE = "      \
 QPushButton                             \
 {                                       \
-    background: #eeeeee;                \
+    background: white;                  \
     font-size: 12px;                    \
     border-width: 1px;                  \
     border-color: black;                \

@@ -2,6 +2,7 @@
 #define ONYX_CLOCK_DIALOG_H_
 
 #include "onyx_dialog.h"
+#include "onyx/sys/sys.h"
 
 namespace ui
 {
@@ -31,6 +32,37 @@ private:
     OnyxLabel year_label_;
     QLabel separator_;
     OnyxLabel reading_label_;
+};
+
+/// Full screen dialog
+class FullScreenClock : public QDialog
+{
+    Q_OBJECT
+
+public:
+    FullScreenClock(QWidget *parent);
+    ~FullScreenClock(void);
+
+public:
+    int exec();
+
+private:
+    void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
+    bool event(QEvent *e);
+    void createLayout();
+    void paintEvent(QPaintEvent *);  
+    void drawTime(QPainter *);
+    void drawDate(QPainter *);
+
+private Q_SLOTS:
+    void updateFSClock();
+    void onReturn();
+    void onOkClicked(bool);
+    void onCloseClicked();
+
+private:
+    bool need_GC_;
 };
 
 };  // namespace ui

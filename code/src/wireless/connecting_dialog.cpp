@@ -27,7 +27,7 @@ ConnectingDialog::~ConnectingDialog()
 
 void ConnectingDialog::createLayout()
 {
-    const int SPACING = 2;
+/*    const int SPACING = 2;
     content_layout_.setSizeConstraint(QLayout::SetMaximumSize);
     content_layout_.setSpacing(SPACING);
     content_layout_.setContentsMargins(SPACING, SPACING, SPACING, SPACING);
@@ -39,7 +39,7 @@ void ConnectingDialog::createLayout()
 
     content_layout_.addWidget(&state_widget_,600);
     content_layout_.addStretch(0);
-
+*/
 
     QObject::connect(&sys_, SIGNAL(pppConnectionChanged(const QString &, int)),
                      this, SLOT(onPppConnectionChanged(const QString &, int)));
@@ -51,11 +51,11 @@ void ConnectingDialog::onPppConnectionChanged(const QString &message, int status
 {
     if (status == TG_CHECKING_NETWORK)
     {
-        state_widget_.setText(tr("Searching Network..."));
+//        state_widget_.setText(tr("Searching Network..."));
     }
     else if (status == TG_CONNECTING)
     {
-        state_widget_.setText(tr("Connecting..."));
+//        state_widget_.setText(tr("Connecting..."));
     }
     else if (status == TG_CONNECTED)
     {
@@ -63,7 +63,7 @@ void ConnectingDialog::onPppConnectionChanged(const QString &message, int status
     }
     else if (status == TG_DISCONNECTED)
     {
-        state_widget_.setText(tr("Disconnected."));
+//        state_widget_.setText(tr("Disconnected."));
         QTimer::singleShot(1500, this, SLOT(reject()));
     }
 }

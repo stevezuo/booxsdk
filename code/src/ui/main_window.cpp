@@ -19,8 +19,8 @@ MainWindow::MainWindow(QObject *parent)
     , hlayout_(0)
     , status_bar_(this,
                   (SysStatus::instance().hasTouchScreen() ? 
-                  (MENU | PROGRESS | MESSAGE | STYLUS | BATTERY | CLOCK | VOLUME | SCREEN_REFRESH) :
-                  (MENU | PROGRESS | MESSAGE | STYLUS | BATTERY )))
+                  (MENU | PROGRESS | MESSAGE | STYLUS | BATTERY | MUSIC_PLAYER | CLOCK | VOLUME | SCREEN_REFRESH) :
+                  (MENU | PROGRESS | MESSAGE | STYLUS | BATTERY | MUSIC_PLAYER)))
     , mandatory_update_(false)
 {
     setAutoFillBackground(true);

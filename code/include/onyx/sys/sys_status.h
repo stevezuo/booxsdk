@@ -54,6 +54,8 @@ class SysStatus : public QObject
     bool isUSBMounted();
     bool isSDMounted();
     bool isFlashMounted();
+    bool isMusicPlayerRunning();
+    bool isProcessRunning(const QString & proc_name);
 
     bool umountUSB();
     bool umountSD();
@@ -126,8 +128,10 @@ class SysStatus : public QObject
     bool hasTouchScreen();
     bool isTTSEnabled();
     bool isDictionaryEnabled();
+    //bool isMusicPlayerRunning();
 
     void startSingleShotHardwareTimer(const int seconds);
+    void setDefaultHardwareTimerInterval();
 
     // The following signals must be the same with system manager.
     // Need a better way to sync them.

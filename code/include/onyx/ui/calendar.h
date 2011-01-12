@@ -1,61 +1,56 @@
 
-#ifndef ONYX_CALENDAR_H_
-#define ONYX_CALENDAR_H_
+#ifndef ONYX_FULL_SCREEN_CALENDAR_H_
+#define ONYX_FULL_SCREEN_CALENDAR_H_
 
-#include <QCalendarWidget>
-#include "buttons.h"
-#include "label.h"
+#include <QDialog>
+#include <QDate>
 
 namespace ui
 {
 
-/// Calendar widget for eink device. Remove unnecessary screen updates.
-class OnyxCalendar : public QWidget
+/// Fullscreen calendar
+class Calendar : public QDialog
 {
     Q_OBJECT
 public:
-    OnyxCalendar(QWidget *parent);
-    ~OnyxCalendar();
+    Calendar(QWidget *parent);
+    ~Calendar(void);
 
 public:
-    QDate selectedDate() const;
-
-protected:
-    bool event(QEvent *e);
-    void keyPressEvent(QKeyEvent * ke);
-    void keyReleaseEvent(QKeyEvent * ke);
-    void paintEvent(QPaintEvent *pe);
+    int exec();
 
 private:
+    void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
+    bool event(QEvent *e);
     void createLayout();
+    void paintEvent(QPaintEvent *);  
+    void drawMonth(QPainter* painter,
+                   int inix,
+                   int iniy,
+                   int monthWth,
+                   int monthHth,
+                   int dayWth,
+                   int dayHth,
+                   int year,
+                   int month);
+    void drawPage(QPainter*, const QDate& date);
+    void drawArrow(QPainter* painter, int total_width, int total_height, int hor_space, int ver_space, int year_height);
+    void drawYear(QPainter* painter, const QRect& rect, int year_height, int year);
+    void setColAndRow(int& col, int& row, int total_width, int total_height, int hor_space, int ver_space);
+    void month_loc(int& x,int& y, int col,int month);
+    int firstMonth(int curr_month);
 
 private Q_SLOTS:
-    void onSelectionChanged();
-    void onCurrentPageChanged(int, int);
-
-    void onYearNextClicked(bool);
-    void onYearPrevClicked(bool);
-
-    void onMonthNextClicked(bool);
-    void onMonthPrevClicked(bool);
+    void onReturn();
+    void onOkClicked(bool);
+    void onCloseClicked();
 
 private:
-    QVBoxLayout layout_;
-    QHBoxLayout header_layout_;
-
-    OnyxLabel year_title_;
-    OnyxLabel year_label_;
-    OnyxPushButton year_prev_;
-    OnyxPushButton year_next_;
-
-    OnyxLabel month_title_;
-    OnyxLabel month_label_;
-    OnyxPushButton month_prev_;
-    OnyxPushButton month_next_;
-
-    QCalendarWidget calendar_;
+    int page_tag_;
+    int month_count_;
 };
 
-};      // ONYX_CALENDAR_H_
+}   // namespace ui
 
 #endif

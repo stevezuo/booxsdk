@@ -688,5 +688,22 @@ int SystemConfig::screenUpdateGCInterval()
     return interval;
 }
 
+int SystemConfig::screenUpdateGrayScaleSetting()
+{
+    const int DEFAULT_GRAY_SCALE_SETTING = 8;
+    QString value = MiscConfig::getValue(*database_, "gray_scale_setting");
+    bool ok;
+    int gray_scale_setting = value.toInt(&ok, 10);
+    if (!ok)
+    {
+        gray_scale_setting = DEFAULT_GRAY_SCALE_SETTING;
+    }
+    if (gray_scale_setting != DEFAULT_GRAY_SCALE_SETTING
+            && gray_scale_setting != 16)
+    {
+        gray_scale_setting = DEFAULT_GRAY_SCALE_SETTING;
+    }
+    return gray_scale_setting;
 }
 
+}

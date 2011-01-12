@@ -107,6 +107,7 @@ public:
     bool setMiscValue(const QString &key, const QString &value);
     QString miscValue(const QString &key);
     int screenUpdateGCInterval();
+    int screenUpdateGrayScaleSetting();
 
     // Page turning direction.
     static int direction(const QPoint & old_position, const QPoint & new_position);

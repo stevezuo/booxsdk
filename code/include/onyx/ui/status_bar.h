@@ -25,7 +25,7 @@ class StatusBar : public QStatusBar
 {
     Q_OBJECT
 public:
-    StatusBar(QWidget *parent, StatusBarItemTypes items = MENU|PROGRESS|MESSAGE|BATTERY);
+    StatusBar(QWidget *parent, StatusBarItemTypes items = MENU|PROGRESS|MESSAGE|BATTERY|MUSIC_PLAYER);
     ~StatusBar(void);
 
 public:
@@ -53,6 +53,7 @@ public Q_SLOTS:
     void onInputUrlClicked();
     void onInputTextClicked();
     void onVolumeClicked();
+    void onMusicPlayerClicked();
 
 Q_SIGNALS:
     void progressClicked(const int percent, const int value);

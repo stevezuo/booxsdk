@@ -48,7 +48,8 @@ void KeyboardLayout::initShiftMap()
     shift_map_[code_vector_[23]] = '.';
     shift_map_[code_vector_[2]] = '/';
     shift_map_[code_vector_[21]] = QChar(0x00A3);
-    shift_map_[code_vector_[1]]  = QChar(0x00A5);//shift_map_[code_vector_[13]] = QChar(0x00A7);
+    shift_map_[code_vector_[1]]  = QChar(0x00A5);
+    shift_map_[code_vector_[13]] = QChar(0x00A7);
     shift_map_[code_vector_[12]] = QChar(0x00A9);
 
     if (code_vector_.size() > 26)

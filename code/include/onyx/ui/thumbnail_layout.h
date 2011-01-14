@@ -39,7 +39,7 @@ struct ThumbnailLayoutContext
     TextDirection     txt_dir;
     float             txt_ratio;
 
-    ThumbnailLayoutContext() : rows(2), columns(2), space(10), txt_dir(TEXT_BOTTOM), txt_ratio(0.1f) {}
+    ThumbnailLayoutContext() : rows(2), columns(2), space(2), txt_dir(TEXT_BOTTOM), txt_ratio(0.1f) {}
 };
 
 class ThumbnailLayout

@@ -26,7 +26,8 @@ TasksHandler::~TasksHandler()
 
 /// Add a new task into the queue
 /// if the timer stops when adding, start it
-void TasksHandler::addTask(BaseTask *t, bool append)
+/// NOTE: abort_current and clear_all are valid when append is false
+void TasksHandler::addTask(BaseTask *t, bool append, bool abort_current, bool clear_all)
 {
     if (append)
     {
@@ -34,9 +35,15 @@ void TasksHandler::addTask(BaseTask *t, bool append)
     }
     else
     {
-        clearTasks(t->type());
+        if (clear_all)
+        {
+            clearTasks(t->type());
+        }
         tasks_.prepend(t);
-        abortCurTask();
+        if (abort_current)
+        {
+            abortCurTask();
+        }
     }
 
     // start the timer if it is not running

@@ -28,7 +28,7 @@ public:
     //static TasksHandler& instance();
     void clearTasks();
     void clearTasks(int t);
-    void addTask(BaseTask *t, bool append = true);
+    void addTask(BaseTask *t, bool append = true, bool abort_current = true, bool clear_all = true);
     void abortCurTask();
     void pauseCurTask();
     void startCurTask();
